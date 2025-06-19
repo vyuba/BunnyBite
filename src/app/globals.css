@@ -1,8 +1,93 @@
 @import "tailwindcss";
 
+/* imported font  */
+
+@font-face {
+  font-family: "Neue";
+  src: url("/font/NeueMontreal-Light.otf");
+  font-weight: 300; /* Light */
+}
+
+@font-face {
+  font-family: "Neue";
+  src: url("/font/NeueMontreal-Regular.otf");
+  font-weight: 400; /* Regular */
+}
+
+@font-face {
+  font-family: "Neue";
+  src: url("/font/NeueMontreal-Medium.otf");
+  font-weight: 500; /* Medium */
+}
+
+@font-face {
+  font-family: "Neue";
+  src: url("/font/NeueMontreal-Bold.otf");
+  font-weight: 700; /* Bold */
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f1f1f1;
+  --foreground: #0a0a0a;
+  /* --font-neue: 'Neue', sans-serif; */
+}
+
+.shared-style {
+  @apply w-full h-full bg-[#303030];
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.parent {
+  position: relative;
+  transform-style: preserve-3d;
+  perspective: 10000px;
+  /* margin-top: 300px; */
+  /*   rotate: y 0deg */
+  animation: rotates 12s infinite linear;
+  animation-fill-mode: forwards;
+}
+
+.blue {
+  animation: rotateX 8s infinite linear;
+  animation-fill-mode: forwards;
+  transform: translateZ(39px);
+  border: 2px solid #ebebeb;
+}
+.red {
+  animation: rotateY 8s infinite linear;
+  animation-fill-mode: forwards;
+  transform: rotateY(180deg) translateZ(39px);
+  border: 2px solid #ebebeb;
+}
+
+.right {
+  transform: rotateY(90deg) translateZ(39px);
+  border: 2px solid #ebebeb;
+}
+.left {
+  transform: rotateY(-90deg) translateZ(39px);
+  border: 2px solid #ebebeb;
+}
+.bottom {
+  transform: rotateX(-90deg) translateZ(39px);
+  border: 2px solid #ebebeb;
+}
+.top {
+  transform: rotateX(90deg) translateZ(39px);
+  border: 2px solid #ebebeb;
+}
+
+@keyframes rotates {
+  from {
+    transform: rotateY(0deg) rotateX(0deg);
+  }
+  to {
+    transform: rotateY(360deg) rotateX(360deg);
+  }
 }
 
 @theme inline {
@@ -10,17 +95,27 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-neue: var(--font-neue);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  /* :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-  }
+  } */
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-neue);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  box-shadow: 0 0 0 30px #f9fafb inset !important; /* Example background color */
+  -webkit-text-fill-color: #6b6b6b !important; /* Example text color */
+  border: 1px solid #cacaca !important; /* Example border color */
 }

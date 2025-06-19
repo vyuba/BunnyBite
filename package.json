@@ -9,19 +9,41 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.2"
+    "@appwrite.io/pink": "^1.0.0",
+    "@dicebear/collection": "^9.2.2",
+    "@dicebear/core": "^9.2.2",
+    "@langchain/community": "^0.3.46",
+    "@langchain/core": "^0.3.59",
+    "@langchain/langgraph": "^0.3.3",
+    "@phosphor-icons/react": "^2.1.10",
+    "@shopify/shopify-api": "^11.12.0",
+    "@shopify/shopify-app-session-storage": "^3.0.17",
+    "@shopify/shopify-app-session-storage-mysql": "^4.0.17",
+    "appwrite": "^18.1.1",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "motion": "^12.18.1",
+    "next": "^15.3.3",
+    "node-appwrite": "^17.0.0",
+    "nodemon": "^3.1.10",
+    "sonner": "^2.0.5",
+    "twilio": "^5.7.0",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/express": "^5.0.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5"
   }
 }
