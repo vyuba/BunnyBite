@@ -99,17 +99,15 @@ export const SideBar = ({
 
   return (
     <motion.div
-      // initial={{ width: isSidebar ? 0 : "fit-content" }}
-      // animate={{ width: isSidebar ? 0 : "fit-content" }}
-      // transition={{
-      //   type: "spring",
-      //   stiffness: 200,
-      //   damping: 20,
-      // }}
-      // exit={{ width: 0 }}
-      className={` ${
-        isSidebar ? "w-0 transition-all" : "w-fit transition-all"
-      } md:w-fit overflow-hidden flex transition-all flex-col justify-between h-screen bg-[#EBEBEB] `}
+      initial={{ width: isSidebar ? 0 : "auto" }}
+      animate={{ width: isSidebar ? 0 : "auto" }}
+      transition={{
+        type: "tween",
+        stiffness: 100,
+        damping: 0,
+      }}
+      exit={{ width: 0 }}
+      className={`  md:w-fit overflow-hidden flex transition-all flex-col justify-between h-screen bg-[#EBEBEB] `}
     >
       <ul className="flex flex-col gap-3 px-3 mt-3">
         <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize px-3 bg-[#303030] text-sm py-2 rounded-lg" />
