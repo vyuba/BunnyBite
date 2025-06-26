@@ -2,7 +2,7 @@
 import AccountSetup from "@/components/AccountSetup";
 export default function Home() {
   return (
-    <div className="flex gap-5 flex-col">
+    <div className="flex gap-5 flex-col h-full ">
       <div className="w-full flex flex-col">
         {/* The steps container  */}
         <AccountSetup />

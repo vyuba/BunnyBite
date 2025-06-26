@@ -48,22 +48,24 @@ const Modal = ({
           //   delay: 0.3,
           duration: 0.1,
         }}
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white w-full max-w-[450px] rounded-lg  z-50 overflow-hidden"
+        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-[500px]  flex items-center justify-center px-3 "
       >
-        <div className="flex justify-between p-2 bg-[#F7F7F7]  items-center border-b border-[#EBEBEB]">
-          <h2 className="text-base font-medium">{title}</h2>
-          <button
-            className=" hover:bg-[#F7F7F7] p-1.5 rounded-sm cursor-pointer"
-            onClick={onClose}
-          >
-            <XIcon size={17} />
-          </button>
-        </div>
-        <div className="py-2">
-          <p className="text-sm text-pretty text-black/70 w-full px-2 pb-2">
-            {description}
-          </p>
-          {children}
+        <div className="bg-white w-full rounded-lg  overflow-hidden">
+          <div className="flex justify-between p-2 bg-[#F7F7F7]  items-center border-b border-[#EBEBEB]">
+            <h2 className="text-base font-medium">{title}</h2>
+            <button
+              className=" hover:bg-[#F7F7F7] p-1.5 rounded-sm cursor-pointer"
+              onClick={onClose}
+            >
+              <XIcon size={17} />
+            </button>
+          </div>
+          <div className="py-2">
+            <p className="text-sm text-pretty text-black/70 w-full px-2 pb-2">
+              {description}
+            </p>
+            {children}
+          </div>
         </div>
       </motion.div>
     </div>

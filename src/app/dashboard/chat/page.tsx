@@ -8,11 +8,11 @@ import { useEffect, useState, useRef } from "react";
 import { client, clientDatabase } from "@/app/lib/client-appwrite";
 import { ID, Query } from "appwrite";
 import { Models } from "appwrite";
-import { ArrowLeftIcon, PaperPlaneRightIcon } from "@phosphor-icons/react";
+import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
-import Image from "next/image";
 import ChatListSection from "@/components/ChatListSection";
+import ChatHeader from "@/components/ChatHeader";
 // import AnalyticCard from "@/components/AnalyticsCard";
 
 const avatar = createAvatar(lorelei, {
@@ -109,6 +109,7 @@ const Page = () => {
   const { shop } = useCounterStore((state) => state);
   const [selectedChat, setSelectedChat] = useState<Chats | null>(null);
   const message_box = useRef<HTMLDivElement>(null);
+  const bottom_message = useRef<HTMLDivElement>(null);
   // const [customerCount, setCustomerCount] = useState<number>(0);
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [messages, setMessages] =
@@ -123,6 +124,10 @@ const Page = () => {
     toggleAI: true,
   });
   useEffect(() => {
+    bottom_message.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
     const unsubscribe = client.subscribe(
       `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
       (response) => {
@@ -137,9 +142,10 @@ const Page = () => {
               response.payload as Models.Document,
             ],
           }));
-          message_box.current?.scrollTo({
-            top: message_box.current.scrollHeight,
+
+          bottom_message.current?.scrollIntoView({
             behavior: "smooth",
+            block: "end",
           });
           if (customer && message.toggleAI === true) {
             console.log("--AGENT-CLIENT");
@@ -150,19 +156,19 @@ const Page = () => {
     );
 
     return () => unsubscribe();
-  }, [shop?.shop, selectedChat?.chat_id, message_box, message]);
+  }, [shop?.shop, selectedChat?.chat_id, bottom_message, message]);
 
   // console.log(customerCount);
   // console.log(chats);
   // console.log("message", message?.content);
 
   return (
-    <div className="flex flex-col w-full h-full gap-2 pb-15">
+    <div className="flex flex-col md:z-0 w-full h-full gap-2 pb-15">
       {/* chat analytics data section  */}
       {/* <div className="w-full flex flex-wrap gap-1.5 items-center">
         <AnalyticCard title={"No Of Customers"} count={customerCount} />
       </div> */}
-      <div className="w-full relative overflow-hidden h-[calc(100%-50px)] flex gap-2">
+      <div className="w-full relative md:z-0 overflow-hidden h-[calc(100dvh-135px)] flex gap-2">
         {/* container for chat list  */}
         <ChatListSection
           setMessages={setMessages}
@@ -178,32 +184,18 @@ const Page = () => {
         <div
           className={`w-full ${
             isChatOpen ? "translate-x-full z-10" : " translate-x-0 z-20  "
-          } md:translate-x-0  h-full relative duration-300  bg-white overflow-hidden rounded-md border border-[#E3E3E3]`}
+          } md:translate-x-0 md:z-0  h-full relative duration-300  bg-white overflow-hidden rounded-md border border-[#E3E3E3]`}
         >
           <div className="bg-white/20 bg-repeat bg-[url('/whatsappbackground.png')] w-full h-full">
             {messages && messages.total > 0 ? (
               <div className="w-full h-full flex flex-col">
-                <div className="absolute top-0 left-0 w-full h-13 bg-[var(--background)] border-b border-[#E3E3E3] flex items-center justify-between px-2">
-                  {/* profile icon and name container */}
-                  <div className="w-fit h-full flex items-center gap-2">
-                    <ArrowLeftIcon
-                      onClick={() => setIsChatOpen(true)}
-                      size={16}
-                      weight="bold"
-                      className="p-2 md:hidden text-black/70 hover:bg-white rounded-md cursor-pointer size-fit "
-                    />
-                    <Image
-                      src={svg}
-                      alt=""
-                      width={30}
-                      height={30}
-                      className="bg-white block border-[#E3E3E3] border rounded-full size-10"
-                    />
-                    <p className="text-sm  text-black/70 capitalize font-medium">
-                      {selectedChat?.customer_name}
-                    </p>
-                  </div>
-                </div>
+                <ChatHeader
+                  setIsChatOpen={setIsChatOpen}
+                  svg={svg}
+                  selectedChat={selectedChat}
+                  setMessage={setMessage}
+                  message={message}
+                />
 
                 <div
                   ref={message_box}
@@ -236,6 +228,7 @@ const Page = () => {
                       </p>
                     </div>
                   ))}
+                  <div ref={bottom_message} className="opacity-0 h-5" />
                 </div>
 
                 {/* Messaging input section  */}

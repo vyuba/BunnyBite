@@ -72,7 +72,7 @@ const ChatListSection = ({
         isChatOpen
           ? "translate-x-0 z-20"
           : "z-10 -translate-x-[50%] md:translate-x-0"
-      } absolute left-0 transition-transform  w-full md:static md:w-[25%] md:min-w-[250px] h-full flex flex-col pt-2 border border-[#E3E3E3] overflow-hidden rounded-lg bg-[#EBEBEB] gap-2`}
+      } absolute left-0 md:z-0 transition-transform  w-full md:static md:w-[25%] md:min-w-[250px] h-full flex flex-col pt-2 border border-[#E3E3E3] overflow-hidden rounded-lg bg-[#EBEBEB] gap-2`}
     >
       <div className="border mx-2 px-2 rounded-sm border-[#E3E3E3]">
         <input

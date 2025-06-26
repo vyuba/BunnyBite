@@ -98,7 +98,7 @@ const AccountSetup = () => {
   }, [user]);
 
   return (
-    <motion.span className="w-full max-w-[796px] bg-[#F7F7F7] mx-auto py-3 px-1.5 rounded-lg border border-[#E3E3E3] ">
+    <motion.span className="w-full h-full max-w-[796px] bg-[#F7F7F7] mx-auto py-3 px-1.5 rounded-lg border border-[#E3E3E3] ">
       <div className="flex items-center pb-3 gap-1.5  px-1">
         <motion.svg
           className="-rotate-90 fill-none"

@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import { clientAccount } from "@/app/lib/client-appwrite";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { toast } from "sonner";
+import ToolKit from "./ToolKit";
 
 // import { signOut } from "@/helpers/appwrite-helpers";
 
@@ -55,9 +56,11 @@ export const SideBar = ({
 }) => {
   const [isProfileClicked, setIsProfileClicked] = useState(false);
   const router = useRouter();
-  const { isSidebar } = useCounterStore((state) => state);
+  const { isSidebar, setSidebar } = useCounterStore((state) => state);
   const inputRef = useRef(null);
   const PopUpref = useRef(null);
+  const [isToolKit, setToolKit] = useState(false);
+  const [isHovered, setHovered] = useState(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent): void {
@@ -99,15 +102,11 @@ export const SideBar = ({
 
   return (
     <motion.div
-      initial={{ width: isSidebar ? 0 : "auto" }}
-      animate={{ width: isSidebar ? 0 : "auto" }}
-      transition={{
-        type: "tween",
-        stiffness: 100,
-        damping: 0,
-      }}
-      exit={{ width: 0 }}
-      className={`  md:w-fit overflow-hidden flex transition-all flex-col justify-between h-screen bg-[#EBEBEB] `}
+      className={`fixed md:static top-0 left-0 ${
+        isSidebar
+          ? "-translate-x-[100px] md:translate-x-0"
+          : "translate-x-[0] md:translate-x-0"
+      } z-[2000]  border border-[#E3E3E3]  md:border-0  md:static md:w-fit  flex transition-all flex-col justify-between h-dvh bg-[#EBEBEB] `}
     >
       <ul className="flex flex-col gap-3 px-3 mt-3">
         <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize px-3 bg-[#303030] text-sm py-2 rounded-lg" />
@@ -116,8 +115,17 @@ export const SideBar = ({
             className="flex items-center gap-2"
             href={link.link}
             key={index}
+            onClick={() => setSidebar(!isSidebar)}
           >
-            <div
+            <motion.div
+              onMouseEnter={() => {
+                setToolKit(true);
+                setHovered(index);
+              }}
+              onMouseLeave={() => {
+                setToolKit(false);
+                setHovered(null);
+              }}
               className={` ${
                 link.link == pathname
                   ? " border-[#E3E3E3] hover:border-b-2 bg-[var(--background)]"
@@ -129,7 +137,13 @@ export const SideBar = ({
                 fill="#303030"
                 size={20}
               />
-            </div>
+              <ToolKit
+                isToolKit={isToolKit}
+                isHovered={isHovered}
+                index={index}
+                title={link.title}
+              />
+            </motion.div>
           </Link>
         ))}
       </ul>
@@ -141,6 +155,14 @@ export const SideBar = ({
             key={index}
           >
             <div
+              onMouseEnter={() => {
+                setToolKit(true);
+                setHovered(index);
+              }}
+              onMouseLeave={() => {
+                setToolKit(false);
+                setHovered(null);
+              }}
               className={` ${
                 link.link == pathname
                   ? " bg-[var(--background)]"
@@ -151,6 +173,12 @@ export const SideBar = ({
                 weight={`${link.link == pathname ? "fill" : "regular"}`}
                 fill="#303030"
                 size={20}
+              />
+              <ToolKit
+                isToolKit={isToolKit}
+                isHovered={isHovered}
+                index={index}
+                title={link.title}
               />
             </div>
           </Link>
@@ -182,7 +210,7 @@ export const SideBar = ({
         }}
         exit={{ y: 100, x: -100, opacity: 0, scale: 0 }}
         transition={{ duration: 0.2 }}
-        className="fixed bottom-10 z-50 left-10 rounded-md bg-[#EBEBEB] border border-[#E3E3E3] px-1 pb-1 max-w-[240px]"
+        className="fixed bottom-10 z-[9000] left-10 rounded-md bg-[#EBEBEB] border border-[#E3E3E3] px-1 pb-1 max-w-[240px]"
       >
         <button className="cursor-pointer w-full flex items-center gap-1 py-1 hover:bg-white rounded-sm px-1 my-1.5">
           <div className="size-7 rounded-sm bg-[#303030]" />
