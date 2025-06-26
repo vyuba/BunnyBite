@@ -8,7 +8,7 @@ const fetchShop = async ({ shop }: { shop: string }) => {
   try {
     const baseUrl =
       process.env.SHOPIFY_APP_URL ||
-      "https://2d87-102-89-32-171.ngrok-free.app";
+      "https://personally-version-algorithm-singles.trycloudflare.com";
     const response = await fetch(
       `${baseUrl}/api/shopify/shop?shop=${shop}`,
       {}
@@ -37,7 +37,7 @@ const fetchCustomerCount = async ({ shop }: { shop: string }) => {
   try {
     const baseUrl =
       process.env.SHOPIFY_APP_URL ||
-      "https://2d87-102-89-32-171.ngrok-free.app";
+      "https://personally-version-algorithm-singles.trycloudflare.com";
     const response = await fetch(
       `${baseUrl}/api/shopify/customer?shop=${shop}`,
       {}

@@ -4,6 +4,8 @@ import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { TwillioClient } from "@/app/lib/twillio";
 import { databases } from "@/app/lib/node-appwrite";
 import { ID, Permission, Role } from "node-appwrite";
+// import { graph } from "@/agent/model";
+// import { Command } from "@langchain/langgraph";
 
 // export const GET = async (req: NextRequest, res: NextResponse) => {
 //   console.log("sms route hit");
@@ -33,7 +35,25 @@ export const POST = async (req: NextRequest) => {
   console.log("body:", body);
   console.log("to:", to);
 
-  // twiml.message("The way things go!");
+  // twiml.message(response.output);
+
+  // const response = await fetch(
+  //   "https://personally-version-algorithm-singles.trycloudflare.com/api/agent",
+  //   {
+  //     method: "POST",
+  //     // headers: {
+  //     //   "Content-Type": "application/json",
+  //     // },
+  //     body: JSON.stringify({
+  //       sender_type: message.sender_type,
+  //       content: payload?.content,
+  //       messageId: ID.unique(),
+  //       shop_name: message.shop_name,
+  //       Receiver_id: message.Receiver_id,
+  //       chat_id: message.chat_id,
+  //     }),
+  //   }
+  // );
   //   twiml.message("The Robots are coming! Head for the hills!");
   await databases.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,

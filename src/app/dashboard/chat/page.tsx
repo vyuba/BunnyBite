@@ -1,7 +1,7 @@
 "use client";
 
 // import { getChats, getMessages } from "@/helpers/shopifyQuery";
-import { fetchCustomerCount } from "@/helpers/shopifyQuery";
+// import { fetchCustomerCount } from "@/helpers/shopifyQuery";
 import { Chats } from "@/types";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { useEffect, useState, useRef } from "react";
@@ -13,6 +13,7 @@ import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
 import Image from "next/image";
 import ChatListSection from "@/components/ChatListSection";
+// import AnalyticCard from "@/components/AnalyticsCard";
 
 const avatar = createAvatar(lorelei, {
   seed: "John Doe",
@@ -21,48 +22,6 @@ const avatar = createAvatar(lorelei, {
 });
 
 const svg = avatar.toDataUri();
-
-const getChats = async (
-  shop: string
-): Promise<Chats[] | null | Models.DocumentList<Models.Document>> => {
-  // const cookieStore = await cookies();
-  // const shop = cookieStore.get("shop");
-  try {
-    const document = await clientDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      [Query.equal("shop_name", shop || "")]
-    );
-    console.log(document);
-    if (document.total === 0) {
-      return document as Models.DocumentList<Models.Document>;
-    }
-
-    const chatsWithMessages = await Promise.all(
-      document.documents.map(async (doc) => {
-        const messageDocument = await clientDatabase.listDocuments(
-          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-          [
-            Query.equal("chat_id", doc?.chat_id || ""),
-            Query.equal("shop_name", shop || ""),
-            Query.orderDesc("$createdAt"),
-            Query.limit(1),
-          ]
-        );
-
-        return {
-          ...doc,
-          messages: messageDocument.documents as Models.Document[],
-        } as Chats;
-      })
-    );
-    return chatsWithMessages;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
 
 const getMessages = async (chat_id: string, shop: string) => {
   if (!chat_id || !shop) {
@@ -96,7 +55,30 @@ interface Message {
   shop_name: string;
   Receiver_id: string | undefined;
   chat_id: string;
+  toggleAI: boolean;
 }
+
+const sendAIMessage = async (message, payload) => {
+  const response = await fetch(
+    "https://personally-version-algorithm-singles.trycloudflare.com/api/agent",
+    {
+      method: "POST",
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      body: JSON.stringify({
+        sender_type: message.sender_type,
+        content: payload?.content,
+        messageId: ID.unique(),
+        shop_name: message.shop_name,
+        Receiver_id: message.Receiver_id,
+        chat_id: message.chat_id,
+      }),
+    }
+  );
+  const data = await response.json();
+  console.log(data);
+};
 
 const sendMessage = async (message: Message) => {
   try {
@@ -125,10 +107,9 @@ const sendMessage = async (message: Message) => {
 
 const Page = () => {
   const { shop } = useCounterStore((state) => state);
-  const [chats, setChats] = useState<Chats[] | null>(null);
   const [selectedChat, setSelectedChat] = useState<Chats | null>(null);
   const message_box = useRef<HTMLDivElement>(null);
-  const [customerCount, setCustomerCount] = useState<number>(0);
+  // const [customerCount, setCustomerCount] = useState<number>(0);
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [messages, setMessages] =
     useState<Models.DocumentList<Models.Document> | null>(null);
@@ -139,20 +120,15 @@ const Page = () => {
     shop_name: shop?.shop || "",
     Receiver_id: selectedChat?.customer_name,
     chat_id: selectedChat?.chat_id || "",
+    toggleAI: true,
   });
   useEffect(() => {
-    const fetchChats = async () => {
-      const chats = (await getChats(shop?.shop || "")) as Chats[];
-      console.log("chats", chats);
-      setChats(chats);
-      const Count = await fetchCustomerCount({ shop: shop?.shop });
-      setCustomerCount(Count?.customersCount.count);
-    };
     const unsubscribe = client.subscribe(
       `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
       (response) => {
         const document = response.payload as Models.Document;
         const chatId = document?.chat_id;
+        const customer = document?.sender_type === "customer";
         if (document && selectedChat?.chat_id === chatId) {
           setMessages((prev) => ({
             ...prev,
@@ -165,12 +141,16 @@ const Page = () => {
             top: message_box.current.scrollHeight,
             behavior: "smooth",
           });
+          if (customer && message.toggleAI === true) {
+            console.log("--AGENT-CLIENT");
+            sendAIMessage(message, response.payload);
+          }
         }
       }
     );
-    fetchChats();
+
     return () => unsubscribe();
-  }, [shop?.shop, selectedChat?.chat_id, message_box, customerCount]);
+  }, [shop?.shop, selectedChat?.chat_id, message_box, message]);
 
   // console.log(customerCount);
   // console.log(chats);
@@ -179,15 +159,10 @@ const Page = () => {
   return (
     <div className="flex flex-col w-full h-full gap-2 pb-15">
       {/* chat analytics data section  */}
-      <div className="w-full flex flex-wrap gap-1.5 items-center">
-        <div className="border w-70 flex flex-col gap-1.5  border-[#E3E3E3]  transition-[border] text-black/70 capitalize px-3 bg-white text-sm py-2 rounded-lg">
-          <h1 className="border-dotted border-b w-fit border-[#E3E3E3]">
-            No Of Customers
-          </h1>
-          <span className="text-medium">{customerCount}</span>
-        </div>
-      </div>
-      <div className="w-full relative overflow-hidden h-[calc(100%-120px)] flex gap-2">
+      {/* <div className="w-full flex flex-wrap gap-1.5 items-center">
+        <AnalyticCard title={"No Of Customers"} count={customerCount} />
+      </div> */}
+      <div className="w-full relative overflow-hidden h-[calc(100%-50px)] flex gap-2">
         {/* container for chat list  */}
         <ChatListSection
           setMessages={setMessages}
@@ -195,7 +170,6 @@ const Page = () => {
           setSelectedChat={setSelectedChat}
           selectedChat={selectedChat}
           svg={svg}
-          chats={chats}
           shop={shop?.shop || ""}
           isChatOpen={isChatOpen}
           setIsChatOpen={setIsChatOpen}
@@ -276,6 +250,7 @@ const Page = () => {
                         shop_name: shop?.shop || "",
                         Receiver_id: selectedChat?.customer_name || "",
                         chat_id: selectedChat?.chat_id || "",
+                        toggleAI: true,
                       })
                     }
                     className="w-full border border-[#E3E3E3] px-3 h-full text-black/70 outline-0 bg-white rounded-full"

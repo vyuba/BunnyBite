@@ -15,10 +15,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { setCurrentUser, setCurrentShop, setSidebar, isSidebar, shop, user } =
     useCounterStore((state) => state);
   const pathname = usePathname();
-  // const [isUser, setUser] = useState<
-  //   Models.User<Models.Preferences> | null | undefined
-  // >();
-  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchSession = async () => {

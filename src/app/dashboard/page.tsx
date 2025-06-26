@@ -1,6 +1,5 @@
 // import { clientDatabase } from "../lib/client-appwrite";
 import AccountSetup from "@/components/AccountSetup";
-
 export default function Home() {
   return (
     <div className="flex gap-5 flex-col">

@@ -8,7 +8,7 @@ import { createHmac } from "crypto";
 export const POST = async (req: NextRequest) => {
   const payload = await req.text(); // use .text(), not .json(), for exact signature match
   const signatureHeader = req.headers.get("x-appwrite-webhook-signature")!;
-  const webhookUrl = "2d87-102-89-32-171.ngrok-free.app"; // full path that Appwrite posts to
+  const webhookUrl = "personally-version-algorithm-singles.trycloudflare.com"; // full path that Appwrite posts to
   const signatureKey = process.env.YOUR_SECRET_HMAC_KEY!;
 
   const expectedSignature = createHmac("sha1", signatureKey)
@@ -21,22 +21,24 @@ export const POST = async (req: NextRequest) => {
   }
 
   const json = JSON.parse(payload);
-  console.log("Verified webhook:", json);
-  console.log("Document created:", payload);
+  // console.log("Verified webhook:", json);
+  // console.log("Document created:", payload);
 
   //   const document = payload; // entire document object
-  const id = json.$id; // auto-generated document ID
-  console.log("Document created:", json);
-  console.log("Document ID:", id);
-  const reponse = await TwillioClient.messages.create({
-    body: json?.content,
-    from: "whatsapp:+14155238886",
-    to: "whatsapp:+2349161076598",
-  });
-
-  console.log(reponse);
-  return new NextResponse(reponse.body, {
-    status: 200,
-    headers: { "Content-Type": "text/xml" },
-  });
+  // const id = json.$id; // auto-generated document ID
+  // console.log("Document created:", json);
+  // console.log("Document ID:", id);
+  if (json?.sender_type !== "customer") {
+    const reponse = await TwillioClient.messages.create({
+      body: json?.content,
+      from: "whatsapp:+14155238886",
+      to: "whatsapp:+2349161076598",
+    });
+    console.log(reponse);
+    return new NextResponse(reponse.body, {
+      status: 200,
+      headers: { "Content-Type": "text/xml" },
+    });
+  }
+  return NextResponse.json({ message: "Successfull" }, { status: 200 });
 };

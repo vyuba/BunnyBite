@@ -50,31 +50,43 @@ const SettingsPage = () => {
         ))}
       </ul>
       <motion.div className="w-full bg-white rounded-lg border border-[#E3E3E3] h-auto flex flex-col gap-1.5 ">
-        <div className="grid gap-3 py-2">
+        <div className="grid gap-3 py-3">
           <div className="flex flex-col">
-            <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-2 pb-2">
+            <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 pb-2">
               <h2 className="text-base">General</h2>
               <p className="text-sm text-black/70">
                 Configure your account settings to manage your account
                 information and preferences.
               </p>
             </div>
-            <div className="flex flex-col gap-2 px-2 pt-2 w-fit">
-              <label className="flex flex-col gap-1">
-                <span className="text-sm capitalize ">customthem</span>
-                <span className="text-sm text-black/70">johnfre@gmail.com</span>
-              </label>
+            <div className="px-3">
+              <div className="flex flex-col gap-2 pt-2 w-fit">
+                <label className="flex flex-col gap-1">
+                  <span className="text-sm capitalize ">customthem</span>
+                  <span className="text-sm text-black/70">
+                    johnfre@gmail.com
+                  </span>
+                </label>
+              </div>
+              <div className="flex flex-col gap-2  pt-2 w-fit">
+                <label className="flex flex-col gap-1">
+                  <span className="text-sm capitalize ">customthem</span>
+                  <span className="text-sm text-black/70">
+                    johnfre@gmail.com
+                  </span>
+                </label>
+              </div>
             </div>
           </div>
           <div className="flex flex-col border-t border-[#E3E3E3]">
-            <div className="w-full border-b grid gap-1 border-[#E3E3E3] p-2 pb-2">
+            <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 py-2">
               <h2 className="text-base">Twilio WhatsApp API Configuration</h2>
               <p className="text-sm text-black/70">
                 Configure your Twilio WhatsApp API settings to enable BunnyBite
                 to send WhatsApp messages.
               </p>
             </div>
-            <div className="flex flex-col gap-2 px-2 pt-2 w-full relative">
+            <div className="flex flex-col gap-2 px-3 pt-2 w-full relative">
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="absolute hover:bg-[#F7F7F7] p-1.5 rounded-sm cursor-pointer top-[10px] right-[10px]"

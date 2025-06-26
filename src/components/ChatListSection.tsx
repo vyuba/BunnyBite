@@ -1,7 +1,53 @@
 import Image from "next/image";
 import { Models } from "appwrite";
+import { useEffect, useState } from "react";
+import { Chats } from "@/types";
+import { Query } from "appwrite";
+import { clientDatabase } from "@/app/lib/client-appwrite";
+
+const getChats = async (
+  shop: string
+): Promise<Chats[] | null | Models.DocumentList<Models.Document>> => {
+  // const cookieStore = await cookies();
+  // const shop = cookieStore.get("shop");
+  try {
+    const document = await clientDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+      [Query.equal("shop_name", shop || "")]
+    );
+    console.log(document);
+    if (document.total === 0) {
+      return document as Models.DocumentList<Models.Document>;
+    }
+
+    const chatsWithMessages = await Promise.all(
+      document.documents.map(async (doc) => {
+        const messageDocument = await clientDatabase.listDocuments(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+          [
+            Query.equal("chat_id", doc?.chat_id || ""),
+            Query.equal("shop_name", shop || ""),
+            Query.orderDesc("$createdAt"),
+            Query.limit(1),
+          ]
+        );
+
+        return {
+          ...doc,
+          messages: messageDocument.documents as Models.Document[],
+        } as Chats;
+      })
+    );
+    return chatsWithMessages;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 const ChatListSection = ({
-  chats,
   getMessages,
   setMessages,
   setSelectedChat,
@@ -11,6 +57,15 @@ const ChatListSection = ({
   isChatOpen,
   setIsChatOpen,
 }) => {
+  const [chats, setChats] = useState<Chats[] | null>(null);
+  useEffect(() => {
+    const fetchChats = async () => {
+      const chats = (await getChats(shop || "")) as Chats[];
+      console.log("chats", chats);
+      setChats(chats);
+    };
+    fetchChats();
+  }, [shop]);
   return (
     <div
       className={`${
@@ -54,11 +109,13 @@ const ChatListSection = ({
                 height={30}
                 className="bg-white block border-[#E3E3E3] border rounded-full size-10"
               />
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 overflow-hidden">
                 <h1 className="text-sm capitalize font-medium">
                   {chat?.customer_name}
                 </h1>
-                <span className="text-xs ">{chat?.messages[0]?.content}</span>
+                <span className="text-xs truncate">
+                  {chat?.messages[0]?.content}
+                </span>
               </div>
             </div>
           ))}

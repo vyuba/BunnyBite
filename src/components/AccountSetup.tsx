@@ -7,6 +7,10 @@ import {
   CircleDashedIcon,
 } from "@phosphor-icons/react";
 import { useState } from "react";
+import { useEffect } from "react";
+import { clientDatabase } from "@/app/lib/client-appwrite";
+import { Models, Query } from "appwrite";
+import { useCounterStore } from "@/app/providers/counter-store-provider";
 
 const setupStatus = [
   {
@@ -53,18 +57,48 @@ const setupStatus = [
   },
 ];
 
+interface SetupProgress extends Models.Document {
+  userId: string;
+  completedSteps: number[];
+}
+
+const getSetupProgress = async (id: string) => {
+  if (!id) throw new Error("No user id provided");
+  try {
+    const response = await clientDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID || "683b2cfa00237042d186",
+      process.env.APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID ||
+        "68574c5a000318663290",
+      [Query.equal("userId", id)]
+    );
+    return response?.documents[0];
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const AccountSetup = () => {
+  const { user } = useCounterStore((state) => state);
   const [isSetupsVisible, setIsSetupsVisible] = useState(true);
-  const [activeIndex, setActiveIndex] = useState<number | null>(0);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [accountSetupStatus, setAccountSetupStatus] = useState(setupStatus);
 
+  useEffect(() => {
+    const fetchSetupProgress = async () => {
+      const response = (await getSetupProgress(user?.$id)) as SetupProgress;
+      console.log(response);
+      const updatedSetupStatus = setupStatus.map((step, index) => ({
+        ...step,
+        checked: response?.completedSteps?.includes(index),
+      }));
+      setAccountSetupStatus(updatedSetupStatus);
+      setActiveIndex(response?.completedSteps.at(-1));
+    };
+    fetchSetupProgress();
+  }, [user]);
+
   return (
-    <motion.span
-      //   animate={{
-      //     height: isSetupsVisible ? "auto" : undefined,
-      //   }}
-      className="w-full max-w-[796px] bg-[#F7F7F7] mx-auto py-3 px-1.5 rounded-lg border border-[#E3E3E3] "
-    >
+    <motion.span className="w-full max-w-[796px] bg-[#F7F7F7] mx-auto py-3 px-1.5 rounded-lg border border-[#E3E3E3] ">
       <div className="flex items-center pb-3 gap-1.5  px-1">
         <motion.svg
           className="-rotate-90 fill-none"
@@ -164,35 +198,45 @@ const AccountSetup = () => {
                   setActiveIndex(index);
                 }}
                 initial={{
+                  opacity:
+                    activeIndex === index ? "1" : isSetupsVisible ? 0 : 1,
+                  display:
+                    activeIndex === index
+                      ? "flex"
+                      : isSetupsVisible
+                      ? "none"
+                      : "flex",
                   height:
                     activeIndex === index
                       ? "auto"
                       : isSetupsVisible
                       ? 0
                       : "auto",
-                  opacity:
-                    activeIndex === index ? "1" : isSetupsVisible ? 0 : "1",
                 }}
                 animate={{
+                  opacity: activeIndex === index ? 1 : isSetupsVisible ? 0 : 1,
+                  display:
+                    activeIndex === index
+                      ? "flex"
+                      : isSetupsVisible
+                      ? "none"
+                      : "flex",
                   height:
                     activeIndex === index
                       ? "auto"
                       : isSetupsVisible
                       ? 0
                       : "auto",
-                  opacity:
-                    activeIndex === index ? "1" : isSetupsVisible ? 0 : "1",
                 }}
-                transition={
-                  {
-                    //   duration: 0.3,
-                    //   delay: 0.5,
-                  }
-                }
+                transition={{
+                  duration: 0.3,
+                  // delay: 1,
+                }}
                 exit={{
                   height: 0,
+                  opacity: 0,
                 }}
-                className="text-sm font-medium flex items-center gap-1 overflow-hidden"
+                className="text-sm font-medium  items-center gap-1 overflow-hidden"
               >
                 <button
                   onClick={() => {
@@ -230,7 +274,7 @@ const AccountSetup = () => {
                 className="grid gap-2  overflow-hidden"
               >
                 <p className="text-sm ">
-                  <div
+                  <span
                     dangerouslySetInnerHTML={{ __html: status.description }}
                   />
                 </p>
