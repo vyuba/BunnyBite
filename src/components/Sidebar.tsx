@@ -18,32 +18,36 @@ import { toast } from "sonner";
 import ToolKit from "./ToolKit";
 
 // import { signOut } from "@/helpers/appwrite-helpers";
-
-export const SidebarLinks = [
-  {
-    title: "Dashboard",
-    icon: HouseIcon,
-    link: "/dashboard",
-  },
-  {
-    title: "Chat",
-    icon: ChatIcon,
-    link: "/dashboard/chat",
-  },
-  {
-    title: "Refunds",
-    icon: ShoppingBagIcon,
-    link: "/dashboard/refunds",
-  },
-];
-
-const SidebarFooterLinks = [
-  {
-    title: "Settings",
-    icon: GearIcon,
-    link: "/dashboard/settings",
-  },
-];
+const SideBarLinks = {
+  DashboardLinks: [
+    {
+      id: 1,
+      title: "Dashboard",
+      icon: HouseIcon,
+      link: "/dashboard",
+    },
+    {
+      id: 2,
+      title: "Chat",
+      icon: ChatIcon,
+      link: "/dashboard/chat",
+    },
+    {
+      id: 3,
+      title: "Refunds",
+      icon: ShoppingBagIcon,
+      link: "/dashboard/refunds",
+    },
+  ],
+  SidebarFooterLinks: [
+    {
+      id: 4,
+      title: "Settings",
+      icon: GearIcon,
+      link: "/dashboard/settings",
+    },
+  ],
+};
 
 export const SideBar = ({
   shop,
@@ -110,7 +114,7 @@ export const SideBar = ({
     >
       <ul className="flex flex-col gap-3 px-3 mt-3">
         <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize px-3 bg-[#303030] text-sm py-2 rounded-lg" />
-        {SidebarLinks.map((link, index) => (
+        {SideBarLinks["DashboardLinks"].map((link, index) => (
           <Link
             className="flex items-center gap-2"
             href={link.link}
@@ -120,7 +124,7 @@ export const SideBar = ({
             <motion.div
               onMouseEnter={() => {
                 setToolKit(true);
-                setHovered(index);
+                setHovered(link.id);
               }}
               onMouseLeave={() => {
                 setToolKit(false);
@@ -140,7 +144,7 @@ export const SideBar = ({
               <ToolKit
                 isToolKit={isToolKit}
                 isHovered={isHovered}
-                index={index}
+                index={link.id}
                 title={link.title}
               />
             </motion.div>
@@ -148,7 +152,7 @@ export const SideBar = ({
         ))}
       </ul>
       <ul className="flex flex-col gap-3 px-3 mb-4">
-        {SidebarFooterLinks.map((link, index) => (
+        {SideBarLinks["SidebarFooterLinks"].map((link, index) => (
           <Link
             className="flex items-center gap-2"
             href={link.link}
@@ -157,7 +161,7 @@ export const SideBar = ({
             <div
               onMouseEnter={() => {
                 setToolKit(true);
-                setHovered(index);
+                setHovered(link.id);
               }}
               onMouseLeave={() => {
                 setToolKit(false);
@@ -177,7 +181,7 @@ export const SideBar = ({
               <ToolKit
                 isToolKit={isToolKit}
                 isHovered={isHovered}
-                index={index}
+                index={link.id}
                 title={link.title}
               />
             </div>

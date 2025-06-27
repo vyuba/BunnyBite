@@ -34,7 +34,7 @@ export const POST = async (req: NextRequest) => {
       sender_type: message.sender_type,
       content: response.output,
       messageId: message.messageId,
-      shop_name: message.shop_name,
+      shop_phone: message.shop_phone,
       Receiver_id: message.Receiver_id,
       chat_id: message.chat_id,
     },

@@ -1,13 +1,33 @@
+import { clientDatabase } from "@/app/lib/client-appwrite";
+// import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { ArrowLeftIcon, RobotIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 
+const changeAiToggle = async (Id, value) => {
+  try {
+    const response = await clientDatabase.updateDocument(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      Id,
+      {
+        isAIActive: value,
+      }
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
 const ChatHeader = ({
+  id,
   setIsChatOpen,
   svg,
   selectedChat,
   setMessage,
   message,
 }) => {
+  //   const { shop } = useCounterStore((state) => state);
   return (
     <div className="absolute top-0 left-0 w-full h-13 bg-[var(--background)] border-b border-[#E3E3E3] flex items-center justify-between px-2">
       {/* profile icon and name container */}
@@ -35,7 +55,9 @@ const ChatHeader = ({
           <input
             type="checkbox"
             checked={message.toggleAI}
-            onChange={() => {
+            onChange={async () => {
+              await changeAiToggle(id, !message.toggleAI);
+              //   setActiveShop(activeShop);
               setMessage((prev) => ({
                 ...prev,
                 toggleAI: !prev.toggleAI,

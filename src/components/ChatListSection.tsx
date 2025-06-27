@@ -6,7 +6,7 @@ import { Query } from "appwrite";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 
 const getChats = async (
-  shop: string
+  shopNumber: string
 ): Promise<Chats[] | null | Models.DocumentList<Models.Document>> => {
   // const cookieStore = await cookies();
   // const shop = cookieStore.get("shop");
@@ -14,7 +14,7 @@ const getChats = async (
     const document = await clientDatabase.listDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      [Query.equal("shop_name", shop || "")]
+      [Query.equal("shop_phone", shopNumber || "")]
     );
     console.log(document);
     if (document.total === 0) {
@@ -28,7 +28,7 @@ const getChats = async (
           process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
           [
             Query.equal("chat_id", doc?.chat_id || ""),
-            Query.equal("shop_name", shop || ""),
+            Query.equal("shop_phone", shopNumber || ""),
             Query.orderDesc("$createdAt"),
             Query.limit(1),
           ]
@@ -50,6 +50,7 @@ const getChats = async (
 const ChatListSection = ({
   getMessages,
   setMessages,
+  setMessage,
   setSelectedChat,
   selectedChat,
   svg,
@@ -86,12 +87,18 @@ const ChatListSection = ({
           {chats.map((chat) => (
             <div
               onClick={async () => {
+                setSelectedChat(chat);
+                setMessage((prev) => ({
+                  ...prev,
+                  Receiver_id: selectedChat?.customer_name,
+                  chat_id: selectedChat?.chat_id,
+                }));
                 const messages = (await getMessages(
                   chat?.chat_id || "",
                   shop
                 )) as Models.DocumentList<Models.Document>;
                 setMessages(messages);
-                setSelectedChat(chat);
+                console.log(chat);
                 setIsChatOpen(false);
               }}
               data-chat-id={chat.$id}

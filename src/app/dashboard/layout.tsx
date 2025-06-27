@@ -11,7 +11,7 @@ import AnouncementBanner from "@/components/AnouncementBanner";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
-  const { setCurrentUser, setCurrentShop, shop, user, isSidebar, setSidebar } =
+  const { setCurrentUser, setUserShop, shop, user, isSidebar, setSidebar } =
     useCounterStore((state) => state);
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +21,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         const user = await clientAccount.get();
         console.log("user", user);
         setCurrentUser(user);
-        setCurrentShop(user?.$id);
+        setUserShop(user?.$id);
         setIsLoading(false);
       } catch (error) {
         console.log("Redirecting User not logged In", error);
@@ -29,7 +29,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       }
     };
     fetchSession();
-  }, [router, setCurrentUser, setCurrentShop]);
+  }, [router, setCurrentUser, setUserShop]);
 
   if (isLoading) {
     return <Loading />;

@@ -3,7 +3,7 @@ import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { createMessage } from "@/app/lib/twillio";
 // import { TwillioClient } from "@/app/lib/twillio";
 import { databases } from "@/app/lib/node-appwrite";
-import { ID, Permission, Role } from "node-appwrite";
+import { ID, Permission, Query, Role } from "node-appwrite";
 // import { graph } from "@/agent/model";
 // import { Command } from "@langchain/langgraph";
 
@@ -30,6 +30,7 @@ export const POST = async (req: NextRequest) => {
 
   const from = params.get("From"); // sender's number (e.g., 'whatsapp:+234...')
   const body = params.get("Body"); // message text
+  const customer_name = params.get("ProfileName");
   const to = params.get("To"); // your Twilio number
   console.log("from:", from);
   console.log("body:", body);
@@ -55,6 +56,28 @@ export const POST = async (req: NextRequest) => {
   //   }
   // );
   //   twiml.message("The Robots are coming! Head for the hills!");
+  const isChatAvailable = await databases.listDocuments(
+    process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+    process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+    [Query.equal("shop_phone", to), Query.equal("customer_phone", from)]
+  );
+
+  let newChat = isChatAvailable.documents[0]?.chat_id;
+  if (isChatAvailable.total === 0) {
+    const response = await databases.createDocument(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+      ID.unique(),
+      {
+        customer_phone: from,
+        customer_name,
+        chat_id: ID.unique(),
+        shop_phone: to,
+      }
+    );
+    newChat = response?.chat_id;
+  }
+
   await databases.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
@@ -63,9 +86,10 @@ export const POST = async (req: NextRequest) => {
       sender_type: "customer",
       content: body,
       messageId: ID.unique(),
-      shop_name: "customthem.myshopify.com",
+      shop_phone: to,
+      customer_number: from,
       Receiver_id: "customthem.myshopify.com",
-      chat_id: "batman",
+      chat_id: newChat,
     },
     [
       Permission.read(Role.user("684e2a400021d564a828")),
