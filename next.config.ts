@@ -3,8 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   allowedDevOrigins: [
-    process.env.SHOPIFY_APP_URL!,
-    "*.ngrok-free.app",
+    process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!,
+    // "*.ngrok-free.app",
     "*.trycloudflare.com",
   ],
 };

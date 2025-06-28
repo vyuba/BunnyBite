@@ -1,8 +1,11 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { z } from "zod";
+import "./../../../envConfig";
 // import { zodToJsonSchema } from "zod-to-json-schema";
 // import { StateGraph } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
-import { Command, END, interrupt, MemorySaver } from "@langchain/langgraph";
+import { END, interrupt, MemorySaver } from "@langchain/langgraph";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import {
   Annotation,
@@ -102,8 +105,6 @@ const trackingOrder = tool(
     }),
   }
 );
-const OPENAI_API_KEY =
-  "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";
 
 const outputSchema = z.object({
   action: z
@@ -116,9 +117,11 @@ const outputSchema = z.object({
 
 // Create the model
 const llm = new ChatOpenAI({
-  modelName: "gpt-4o",
+  modelName: "gpt-4o-mini",
   // temperature: 0,
-  apiKey: OPENAI_API_KEY,
+  apiKey:
+    process.env.OPENAI_API_KEY ||
+    "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",
 });
 
 const agent = createReactAgent({
@@ -136,14 +139,14 @@ const State = Annotation.Root({
   some_text: Annotation<string>,
   output: Annotation<string>,
 });
-import readline from "readline";
+// import readline from "readline";
 import { tool } from "@langchain/core/tools";
 import { ID } from "appwrite";
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout,
+// });
 // import { StructuredOutputParser } from "@langchain/core/output_parsers";
 const myNode = async (state: typeof State.State) => {
   let user_message;
@@ -269,42 +272,42 @@ export const graph = new StateGraph(State)
 // };
 // main();
 
-const main = async () => {
-  const threadConfig = { configurable: { thread_id: "somdsfkle_id" } };
-  const GraphResponse = await graph.invoke(
-    {
-      action: "update",
-      messages: [],
-    },
-    threadConfig
-  );
-  //   console.log(response);
+// const main = async () => {
+//   const threadConfig = { configurable: { thread_id: "somdsfkle_id" } };
+//   const GraphResponse = await graph.invoke(
+//     {
+//       action: "update",
+//       messages: [],
+//     },
+//     threadConfig
+//   );
+//   //   console.log(response);
 
-  let humanText = "";
-  let stop = "";
-  while (true) {
-    await new Promise((resolve) => {
-      rl.question("Customer:", (answer) => {
-        humanText = answer;
-        resolve(answer);
-      });
-    });
+//   let humanText = "";
+//   let stop = "";
+//   while (true) {
+//     await new Promise((resolve) => {
+//       rl.question("Customer:", (answer) => {
+//         humanText = answer;
+//         resolve(answer);
+//       });
+//     });
 
-    const response = await graph.invoke(
-      new Command({
-        resume: { user_input: humanText, messages: GraphResponse.messages },
-      }),
-      threadConfig
-    );
-    // console.log(response);
-    if (response.action && response.action === "save") {
-      stop = "save";
-    }
+//     const response = await graph.invoke(
+//       new Command({
+//         resume: { user_input: humanText, messages: GraphResponse.messages },
+//       }),
+//       threadConfig
+//     );
+//     // console.log(response);
+//     if (response.action && response.action === "save") {
+//       stop = "save";
+//     }
 
-    if (stop === "save") {
-      break;
-    }
-  }
-  rl.close();
-};
-main();
+//     if (stop === "save") {
+//       break;
+//     }
+//   }
+//   rl.close();
+// };
+// // main();

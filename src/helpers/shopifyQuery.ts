@@ -6,9 +6,7 @@
 
 const fetchShop = async ({ shop }: { shop: string }) => {
   try {
-    const baseUrl =
-      process.env.SHOPIFY_APP_URL ||
-      "https://personally-version-algorithm-singles.trycloudflare.com";
+    const baseUrl = process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!;
     const response = await fetch(
       `${baseUrl}/api/shopify/shop?shop=${shop}`,
       {}
@@ -35,9 +33,7 @@ const fetchCustomerCount = async ({ shop }: { shop: string }) => {
     throw new Error("Shop is required");
   }
   try {
-    const baseUrl =
-      process.env.SHOPIFY_APP_URL ||
-      "https://personally-version-algorithm-singles.trycloudflare.com";
+    const baseUrl = process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!;
     const response = await fetch(
       `${baseUrl}/api/shopify/customer?shop=${shop}`,
       {}

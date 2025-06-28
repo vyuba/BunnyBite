@@ -4,6 +4,7 @@ import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { TwillioClient } from "@/app/lib/twillio";
 import { databases } from "@/app/lib/node-appwrite";
 import { ID, Permission, Query, Role } from "node-appwrite";
+// import { createHmac } from "crypto";
 // import { graph } from "@/agent/model";
 // import { Command } from "@langchain/langgraph";
 
@@ -62,7 +63,8 @@ export const POST = async (req: NextRequest) => {
     [Query.equal("shop_phone", to), Query.equal("customer_phone", from)]
   );
 
-  let newChat = isChatAvailable.documents[0]?.chat_id;
+  let newChatId = isChatAvailable.documents[0]?.chat_id;
+  let newChat = isChatAvailable.documents[0];
   if (isChatAvailable.total === 0) {
     const response = await databases.createDocument(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
@@ -75,10 +77,11 @@ export const POST = async (req: NextRequest) => {
         shop_phone: to,
       }
     );
-    newChat = response?.chat_id;
+    newChat = response;
+    newChatId = response?.chat_id;
   }
 
-  await databases.createDocument(
+  const message = await databases.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
     ID.unique(),
@@ -86,10 +89,10 @@ export const POST = async (req: NextRequest) => {
       sender_type: "customer",
       content: body,
       messageId: ID.unique(),
-      shop_phone: to,
-      customer_number: from,
       Receiver_id: "customthem.myshopify.com",
-      chat_id: newChat,
+      chat_id: newChatId,
+      customer_number: from,
+      shop_phone: to,
     },
     [
       Permission.read(Role.user("684e2a400021d564a828")),
@@ -97,6 +100,29 @@ export const POST = async (req: NextRequest) => {
       Permission.update(Role.user("684e2a400021d564a828")),
     ]
   );
+
+  if (newChat?.isAIActive === true) {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sender_type: "shop",
+          content: body,
+          messageId: ID.unique(),
+          Receiver_id: message.Receiver_id,
+          chat_id: message.chat_id,
+          customer_number: from,
+          shop_phone: to,
+        }),
+      }
+    );
+    const data = await response.json();
+    console.log(data);
+  }
 
   return new NextResponse(twiml.toString(), {
     status: 200,

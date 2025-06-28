@@ -6,7 +6,7 @@ import { Chats } from "@/types";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { useState } from "react";
 import { clientDatabase } from "@/app/lib/client-appwrite";
-import { ID, Query } from "appwrite";
+import { ID } from "appwrite";
 import { Models } from "appwrite";
 // import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import { createAvatar } from "@dicebear/core";
@@ -24,35 +24,11 @@ const avatar = createAvatar(lorelei, {
 
 const svg = avatar.toDataUri();
 
-const getMessages = async (chat_id: string, shop_number: string) => {
-  if (!chat_id || !shop_number) {
-    return [];
-  }
-  // console.log(chat_id);
-  try {
-    const document = await clientDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-      [
-        Query.equal("chat_id", chat_id),
-        Query.equal("shop_phone", shop_number),
-        Query.orderAsc("$updatedAt"),
-        Query.limit(100),
-      ]
-    );
-
-    // console.log(document);
-    return document;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
-
 export interface Message {
   sender_type: string;
   messageId: string;
   shop_phone: string;
+  customer_phone: string;
   Receiver_id: string | undefined;
   chat_id: string;
   toggleAI: boolean;
@@ -68,7 +44,8 @@ const Page = () => {
   const [message, setMessage] = useState<Message | null>({
     sender_type: "shop",
     messageId: ID.unique(),
-    shop_phone: shop?.shop_number || "",
+    shop_phone: shop?.shop_number,
+    customer_phone: selectedChat?.customer_phone,
     Receiver_id: selectedChat?.customer_name,
     chat_id: selectedChat?.chat_id || "",
     toggleAI: selectedChat?.isAIActive,
@@ -96,6 +73,7 @@ const Page = () => {
           messageId: message.messageId,
           Receiver_id: message.Receiver_id,
           chat_id: message.chat_id,
+          customer_number: message.customer_phone,
           shop_phone: message.shop_phone,
         }
       );
@@ -119,7 +97,6 @@ const Page = () => {
         <ChatListSection
           setMessages={setMessages}
           setMessage={setMessage}
-          getMessages={getMessages}
           setSelectedChat={setSelectedChat}
           selectedChat={selectedChat}
           svg={svg}

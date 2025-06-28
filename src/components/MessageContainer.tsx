@@ -3,33 +3,30 @@ import ChatHeader from "./ChatHeader";
 import { useEffect, useRef, useState } from "react";
 import { client } from "@/app/lib/client-appwrite";
 import { Models } from "node-appwrite";
-import { ID } from "appwrite";
+// import { ID } from "appwrite";
 
-const sendAIMessage = async (message, payload) => {
-  console.log(message);
-  const response = await fetch(
-    `${
-      process.env.NEXT_PUBLIC_SHOPIFY_APP_URL ||
-      "https://knife-hospitality-subjects-sciences.trycloudflare.com"
-    }/api/agent`,
-    {
-      method: "POST",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
-      body: JSON.stringify({
-        sender_type: message.sender_type,
-        content: payload?.content,
-        messageId: ID.unique(),
-        shop_phone: message.shop_number,
-        Receiver_id: message.Receiver_id,
-        chat_id: message.chat_id,
-      }),
-    }
-  );
-  const data = await response.json();
-  console.log(data);
-};
+// const sendAIMessage = async (message, payload) => {
+//   console.log(message);
+//   const response = await fetch(
+//     `${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
+//     {
+//       method: "POST",
+//       // headers: {
+//       //   "Content-Type": "application/json",
+//       // },
+//       body: JSON.stringify({
+//         sender_type: message.sender_type,
+//         content: payload?.content,
+//         messageId: ID.unique(),
+//         shop_phone: message.shop_number,
+//         Receiver_id: message.Receiver_id,
+//         chat_id: message.chat_id,
+//       }),
+//     }
+//   );
+//   const data = await response.json();
+//   console.log(data);
+// };
 
 const MessageContainer = ({
   isChatOpen,
@@ -56,7 +53,7 @@ const MessageContainer = ({
       (response) => {
         const document = response.payload as Models.Document;
         const chatId = document?.chat_id;
-        const customer = document?.sender_type === "customer";
+        // const customer = document?.sender_type === "customer";
         if (document && selectedChat?.chat_id === chatId) {
           setMessages((prev) => ({
             ...prev,
@@ -70,10 +67,10 @@ const MessageContainer = ({
             behavior: "smooth",
             block: "end",
           });
-          if (customer && message.toggleAI === true) {
-            console.log("--AGENT-CLIENT");
-            sendAIMessage(message, response.payload);
-          }
+          // if (customer && message.toggleAI === true) {
+          //   console.log("--AGENT-CLIENT");
+          //   sendAIMessage(message, response.payload);
+          // }
         }
       }
     );

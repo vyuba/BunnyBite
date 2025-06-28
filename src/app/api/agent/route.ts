@@ -1,4 +1,4 @@
-import { graph } from "@/agent/model";
+import { graph } from "@/app/agent/model";
 import { databases } from "@/app/lib/node-appwrite";
 import { Command } from "@langchain/langgraph";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,6 +7,7 @@ import { ID, Permission, Role } from "node-appwrite";
 export const POST = async (req: NextRequest) => {
   console.log("---CALLING-AGENT---");
   const message = await req.json();
+  console.log(message);
   const threadConfig = { configurable: { thread_id: message?.chat_id } };
   const GraphResponse = await graph.invoke(
     {
@@ -31,12 +32,13 @@ export const POST = async (req: NextRequest) => {
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
     ID.unique(),
     {
-      sender_type: message.sender_type,
-      content: response.output,
-      messageId: message.messageId,
-      shop_phone: message.shop_phone,
-      Receiver_id: message.Receiver_id,
-      chat_id: message.chat_id,
+      sender_type: message?.sender_type,
+      content: response?.output,
+      messageId: message?.messageId,
+      Receiver_id: message?.Receiver_id,
+      chat_id: message?.chat_id,
+      customer_number: message?.customer_number,
+      shop_phone: message?.shop_phone,
     },
     [
       Permission.read(Role.user("684e2a400021d564a828")),

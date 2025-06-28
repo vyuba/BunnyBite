@@ -31,8 +31,8 @@ export const POST = async (req: NextRequest) => {
   if (json?.sender_type !== "customer") {
     const reponse = await TwillioClient.messages.create({
       body: json?.content,
-      from: "whatsapp:+14155238886",
-      to: "whatsapp:+2349161076598",
+      from: json?.shop_phone,
+      to: json?.customer_number,
     });
     console.log(reponse);
     return new NextResponse(reponse.body, {

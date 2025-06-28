@@ -48,7 +48,6 @@ const getChats = async (
 };
 
 const ChatListSection = ({
-  getMessages,
   setMessages,
   setMessage,
   setSelectedChat,
@@ -67,6 +66,40 @@ const ChatListSection = ({
     };
     fetchChats();
   }, [shop]);
+
+  const getMessages = async (chat_id: string, shop_number: string, chat) => {
+    if (!chat_id || !shop_number) {
+      return [];
+    }
+    setSelectedChat(chat);
+    setMessage((prev) => ({
+      ...prev,
+      Receiver_id: chat.customer_name,
+      chat_id: chat.chat_id,
+      toggleAI: chat.isAIActive,
+      shop_phone: chat.shop_phone,
+      customer_phone: chat.customer_phone,
+    }));
+    // console.log(chat_id);
+    try {
+      const document = await clientDatabase.listDocuments(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+        [
+          Query.equal("chat_id", chat_id),
+          Query.equal("shop_phone", shop_number),
+          Query.orderAsc("$updatedAt"),
+          Query.limit(100),
+        ]
+      );
+
+      // console.log(document);
+      setMessages(document);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  };
   return (
     <div
       className={`${
@@ -87,19 +120,7 @@ const ChatListSection = ({
           {chats.map((chat) => (
             <div
               onClick={async () => {
-                setSelectedChat(chat);
-                setMessage((prev) => ({
-                  ...prev,
-                  Receiver_id: chat?.customer_name,
-                  chat_id: chat?.chat_id,
-                  toggleAI: chat?.isAIActive,
-                }));
-                const messages = (await getMessages(
-                  chat?.chat_id || "",
-                  shop
-                )) as Models.DocumentList<Models.Document>;
-                setMessages(messages);
-                console.log(chat);
+                await getMessages(chat?.chat_id || "", shop, chat);
                 setIsChatOpen(false);
               }}
               data-chat-id={chat.$id}
