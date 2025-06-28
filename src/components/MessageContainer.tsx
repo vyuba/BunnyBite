@@ -6,8 +6,12 @@ import { Models } from "node-appwrite";
 import { ID } from "appwrite";
 
 const sendAIMessage = async (message, payload) => {
+  console.log(message);
   const response = await fetch(
-    "https://personally-version-algorithm-singles.trycloudflare.com/api/agent",
+    `${
+      process.env.NEXT_PUBLIC_SHOPIFY_APP_URL ||
+      "https://knife-hospitality-subjects-sciences.trycloudflare.com"
+    }/api/agent`,
     {
       method: "POST",
       // headers: {

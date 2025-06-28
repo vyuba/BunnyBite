@@ -90,8 +90,9 @@ const ChatListSection = ({
                 setSelectedChat(chat);
                 setMessage((prev) => ({
                   ...prev,
-                  Receiver_id: selectedChat?.customer_name,
-                  chat_id: selectedChat?.chat_id,
+                  Receiver_id: chat?.customer_name,
+                  chat_id: chat?.chat_id,
+                  toggleAI: chat?.isAIActive,
                 }));
                 const messages = (await getMessages(
                   chat?.chat_id || "",

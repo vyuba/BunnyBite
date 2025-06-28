@@ -28,7 +28,7 @@ const getMessages = async (chat_id: string, shop_number: string) => {
   if (!chat_id || !shop_number) {
     return [];
   }
-  console.log(chat_id);
+  // console.log(chat_id);
   try {
     const document = await clientDatabase.listDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
@@ -41,7 +41,7 @@ const getMessages = async (chat_id: string, shop_number: string) => {
       ]
     );
 
-    console.log(document);
+    // console.log(document);
     return document;
   } catch (error) {
     console.log(error);
@@ -71,10 +71,15 @@ const Page = () => {
     shop_phone: shop?.shop_number || "",
     Receiver_id: selectedChat?.customer_name,
     chat_id: selectedChat?.chat_id || "",
-    toggleAI: selectedChat?.isAIActive || false,
+    toggleAI: selectedChat?.isAIActive,
   });
 
-  console.log(message, selectedChat);
+  console.log(
+    "--MESSAGE-PAYLOAD--",
+    message,
+    "--SELECTED-CHAT--",
+    selectedChat
+  );
   const sendMessage = async (content) => {
     try {
       // const response = fetch("/api/send-message", {
@@ -94,7 +99,7 @@ const Page = () => {
           shop_phone: message.shop_phone,
         }
       );
-      console.log(response);
+      console.log("--MESAGE-SENT--", response);
     } catch (error) {
       console.log(error);
     }

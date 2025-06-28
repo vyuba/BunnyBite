@@ -7,7 +7,7 @@ import { ID, Permission, Role } from "node-appwrite";
 export const POST = async (req: NextRequest) => {
   console.log("---CALLING-AGENT---");
   const message = await req.json();
-  const threadConfig = { configurable: { thread_id: "somdsfkle_id" } };
+  const threadConfig = { configurable: { thread_id: message?.chat_id } };
   const GraphResponse = await graph.invoke(
     {
       action: "update",

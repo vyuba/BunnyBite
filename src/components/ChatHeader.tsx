@@ -7,7 +7,7 @@ const changeAiToggle = async (Id, value) => {
   try {
     const response = await clientDatabase.updateDocument(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
       Id,
       {
         isAIActive: value,
@@ -28,6 +28,7 @@ const ChatHeader = ({
   message,
 }) => {
   //   const { shop } = useCounterStore((state) => state);
+  // console.log(id);
   return (
     <div className="absolute top-0 left-0 w-full h-13 bg-[var(--background)] border-b border-[#E3E3E3] flex items-center justify-between px-2">
       {/* profile icon and name container */}
