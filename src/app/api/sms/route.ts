@@ -103,7 +103,7 @@ export const POST = async (req: NextRequest) => {
 
   if (newChat?.isAIActive === true) {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
+      `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
       {
         method: "POST",
         headers: {

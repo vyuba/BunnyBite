@@ -8,7 +8,7 @@ const fetchShop = async ({ shop }: { shop: string }) => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!;
     const response = await fetch(
-      `${baseUrl}/api/shopify/shop?shop=${shop}`,
+      `https://${baseUrl}/api/shopify/shop?shop=${shop}`,
       {}
     );
 
@@ -35,7 +35,7 @@ const fetchCustomerCount = async ({ shop }: { shop: string }) => {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!;
     const response = await fetch(
-      `${baseUrl}/api/shopify/customer?shop=${shop}`,
+      `https://${baseUrl}/api/shopify/customer?shop=${shop}`,
       {}
     );
 
