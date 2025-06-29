@@ -77,8 +77,8 @@ const shopify = shopifyApi({
   apiSecretKey: process.env.SHOPIFY_API_SECRET!,
   scopes: ["read_orders", "write_orders", "read_customers", "write_customers"],
   hostName: new URL(
-    process.env.NEXT_PUBLIC_SHOPIFY_APP_URL ||
-      "knife-hospitality-subjects-sciences.trycloudflare.com"
+    `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL}` ||
+      "https://knife-hospitality-subjects-sciences.trycloudflare.com"
   ).host,
   apiVersion: LATEST_API_VERSION,
   isEmbeddedApp: false,
