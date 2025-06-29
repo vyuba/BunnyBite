@@ -8,7 +8,8 @@ import { createHmac } from "crypto";
 export const POST = async (req: NextRequest) => {
   const payload = await req.text(); // use .text(), not .json(), for exact signature match
   const signatureHeader = req.headers.get("x-appwrite-webhook-signature")!;
-  const webhookUrl = process.env.NEXT_PUBLIC_SHOPIFY_APP_URL; // full path that Appwrite posts to
+  const webhookUrl =
+    process.env.NEXT_PUBLIC_SHOPIFY_APP_URL || "bunny-bite.vercel.app"; // full path that Appwrite posts to
   const signatureKey = process.env.YOUR_SECRET_HMAC_KEY!;
 
   const expectedSignature = createHmac("sha1", signatureKey)

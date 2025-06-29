@@ -103,7 +103,9 @@ export const POST = async (req: NextRequest) => {
 
   if (newChat?.isAIActive === true) {
     const response = await fetch(
-      `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
+      `https://${
+        process.env.NEXT_PUBLIC_SHOPIFY_APP_URL || "bunny-bite.vercel.app"
+      }/api/agent`,
       {
         method: "POST",
         headers: {
