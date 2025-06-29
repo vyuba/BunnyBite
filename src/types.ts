@@ -1,6 +1,6 @@
 import { Models } from "node-appwrite";
 export interface Chats extends Models.Document {
-  shop_name: string;
+  shop_phone: string;
   customer_name: string;
   customer_phone: string;
   chat_id: string;

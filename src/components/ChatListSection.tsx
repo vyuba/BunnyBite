@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Chats } from "@/types";
 import { Query } from "appwrite";
 import { clientDatabase } from "@/app/lib/client-appwrite";
+import SpinnerLoader from "./SpinnerLoader";
+import HighlightedText from "./HighlightedText";
 
 const getChats = async (
   shopNumber: string
@@ -58,14 +60,23 @@ const ChatListSection = ({
   setIsChatOpen,
 }) => {
   const [chats, setChats] = useState<Chats[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState("");
   useEffect(() => {
     const fetchChats = async () => {
+      setIsLoading(true);
       const chats = (await getChats(shop || "")) as Chats[];
       console.log("chats", chats);
       setChats(chats);
+      setIsLoading(false);
     };
     fetchChats();
   }, [shop]);
+
+  const filteredChats = (chats ?? []).filter((chat) =>
+    chat.customer_name.toLowerCase().includes(query.toLowerCase())
+  );
+  console.log(filteredChats);
 
   const getMessages = async (chat_id: string, shop_number: string, chat) => {
     if (!chat_id || !shop_number) {
@@ -100,6 +111,9 @@ const ChatListSection = ({
       return null;
     }
   };
+  if (isLoading) {
+    <SpinnerLoader />;
+  }
   return (
     <div
       className={`${
@@ -112,12 +126,14 @@ const ChatListSection = ({
         <input
           type="text"
           placeholder="Search"
+          onChange={(e) => setQuery(e.target.value)}
           className="w-full border-none outline-none bg-transparent text-sm py-1.5"
         />
       </div>
-      {chats && chats.length > 0 ? (
+      {isLoading && <SpinnerLoader />}
+      {chats && filteredChats.length > 0 && (
         <div className="bg-white mx-1 mb-1 p-2 h-full rounded-lg border-t border-[#E3E3E3]">
-          {chats.map((chat) => (
+          {filteredChats.map((chat) => (
             <div
               onClick={async () => {
                 await getMessages(chat?.chat_id || "", shop, chat);
@@ -139,8 +155,9 @@ const ChatListSection = ({
                 className="bg-white block border-[#E3E3E3] border rounded-full size-10"
               />
               <div className="flex flex-col gap-1.5 overflow-hidden">
-                <h1 className="text-sm capitalize font-medium">
-                  {chat?.customer_name}
+                <h1 className={`text-sm capitalize font-medium `}>
+                  <HighlightedText text={chat?.customer_name} query={query} />
+                  {/* {chat?.customer_name} */}
                 </h1>
                 <span className="text-xs truncate">
                   {chat?.messages[0]?.content}
@@ -149,7 +166,8 @@ const ChatListSection = ({
             </div>
           ))}
         </div>
-      ) : (
+      )}
+      {chats && filteredChats.length === 0 && (
         <div className="flex flex-col items-center justify-center w-full h-full">
           <svg
             width="170"

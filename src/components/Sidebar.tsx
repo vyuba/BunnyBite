@@ -16,7 +16,8 @@ import { clientAccount } from "@/app/lib/client-appwrite";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { toast } from "sonner";
 import ToolKit from "./ToolKit";
-
+import { usePathname } from "next/navigation";
+import Image from "next/image";
 // import { signOut } from "@/helpers/appwrite-helpers";
 const SideBarLinks = {
   DashboardLinks: [
@@ -52,12 +53,11 @@ const SideBarLinks = {
 export const SideBar = ({
   shop,
   user,
-  pathname,
 }: {
   shop: string | null;
   user: string | null;
-  pathname: string;
 }) => {
+  const pathname = usePathname();
   const [isProfileClicked, setIsProfileClicked] = useState(false);
   const router = useRouter();
   const { isSidebar, setSidebar } = useCounterStore((state) => state);
@@ -113,7 +113,15 @@ export const SideBar = ({
       } z-[2000]  border border-[#E3E3E3]  md:border-0  md:static md:w-fit  flex transition-all flex-col justify-between h-dvh bg-[#EBEBEB] `}
     >
       <ul className="flex flex-col gap-3 px-3 mt-3">
-        <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize px-3 bg-[#303030] text-sm py-2 rounded-lg" />
+        <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize  bg-[#303030] flex items-center justify-center text-sm  rounded-lg">
+          <Image
+            width={40}
+            height={40}
+            src={"/bunnyBite-logo.svg"}
+            alt="BunnyBite Logo"
+            className="p-1"
+          />
+        </div>
         {SideBarLinks["DashboardLinks"].map((link, index) => (
           <Link
             className="flex items-center gap-2"

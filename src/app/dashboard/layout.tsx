@@ -1,7 +1,7 @@
 "use client";
 import { clientAccount } from "../lib/client-appwrite";
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { SideBar } from "@/components/Sidebar";
 import Loading from "./loading";
@@ -13,7 +13,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const { setCurrentUser, setUserShop, shop, user, isSidebar, setSidebar } =
     useCounterStore((state) => state);
-  const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchSession = async () => {
@@ -36,7 +35,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }
   return (
     <div className="flex w-full h-dvh">
-      <SideBar pathname={pathname} shop={shop?.shop} user={user?.name} />
+      <SideBar shop={shop?.shop} user={user?.name} />
       <div className="h-screen overflow-hidden flex-[85%] bg-[#EBEBEB] ">
         {!isSidebar && (
           <motion.div
@@ -54,7 +53,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
         <AnouncementBanner />
         <div className="rounded-tl-xl bg-[var(--background)] border border-[#E3E3E3] h-full p-3">
-          <PageHeader pathname={pathname} username={user?.name} />
+          <PageHeader username={user?.name} />
           <div className="overflow-y-scroll h-full">{children}</div>
         </div>
       </div>

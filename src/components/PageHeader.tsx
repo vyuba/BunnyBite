@@ -1,7 +1,9 @@
 import { SidebarSimpleIcon } from "@phosphor-icons/react";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
-const PageHeader = ({ username, pathname }) => {
+import { usePathname } from "next/navigation";
+const PageHeader = ({ username }) => {
   const { setSidebar, isSidebar } = useCounterStore((state) => state);
+  const pathname = usePathname();
   return (
     <div className="flex pb-3  items-center gap-1.5">
       <button
