@@ -11,8 +11,16 @@ export const GET = async (req: NextRequest) => {
       { status: 400 }
     );
   }
-
-  const { searchParams } = new URL(req.url);
+  let searchParams: URLSearchParams;
+  try {
+    searchParams = new URL(req.url).searchParams;
+  } catch (e) {
+    return NextResponse.json(
+      { error: `${e?.message}, Invalid request URL` },
+      { status: 400 }
+    );
+  }
+  // const { searchParams } = new URL(req.url);
   const shop = searchParams.get("shop");
   // console.log("Shop:", shop);
   if (!shop) {
