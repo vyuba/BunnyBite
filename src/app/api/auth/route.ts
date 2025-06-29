@@ -4,9 +4,6 @@ import { shopify } from "../../lib/shopify";
 
 export const GET = async (req: NextRequest) => {
   console.log("GET request received");
-  const { searchParams } = new URL(req.url);
-  const shop = searchParams.get("shop");
-  // console.log("Shop:", shop);
   // Guard: req.url may be undefined during build/static generation
   if (!req.url) {
     return NextResponse.json(
@@ -14,6 +11,10 @@ export const GET = async (req: NextRequest) => {
       { status: 400 }
     );
   }
+
+  const { searchParams } = new URL(req.url);
+  const shop = searchParams.get("shop");
+  // console.log("Shop:", shop);
   if (!shop) {
     return NextResponse.json(
       { error: "shop parameter is required " },
