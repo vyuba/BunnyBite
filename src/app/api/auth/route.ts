@@ -6,7 +6,13 @@ export const GET = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const shop = searchParams.get("shop");
   // console.log("Shop:", shop);
-
+  // Guard: req.url may be undefined during build/static generation
+  if (!req.url) {
+    return NextResponse.json(
+      { error: "Request URL is missing" },
+      { status: 400 }
+    );
+  }
   if (!shop) {
     return NextResponse.json(
       { error: "shop parameter is required " },
