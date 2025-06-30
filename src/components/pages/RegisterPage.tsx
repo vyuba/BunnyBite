@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { clientAccount, clientDatabase } from "@/app/lib/client-appwrite";
+import { clientAccount } from "@/app/lib/client-appwrite";
 import { ID } from "appwrite";
 import { motion } from "motion/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -52,23 +52,24 @@ const RegisterPage = () => {
       id: "Register",
     });
     try {
-      const user = await clientAccount.create(
+      await clientAccount.create(
         ID.unique(),
         email as string,
         password as string
       );
 
-      if (shop) {
-        await clientDatabase.createDocument(
-          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-          ID.unique(),
-          {
-            shop: shop,
-            user: user.$id,
-          }
-        );
-      }
+      // if (shop) {
+      // await clientDatabase.createDocument(
+      //   process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      //   process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      //   ID.unique(),
+      //   {
+      //     shop: shop,
+      //     user: user.$id,
+      //   }
+      // );
+      // router.push(`/dashboard/settings/integration?shop=${shop}`);
+      // }
 
       setStatus({
         message: "Account created successfully",
@@ -78,7 +79,10 @@ const RegisterPage = () => {
         id: "Register",
       });
       setLoading(false);
-      router.push("/login");
+      if (shop) {
+        router.push(`/login?shop=${shop}`);
+      }
+      router.push(`/login`);
     } catch (error) {
       setStatus({
         message: error.message,

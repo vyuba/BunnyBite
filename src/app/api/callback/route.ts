@@ -102,7 +102,7 @@ export const GET = async (req: NextRequest) => {
     }
 
     const redirectUrl = new URL(
-      `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL}/register`,
+      `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL}/dashboard`,
       req.url
     );
     redirectUrl.searchParams.append("shop", shop);

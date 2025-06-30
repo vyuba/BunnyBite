@@ -8,9 +8,12 @@ import Loading from "./loading";
 import { useCounterStore } from "../providers/counter-store-provider";
 import PageHeader from "@/components/PageHeader";
 import AnouncementBanner from "@/components/AnouncementBanner";
+import { useSearchParams } from "next/navigation";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const store = searchParams.get("shop");
   const { setCurrentUser, setUserShop, shop, user, isSidebar, setSidebar } =
     useCounterStore((state) => state);
   const [isLoading, setIsLoading] = useState(true);
@@ -21,14 +24,20 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         console.log("user", user);
         setCurrentUser(user);
         setUserShop(user?.$id);
+        if (store) {
+          router.push(`/dashboard/settings/integration?shop=${store}`);
+        }
         setIsLoading(false);
       } catch (error) {
         console.log("Redirecting User not logged In", error);
+        if (store) {
+          router.push(`/login?shop=${store}`);
+        }
         router.push("/login");
       }
     };
     fetchSession();
-  }, [router, setCurrentUser, setUserShop]);
+  }, [router, setCurrentUser, store, setUserShop]);
 
   if (isLoading) {
     return <Loading />;
