@@ -54,7 +54,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <AnouncementBanner />
         <div className="rounded-tl-xl bg-[var(--background)] border border-[#E3E3E3] h-full p-3">
           <PageHeader username={user?.name} />
-          <div className="overflow-y-scroll h-screen">{children}</div>
+          <div className="overflow-y-scroll h-fit">{children}</div>
         </div>
       </div>
     </div>

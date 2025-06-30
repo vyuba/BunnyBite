@@ -87,7 +87,7 @@ const Page = () => {
   // console.log("message", message?.content);
 
   return (
-    <div className="flex flex-col md:z-0 w-full h-full gap-2 pb-15">
+    <div className="flex flex-col md:z-0 w-full h-fit gap-2 pb-15">
       {/* chat analytics data section  */}
       {/* <div className="w-full flex flex-wrap gap-1.5 items-center">
         <AnalyticCard title={"No Of Customers"} count={customerCount} />
