@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 const PopOver = ({
@@ -11,6 +11,24 @@ const PopOver = ({
   const [isProfileClicked, setIsProfileClicked] = useState(false);
   const inputRef = useRef(null);
   const PopUpref = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent): void {
+      event.stopPropagation();
+      if (
+        PopUpref.current &&
+        inputRef.current &&
+        !(PopUpref.current as HTMLElement).contains(event.target as Node) &&
+        !(inputRef.current as HTMLElement).contains(event.target as Node)
+      ) {
+        setIsProfileClicked(!isProfileClicked);
+      }
+    }
+    if (isProfileClicked) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isProfileClicked]);
   return (
     <>
       <button

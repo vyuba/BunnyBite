@@ -1,4 +1,4 @@
-import { BellRingingIcon, GearIcon } from "@phosphor-icons/react";
+import { BellIcon, GearIcon } from "@phosphor-icons/react";
 import PopOver from "./Popover";
 import Link from "next/link";
 
@@ -21,7 +21,7 @@ const AnouncementBanner = () => {
           <BellRingingIcon weight={`regular`} fill="#303030" size={20} />
         </button> */}
         <PopOver
-          icon={<BellRingingIcon weight={`regular`} fill="#303030" size={20} />}
+          icon={<BellIcon weight={`regular`} fill="#303030" size={18} />}
         >
           <div className="w-full h-[400px]">
             <span className=" p-3 w-full flex items-center justify-between">
