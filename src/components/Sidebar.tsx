@@ -165,6 +165,7 @@ export const SideBar = ({
             className="flex items-center gap-2"
             href={link.link}
             key={index}
+            onClick={() => setSidebar(!isSidebar)}
           >
             <div
               onMouseEnter={() => {
