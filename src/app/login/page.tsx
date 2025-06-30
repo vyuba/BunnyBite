@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { clientAccount } from "../lib/client-appwrite";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Status } from "@/components/pages/RegisterPage";
+import Image from "next/image";
+import { SmileyXEyesIcon } from "@phosphor-icons/react";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -43,11 +45,11 @@ const LoginPage = () => {
       id: "Login",
     });
     try {
-      const session = clientAccount.createEmailPasswordSession(
+      const session = await clientAccount.createEmailPasswordSession(
         email as string,
         password as string
       );
-      const jwt = clientAccount.createJWT();
+      const jwt = await clientAccount.createJWT();
       console.log(session);
       console.log("jwt", jwt);
       setStatus({
@@ -68,8 +70,9 @@ const LoginPage = () => {
         message: "An error occurred.",
         type: "error",
       });
-      toast.success(status.message, {
+      toast.error(status.message, {
         id: "Login",
+        icon: <SmileyXEyesIcon fill="#303030" />,
       });
       console.error("Error:", error);
     } finally {
@@ -81,7 +84,15 @@ const LoginPage = () => {
     <div className=" w-full h-screen flex items-center justify-center bg-[#EBEBEB] px-4">
       <div className="flex flex-col w-full max-w-[400px]">
         <div className="flex flex-col gap-2 items-center justify-center pb-8">
-          <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize px-3 bg-[#303030] text-sm py-2 rounded-lg" />
+          <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize  bg-[#303030] flex items-center justify-center text-sm  rounded-lg">
+            <Image
+              width={40}
+              height={40}
+              src={"/bunnyBite-logo.svg"}
+              alt="BunnyBite Logo"
+              className="p-1"
+            />
+          </div>
           <h1 className="text-center text-lg md:text-xl font-medium">
             Sign in
           </h1>

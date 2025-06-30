@@ -2,27 +2,29 @@
 import { clientAccount } from "@/app/lib/client-appwrite";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "motion/react";
-import { CopyIcon, PencilSimpleIcon } from "@phosphor-icons/react";
+// import { motion } from "motion/react";
+import { useCounterStore } from "@/app/providers/counter-store-provider";
+// import { CopyIcon, PencilSimpleIcon } from "@phosphor-icons/react";
 import Modal from "@/components/Modal";
 import Button from "@/components/Button";
 
-const SettingsNavLinks = [
-  {
-    title: "Account",
-    link: "/settings/account",
-  },
-  {
-    title: "Security",
-    link: "/settings/security",
-  },
-  {
-    title: "Notifications",
-    link: "/settings/notifications",
-  },
-];
+// const SettingsNavLinks = [
+//   {
+//     title: "Account",
+//     link: "/settings/account",
+//   },
+//   {
+//     title: "Security",
+//     link: "/settings/security",
+//   },
+//   {
+//     title: "Notifications",
+//     link: "/settings/notifications",
+//   },
+// ];
 const SettingsPage = () => {
   const router = useRouter();
+  const { user } = useCounterStore((state) => state);
   const [isModalOpen, setIsModalOpen] = useState(false);
   useEffect(() => {
     const checkUser = async () => {
@@ -34,51 +36,52 @@ const SettingsPage = () => {
     checkUser();
   }, [router]);
   return (
-    <div className="w-full h-full max-w-[796px] mx-auto flex flex-col gap-1.5">
-      <ul className="flex mt-2 gap-1 items-center p-0.5 bg-[#F7F7F7] w-fit rounded-md border border-[#E3E3E3]">
-        {SettingsNavLinks.map((links, index) => (
-          <li
-            key={index}
-            className={`py-1 transition-colors cursor-pointer px-3 ${
-              index === 0
-                ? "bg-white border border-[#E3E3E3]"
-                : "hover:bg-[#f0efef]"
-            }  rounded-sm`}
-          >
-            <h2>{links.title}</h2>
-          </li>
-        ))}
-      </ul>
-      <motion.div className="w-full bg-white rounded-lg border border-[#E3E3E3] h-auto flex flex-col gap-1.5 ">
-        <div className="grid gap-3 py-3 w-full">
-          <div className="flex flex-col w-full">
-            <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 pb-2">
-              <h2 className="text-base">General</h2>
-              <p className="text-sm text-black/70">
-                Configure your account settings to manage your account
-                information and preferences.
-              </p>
-            </div>
-            <div className=" px-3">
-              <div className="flex  w-full flex-col gap-2 pt-2">
-                <label className="flex flex-col gap-1">
-                  <span className="text-sm capitalize ">customthem</span>
-                  <span className="text-sm text-black/70">
-                    johnfre@gmail.com
-                  </span>
-                </label>
-              </div>
-              <div className="flex  w-full flex-col gap-2  pt-2 ">
-                <label className="flex flex-col gap-1">
-                  <span className="text-sm capitalize ">customthem</span>
-                  <span className="text-sm text-black/70">
-                    johnfre@gmail.com
-                  </span>
-                </label>
-              </div>
-            </div>
+    <div>
+      <div className="grid gap-3 py-3 w-full">
+        <div className="flex flex-col w-full">
+          <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 pb-2">
+            <h2 className="text-base">General</h2>
+            <p className="text-sm text-black/70">
+              Configure your account settings to manage your account information
+              and preferences.
+            </p>
           </div>
-          <div className="flex flex-col border-t border-[#E3E3E3]">
+          <div className=" px-3">
+            <div className="flex  w-full flex-col gap-2 pt-2">
+              <label className="flex flex-col gap-1">
+                <div className="w-full flex items-center justify-between">
+                  <span className="capitalize text-sm md:text-base ">
+                    Profile
+                  </span>
+                  <button className="border w-fit border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg">
+                    save
+                  </button>
+                </div>
+                <div className="w-full flex flex-col md:flex-row items-center gap-1.5">
+                  <input
+                    type="text"
+                    className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                    defaultValue={user.name}
+                  />
+                  <input
+                    type="text"
+                    className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                    defaultValue={user?.email}
+                  />
+                </div>
+              </label>
+            </div>
+            {/* <div className="flex  w-full flex-col gap-2  pt-2 ">
+                <label className="flex flex-col gap-1">
+                  <span className="text-sm capitalize ">customthem</span>
+                  <span className="text-sm text-black/70">
+                    johnfre@gmail.com
+                  </span>
+                </label>
+              </div> */}
+          </div>
+        </div>
+        {/* <div className="flex flex-col border-t border-[#E3E3E3]">
             <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 py-2">
               <h2 className="text-base">Twilio WhatsApp API Configuration</h2>
               <p className="text-sm  w-full text-black/70">
@@ -116,9 +119,9 @@ const SettingsPage = () => {
                 </label>
               </div>
             </div>
-          </div>
-        </div>
-      </motion.div>
+          </div> */}
+      </div>
+
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

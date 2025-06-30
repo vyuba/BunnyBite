@@ -1,5 +1,9 @@
 "use client";
-import { MagnifyingGlassIcon, SquareIcon } from "@phosphor-icons/react";
+import {
+  CaretDownIcon,
+  MagnifyingGlassIcon,
+  SquareIcon,
+} from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
@@ -65,17 +69,14 @@ const RefundPage = () => {
                 <th className="text-nowrap text-left text-sm font-medium h-full p-2">
                   Status
                 </th>
-                <th className="text-nowrap text-left text-sm font-medium h-full p-2">
-                  Action
-                </th>
               </tr>
             </thead>
             <tbody>
               {refunds &&
-                refunds.documents.map((refund) => (
+                refunds.documents.map((refund, index) => (
                   <tr
                     key={refund?.$id}
-                    className="text-black/75 border-b border-[#E3E3E3]"
+                    className="text-black/75 border-b border-[#E3E3E3] relative "
                   >
                     <td className="text-nowrap text-left text-sm font-medium h-full p-2 bg-white flex items-center gap-2 sticky top-0 left-0">
                       <SquareIcon size={20} color="#303030" weight="regular" />
@@ -96,8 +97,38 @@ const RefundPage = () => {
                     <td className="text-nowrap text-left text-sm font-medium h-full p-2">
                       {refund?.details}
                     </td>
-                    <td className="text-nowrap text-left text-sm font-medium h-full p-2">
-                      Pending
+                    <td className="text-nowrap text-left text-sm font-medium h-full  p-2 ">
+                      <button className="flex gap-1 items-center cursor-pointer bg-[#f7f7f7] hover:bg-[#f5f5f5] transiton-all rounded-2xl border  px-2 py-1 border-[#E3E3E3]">
+                        <span className="inline-block w-[10px] h-[10px] rounded-[5px] border border-solid border-yellow-500 transition-colors duration-200 ease bg-yellow-400"></span>
+                        <span>Pending</span>
+                        <CaretDownIcon />
+                      </button>
+                      {index === 0 && (
+                        <div className="absolute hidden capitalize w-full rounded-md overflow-hidden max-w-[150px] top-10 right-23 z-50 bg-white border-none border-[#E3E3E3]">
+                          <ul className="w-full overflow-hidden">
+                            <li className="capitalize overflow-hidden">
+                              <button className="flex overflow-hidden w-full gap-1 items-center cursor-pointer bg-white hover:bg-[#f5f5f5] transiton-all border  px-2 py-1.5 border-[#E3E3E3]">
+                                <span className="inline-block w-[10px] h-[10px] rounded-[5px] border-none  border-red-600 transition-colors duration-200 ease bg-red-500"></span>
+                                <span className="capitalize">
+                                  Action needed
+                                </span>
+                              </button>
+                            </li>
+                            <li className="capitalize overflow-hidden">
+                              <button className="flex overflow-hidden w-full gap-1 items-center cursor-pointer bg-white hover:bg-[#f5f5f5] transiton-all border  px-2 py-1.5 border-[#E3E3E3]">
+                                <span className="inline-block w-[10px] h-[10px] rounded-[5px] border-none  border-yellow-500 transition-colors duration-200 ease bg-yellow-400"></span>
+                                <span className="capitalize">pending</span>
+                              </button>
+                            </li>
+                            <li className="capitalize overflow-hidden">
+                              <button className="flex overflow-hidden w-full gap-1 items-center cursor-pointer bg-white hover:bg-[#f5f5f5] transiton-all border  px-2 py-1.5 border-[#E3E3E3]">
+                                <span className="inline-block w-[10px] h-[10px] rounded-[5px] border-none  border-green-800 transition-colors duration-200 ease bg-green-700"></span>
+                                <span className="capitalize">closed</span>
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}

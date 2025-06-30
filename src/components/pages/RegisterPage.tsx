@@ -8,6 +8,7 @@ import { clientAccount, clientDatabase } from "@/app/lib/client-appwrite";
 import { ID } from "appwrite";
 import { motion } from "motion/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { SmileyXEyesIcon } from "@phosphor-icons/react";
 
 export interface Status {
   message: string | null;
@@ -80,16 +81,17 @@ const RegisterPage = () => {
       router.push("/login");
     } catch (error) {
       setStatus({
-        message: error?.message,
+        message: error.message,
         type: "error",
       });
-      toast.success(status.message, {
+      toast.error(status.message, {
         id: "Register",
+        icon: <SmileyXEyesIcon weight="fill" fill="#303030" />,
       });
       setLoading(false);
       console.log(error);
     } finally {
-      toast.dismiss("Register");
+      // toast.dismiss("Register");
     }
   };
 
@@ -98,7 +100,15 @@ const RegisterPage = () => {
       <div className="flex flex-col w-full max-w-[400px]">
         <div className="flex flex-col gap-2 items-center justify-center pb-8">
           <div className="flex items-center gap-3">
-            <div className="border hover:cursor-pointer size-10 md:size-16 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize px-3 bg-[#303030] text-sm py-2 rounded-lg" />
+            <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize  bg-[#303030] flex items-center justify-center text-sm  rounded-lg">
+              <Image
+                width={40}
+                height={40}
+                src={"/bunnyBite-logo.svg"}
+                alt="BunnyBite Logo"
+                className="p-1"
+              />
+            </div>
             {isShop && (
               <>
                 +

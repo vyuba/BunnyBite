@@ -226,11 +226,14 @@ export const SideBar = ({
       >
         <button className="cursor-pointer w-full flex items-center gap-1 py-1 hover:bg-white rounded-sm px-1 my-1.5">
           <div className="size-7 rounded-sm bg-[#303030]" />
-          <span className="text-xs">{shop}</span>
+          <div className="flex flex-col items-start">
+            <span className="text-sm">{user}</span>
+            <span className="text-xs">{shop}</span>
+          </div>
           <CaretUpDownIcon size={18} />
         </button>
         <div className="bg-white text-sm w-full rounded-sm flex flex-col py-1 px-1 gap-2">
-          <span className=" px-2">{user}</span>
+          {/* <span className=" px-2">{user}</span> */}
           <button className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-[#EBEBEB] rounded-sm p-1">
             <UserCircleIcon weight="fill" fill="#303030" size={15} />
             <span>Account</span>
