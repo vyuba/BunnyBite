@@ -66,9 +66,8 @@ const getSetupProgress = async (id: string) => {
   if (!id) throw new Error("No user id provided");
   try {
     const response = await clientDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID || "683b2cfa00237042d186",
-      process.env.APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID ||
-        "68574c5a000318663290",
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
       [Query.equal("userId", id)]
     );
     return response?.documents[0];
