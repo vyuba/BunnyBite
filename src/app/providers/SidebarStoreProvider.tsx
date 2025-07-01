@@ -19,6 +19,7 @@ const ChatContext = createContext<ChatContextType>({
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Chats | null>(null);
+  console.log("selected Chat", selectedChat);
   return (
     <ChatContext.Provider
       value={{ isChatOpen, setIsChatOpen, setSelectedChat, selectedChat }}

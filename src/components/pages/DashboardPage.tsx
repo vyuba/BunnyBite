@@ -47,7 +47,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
     <div className="flex w-full h-dvh">
       <SideBar user={user?.name} />
       <div className="h-screen overflow-hidden flex-[85%] bg-[#EBEBEB] ">
-        {!isSidebar && (
+        {isSidebar && (
           <motion.div
             onClick={() => setSidebar(!isSidebar)}
             initial={{ opacity: 0 }}

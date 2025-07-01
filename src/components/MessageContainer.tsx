@@ -7,7 +7,6 @@ import { client, clientDatabase } from "@/app/lib/client-appwrite";
 import { Models } from "node-appwrite";
 import { ID, Query } from "appwrite";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
-import { Message } from "@/app/dashboard/chat/page";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
@@ -76,7 +75,7 @@ const getMessages = async (
   }
 };
 
-const MessageContainer = ({ chat_id }) => {
+const MessageContainer = ({ id }: { id: string }) => {
   const { isChatOpen, selectedChat, setIsChatOpen } = useChatProvider();
   const { shop } = useCounterStore((state) => state);
   const message_box = useRef<HTMLDivElement>(null);
@@ -84,18 +83,9 @@ const MessageContainer = ({ chat_id }) => {
   const [content, setContent] = useState("");
   const [messages, setMessages] =
     useState<Models.DocumentList<Models.Document> | null>(null);
-  const [message, setMessage] = useState<Message | null>({
-    sender_type: "shop",
-    messageId: ID.unique(),
-    shop_phone: shop?.shop_number,
-    customer_phone: selectedChat?.customer_phone,
-    Receiver_id: selectedChat?.customer_name,
-    chat_id: selectedChat?.chat_id || "",
-    toggleAI: selectedChat?.isAIActive,
-  });
 
   useEffect(() => {
-    getMessages(selectedChat?.chat_id, shop?.shop_number, setMessages);
+    getMessages(id, shop?.shop_number, setMessages);
 
     if (bottom_message && bottom_message.current) {
       bottom_message.current?.scrollIntoView({
@@ -109,7 +99,11 @@ const MessageContainer = ({ chat_id }) => {
         const document = response.payload as Models.Document;
         const chatId = document?.chat_id;
         // const customer = document?.sender_type === "customer";
-        if (document && selectedChat?.chat_id === chatId) {
+        if (
+          document &&
+          id === chatId &&
+          response.events[0].includes("create")
+        ) {
           setMessages((prev) => ({
             ...prev,
             documents: [
@@ -122,22 +116,12 @@ const MessageContainer = ({ chat_id }) => {
             behavior: "smooth",
             block: "end",
           });
-          // if (customer && message.toggleAI === true) {
-          //   console.log("--AGENT-CLIENT");
-          //   sendAIMessage(message, response.payload);
-          // }
         }
       }
     );
 
     return () => unsubscribe();
-  }, [
-    shop?.shop_number,
-    selectedChat?.chat_id,
-    bottom_message,
-    message,
-    setMessages,
-  ]);
+  }, [shop?.shop_number, id, bottom_message]);
 
   const sendMessage = async (content) => {
     try {
@@ -146,13 +130,13 @@ const MessageContainer = ({ chat_id }) => {
         process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
         ID.unique(),
         {
-          sender_type: message.sender_type,
+          sender_type: "shop",
           content: content,
-          messageId: message.messageId,
-          Receiver_id: message.Receiver_id,
-          chat_id: message.chat_id,
-          customer_number: message.customer_phone,
-          shop_phone: message.shop_phone,
+          messageId: ID.unique(),
+          Receiver_id: selectedChat?.customer_name,
+          chat_id: selectedChat?.chat_id,
+          customer_number: selectedChat?.customer_phone,
+          shop_phone: shop?.shop_number,
         }
       );
       console.log("--MESAGE-SENT--", response);
@@ -170,12 +154,7 @@ const MessageContainer = ({ chat_id }) => {
       <div className="bg-white/20 bg-repeat bg-[url('/whatsappbackground.png')] w-full h-full">
         {messages && messages.total > 0 ? (
           <div className="w-full h-full flex flex-col">
-            <ChatHeader
-              id={chat_id}
-              svg={svg}
-              setMessage={setMessage}
-              message={message}
-            />
+            <ChatHeader svg={svg} />
 
             <div
               ref={message_box}

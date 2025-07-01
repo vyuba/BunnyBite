@@ -25,10 +25,6 @@ export interface Message {
   sender_type: string;
   messageId: string;
   shop_phone: string;
-  customer_phone: string;
-  Receiver_id: string | undefined;
-  chat_id: string;
-  toggleAI: boolean;
 }
 
 const Page = () => {

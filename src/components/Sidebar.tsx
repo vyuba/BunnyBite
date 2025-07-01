@@ -104,7 +104,7 @@ export const SideBar = ({ user }: { user: string | null }) => {
   return (
     <motion.div
       className={`fixed md:static top-0 left-0 ${
-        isSidebar
+        !isSidebar
           ? "-translate-x-[100px] md:translate-x-0"
           : "translate-x-[0] md:translate-x-0"
       } z-[2000]  border border-[#E3E3E3]  md:border-0  md:static md:w-fit  flex transition-all flex-col justify-between h-dvh bg-[#EBEBEB] `}

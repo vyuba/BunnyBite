@@ -3,7 +3,7 @@ import { Models } from "appwrite";
 import { useEffect, useState } from "react";
 import { Chats } from "@/types";
 import { Query } from "appwrite";
-import { clientDatabase } from "@/app/lib/client-appwrite";
+import { client, clientDatabase } from "@/app/lib/client-appwrite";
 import SpinnerLoader from "./SpinnerLoader";
 import HighlightedText from "./HighlightedText";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
@@ -67,6 +67,47 @@ const ChatListSection = ({ svg }) => {
       setIsLoading(false);
     };
     fetchChats();
+
+    const unsubscribe = client.subscribe(
+      `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID}.documents`,
+      (response) => {
+        const document = response.payload as Models.Document;
+        const chatId = document?.chat_id;
+        console.log("payload", document);
+        console.log("response", response);
+        // const customer = document?.sender_type === "customer";
+        if (
+          response.events[0].includes("update") &&
+          document.shop_phone === shop?.shop_number
+        ) {
+          setChats((prev) =>
+            prev?.map((chat) =>
+              chat.chat_id === chatId
+                ? {
+                    ...chat,
+                    $updatedAt: document?.$updatedAt,
+                    chat_id: document?.chat_id,
+                    customer_name: document?.customer_name,
+                    customer_phone: document?.customer_phone,
+                    isAIActive: document?.isAIActive,
+                  }
+                : chat
+            )
+          );
+        }
+        if (
+          response.events[0].includes("create") &&
+          document.shop_phone === shop?.shop_number
+        ) {
+          setChats((prev) => ({
+            document,
+            ...prev,
+          }));
+        }
+      }
+    );
+
+    return () => unsubscribe();
   }, [shop]);
 
   const safeChats = Array.isArray(chats) ? chats : [];
@@ -100,7 +141,7 @@ const ChatListSection = ({ svg }) => {
         <div className="bg-white mx-1 mb-1 p-2 h-full rounded-lg border-t border-[#E3E3E3]">
           {filteredChats.map((chat) => (
             <Link
-              href={`/dashboard/chat/${chat?.customer_name}`}
+              href={`/dashboard/chat/${chat?.chat_id}`}
               onClick={async () => {
                 setIsChatOpen(false);
                 setSelectedChat(chat);

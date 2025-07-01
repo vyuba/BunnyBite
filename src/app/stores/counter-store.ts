@@ -28,7 +28,7 @@ export const initCounterStore = (): CounterState => {
     user: null,
     shop: null,
     userShops: null,
-    isSidebar: true,
+    isSidebar: false,
   };
 };
 
@@ -37,7 +37,7 @@ export const defaultInitState: CounterState = {
   user: null,
   shop: null,
   userShops: null,
-  isSidebar: true,
+  isSidebar: false,
 };
 
 export const createCounterStore = (

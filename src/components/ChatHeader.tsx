@@ -1,5 +1,6 @@
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
+import { Chats } from "@/types";
 // import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { ArrowLeftIcon, RobotIcon } from "@phosphor-icons/react";
 import Image from "next/image";
@@ -20,8 +21,8 @@ const changeAiToggle = async (Id, value) => {
     console.log(error);
   }
 };
-const ChatHeader = ({ id, svg, setMessage, message }) => {
-  const { selectedChat, setIsChatOpen } = useChatProvider();
+const ChatHeader = ({ svg }) => {
+  const { selectedChat, setIsChatOpen, setSelectedChat } = useChatProvider();
   //   const { shop } = useCounterStore((state) => state);
   // console.log(id);
   return (
@@ -50,14 +51,13 @@ const ChatHeader = ({ id, svg, setMessage, message }) => {
         <label className="switch cursor-pointer">
           <input
             type="checkbox"
-            checked={message.toggleAI}
+            checked={selectedChat?.isAIActive}
             onChange={async () => {
-              await changeAiToggle(id, !message.toggleAI);
-              //   setActiveShop(activeShop);
-              setMessage((prev) => ({
-                ...prev,
-                toggleAI: !prev.toggleAI,
-              }));
+              const response = await changeAiToggle(
+                selectedChat?.$id,
+                !selectedChat?.isAIActive
+              );
+              setSelectedChat(response as Chats);
             }}
           />
           <span className="slider"></span>

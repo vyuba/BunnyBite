@@ -21,9 +21,7 @@ const PageHeader = ({ username }) => {
         {pathname === "/dashboard"
           ? `Dashboard, welcome ${username}`
           : pathname.split("/").includes("chat")
-          ? pathname.split("/").at(-1) === "chat"
-            ? "Chats"
-            : `Chats / ${pathname.split("/").at(-1)}`
+          ? "Chats"
           : pathname.split("/").at(-1)}
       </h1>
     </div>
