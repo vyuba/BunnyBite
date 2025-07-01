@@ -1,8 +1,16 @@
+"use client";
+
 import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import ChatHeader from "./ChatHeader";
 import { useEffect, useRef, useState } from "react";
-import { client } from "@/app/lib/client-appwrite";
+import { client, clientDatabase } from "@/app/lib/client-appwrite";
 import { Models } from "node-appwrite";
+import { ID, Query } from "appwrite";
+import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { Message } from "@/app/dashboard/chat/page";
+import { createAvatar } from "@dicebear/core";
+import { lorelei } from "@dicebear/collection";
+import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 // import { ID } from "appwrite";
 
 // const sendAIMessage = async (message, payload) => {
@@ -28,26 +36,73 @@ import { Models } from "node-appwrite";
 //   console.log(data);
 // };
 
-const MessageContainer = ({
-  isChatOpen,
-  message,
-  messages,
-  setIsChatOpen,
-  selectedChat,
-  setMessage,
-  svg,
-  shop,
-  setMessages,
-  sendMessage,
-}) => {
+const avatar = createAvatar(lorelei, {
+  seed: "John Doe",
+  // hair: ["variant01", "variant02", "variant03"],
+  // ... other options
+});
+
+const svg = avatar.toDataUri();
+
+const getMessages = async (
+  chat_id: string,
+  shop_number: string,
+  setMessages: React.Dispatch<
+    React.SetStateAction<Models.DocumentList<Models.Document> | null>
+  >
+) => {
+  console.log(chat_id, shop_number);
+
+  if (!chat_id || !shop_number) {
+    return [];
+  }
+  // console.log(chat_id);
+  try {
+    const document = await clientDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+      [
+        Query.equal("chat_id", chat_id),
+        Query.equal("shop_phone", shop_number),
+        Query.orderAsc("$updatedAt"),
+        Query.limit(100),
+      ]
+    );
+    setMessages(document);
+    console.log(document);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
+const MessageContainer = ({ chat_id }) => {
+  const { isChatOpen, selectedChat, setIsChatOpen } = useChatProvider();
+  const { shop } = useCounterStore((state) => state);
   const message_box = useRef<HTMLDivElement>(null);
   const bottom_message = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState("");
+  const [messages, setMessages] =
+    useState<Models.DocumentList<Models.Document> | null>(null);
+  const [message, setMessage] = useState<Message | null>({
+    sender_type: "shop",
+    messageId: ID.unique(),
+    shop_phone: shop?.shop_number,
+    customer_phone: selectedChat?.customer_phone,
+    Receiver_id: selectedChat?.customer_name,
+    chat_id: selectedChat?.chat_id || "",
+    toggleAI: selectedChat?.isAIActive,
+  });
+
   useEffect(() => {
-    bottom_message.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
-    });
+    getMessages(selectedChat?.chat_id, shop?.shop_number, setMessages);
+
+    if (bottom_message && bottom_message.current) {
+      bottom_message.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
     const unsubscribe = client.subscribe(
       `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
       (response) => {
@@ -76,7 +131,35 @@ const MessageContainer = ({
     );
 
     return () => unsubscribe();
-  }, [shop?.shop, selectedChat?.chat_id, bottom_message, message, setMessages]);
+  }, [
+    shop?.shop_number,
+    selectedChat?.chat_id,
+    bottom_message,
+    message,
+    setMessages,
+  ]);
+
+  const sendMessage = async (content) => {
+    try {
+      const response = await clientDatabase.createDocument(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+        ID.unique(),
+        {
+          sender_type: message.sender_type,
+          content: content,
+          messageId: message.messageId,
+          Receiver_id: message.Receiver_id,
+          chat_id: message.chat_id,
+          customer_number: message.customer_phone,
+          shop_phone: message.shop_phone,
+        }
+      );
+      console.log("--MESAGE-SENT--", response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -88,10 +171,8 @@ const MessageContainer = ({
         {messages && messages.total > 0 ? (
           <div className="w-full h-full flex flex-col">
             <ChatHeader
-              id={selectedChat?.$id}
-              setIsChatOpen={setIsChatOpen}
+              id={chat_id}
               svg={svg}
-              selectedChat={selectedChat}
               setMessage={setMessage}
               message={message}
             />
@@ -136,11 +217,9 @@ const MessageContainer = ({
               />
               <button
                 className={` ${
-                  message?.content === ""
-                    ? "cursor-not-allowed"
-                    : "cursor-pointer"
+                  content === "" ? "cursor-not-allowed" : "cursor-pointer"
                 } `}
-                disabled={message?.content === "" ? true : false}
+                disabled={content === "" ? true : false}
                 onClick={async () => {
                   if (content === "") {
                     return;

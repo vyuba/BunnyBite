@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 
 const PopOver = ({
   icon,
   children,
+  isProfileClicked,
+  setIsProfileClicked,
 }: {
   icon: React.ReactNode;
   children: React.ReactNode;
+  isProfileClicked: boolean;
+  setIsProfileClicked: React.Dispatch<SetStateAction<boolean>>;
 }) => {
-  const [isProfileClicked, setIsProfileClicked] = useState(false);
   const inputRef = useRef(null);
   const PopUpref = useRef(null);
 

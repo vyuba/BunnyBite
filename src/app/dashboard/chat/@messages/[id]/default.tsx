@@ -1,138 +1,18 @@
-import Image from "next/image";
-import { Models } from "appwrite";
-import { useEffect, useState } from "react";
-import { Chats } from "@/types";
-import { Query } from "appwrite";
-import { clientDatabase } from "@/app/lib/client-appwrite";
-import SpinnerLoader from "./SpinnerLoader";
-import HighlightedText from "./HighlightedText";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
-import Link from "next/link";
+"use client";
+
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 
-const getChats = async (
-  shopNumber: string
-): Promise<Chats[] | null | Models.DocumentList<Models.Document>> => {
-  // const cookieStore = await cookies();
-  // const shop = cookieStore.get("shop");
-  try {
-    const document = await clientDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      [Query.equal("shop_phone", shopNumber || "")]
-    );
-    console.log(document);
-    if (document.total === 0) {
-      return document as Models.DocumentList<Models.Document>;
-    }
-
-    const chatsWithMessages = await Promise.all(
-      document.documents.map(async (doc) => {
-        const messageDocument = await clientDatabase.listDocuments(
-          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-          [
-            Query.equal("chat_id", doc?.chat_id || ""),
-            Query.equal("shop_phone", shopNumber || ""),
-            Query.orderDesc("$createdAt"),
-            Query.limit(1),
-          ]
-        );
-
-        return {
-          ...doc,
-          messages: messageDocument.documents as Models.Document[],
-        } as Chats;
-      })
-    );
-    return chatsWithMessages;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
-
-const ChatListSection = ({ svg }) => {
-  const { isChatOpen, setIsChatOpen, setSelectedChat } = useChatProvider();
-  const [chats, setChats] = useState<Chats[] | null>(null);
-  const { shop } = useCounterStore((state) => state);
-  const [isLoading, setIsLoading] = useState(false);
-  const [query, setQuery] = useState("");
-  useEffect(() => {
-    const fetchChats = async () => {
-      setIsLoading(true);
-      const chats = (await getChats(shop?.shop_number || "")) as Chats[];
-      console.log("chats", chats);
-      setChats(chats);
-      setIsLoading(false);
-    };
-    fetchChats();
-  }, [shop]);
-
-  const safeChats = Array.isArray(chats) ? chats : [];
-  const filteredChats = safeChats.filter((chat) =>
-    chat.customer_name.toLowerCase().includes(query.toLowerCase())
-  );
-
-  console.log(filteredChats);
-
-  if (isLoading) {
-    <SpinnerLoader />;
-  }
+const MessageDefaultSlot = () => {
+  const { setIsChatOpen, isChatOpen } = useChatProvider();
   return (
     <div
-      className={`${
-        isChatOpen
-          ? "translate-x-0 z-20"
-          : "z-10 -translate-x-[50%] md:translate-x-0"
-      } absolute left-0 md:z-0 transition-transform  w-full md:static md:w-[25%] md:min-w-[250px] h-full flex flex-col pt-2 border border-[#E3E3E3] overflow-hidden rounded-lg bg-[#EBEBEB] gap-2`}
+      className={`w-full ${
+        isChatOpen ? "translate-x-full z-10" : " translate-x-0 z-20  "
+      } md:translate-x-0 md:z-0  h-full relative duration-300  bg-white overflow-hidden rounded-md border border-[#E3E3E3]`}
     >
-      <div className="border mx-2 px-2 rounded-sm border-[#E3E3E3]">
-        <input
-          type="text"
-          placeholder="Search"
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full border-none outline-none bg-transparent text-sm py-1.5"
-        />
-      </div>
-      {isLoading && <SpinnerLoader />}
-      {chats && filteredChats.length > 0 && (
-        <div className="bg-white mx-1 mb-1 p-2 h-full rounded-lg border-t border-[#E3E3E3]">
-          {filteredChats.map((chat) => (
-            <Link
-              href={`/dashboard/chat/${chat?.customer_name}`}
-              onClick={async () => {
-                setIsChatOpen(false);
-                setSelectedChat(chat);
-              }}
-              data-chat-id={chat.$id}
-              className={`
-
-              flex items-center gap-2 cursor-pointer hover:bg-[#F1F1F1] rounded-sm transition-all  pl-2 py-3 `}
-              key={chat.$id}
-            >
-              <Image
-                src={svg}
-                alt=""
-                width={30}
-                height={30}
-                className="bg-white block border-[#E3E3E3] border rounded-full size-10"
-              />
-              <div className="flex flex-col gap-1.5 overflow-hidden">
-                <h1 className={`text-sm capitalize font-medium `}>
-                  <HighlightedText text={chat?.customer_name} query={query} />
-                  {/* {chat?.customer_name} */}
-                </h1>
-                <span className="text-xs truncate">
-                  {chat?.messages[0]?.content}
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-      {chats && filteredChats.length === 0 && (
-        <div className="flex flex-col items-center justify-center w-full h-full">
+      <div className="w-full h-full flex items-center bg-white justify-center overflow-hidden rounded-md border border-[#E3E3E3]">
+        {/* empty chat section  */}
+        <div className="flex flex-col items-center">
           <svg
             width="170"
             height="200"
@@ -231,19 +111,16 @@ const ChatListSection = ({ svg }) => {
               </clipPath>
             </defs>
           </svg>
-          <button className="border w-fit border-[#E3E3E3]  text-black/70 capitalize px-3 hover:cursor-pointer bg-[var(--background)] text-sm py-2 rounded-lg">
-            Oops empty chat list
+          <button
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className="border w-fit cursor-pointer border-[#E3E3E3]  text-black/70 capitalize px-3 hover:cursor-pointer bg-[var(--background)] text-sm py-2 rounded-lg"
+          >
+            Select a chat
           </button>
         </div>
-      )}
+      </div>
     </div>
   );
 };
 
-export default ChatListSection;
-
-// ${
-// selectedChat?.chat_id === chat?.chat_id
-//   ? "bg-[#F1F1F1]"
-//   : "bg-white"
-// }
+export default MessageDefaultSlot;

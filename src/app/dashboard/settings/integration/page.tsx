@@ -1,6 +1,7 @@
 "use client";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { TrashIcon } from "@phosphor-icons/react";
 import { PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { ID } from "appwrite";
 import { AnimatePresence, motion } from "motion/react";
@@ -9,7 +10,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 const IntegrationPage = () => {
   const searchParams = useSearchParams();
-  const { shop, user } = useCounterStore((state) => state);
+  const { user, userShops } = useCounterStore((state) => state);
   const [showConnect, setShowConnect] = useState(false);
   const store = searchParams.get("shop");
   useEffect(() => {
@@ -44,6 +45,30 @@ const IntegrationPage = () => {
       });
     } finally {
       toast.dismiss("connect");
+    }
+  };
+  const deleteShop = async (id) => {
+    if (!id) {
+      throw new Error("Store id is required");
+    }
+    try {
+      toast.loading("Deleting store", {
+        id: "delete-store",
+      });
+      await clientDatabase.deleteDocument(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+        id
+      );
+      toast.success("Store deleted", {
+        id: "delete-store",
+      });
+    } catch (error) {
+      toast.error(`Error deleting your store ${error?.message}`, {
+        id: "delete-store",
+      });
+    } finally {
+      toast.dismiss("delete-store");
     }
   };
   return (
@@ -93,7 +118,6 @@ const IntegrationPage = () => {
                           type="text"
                           name="store"
                           className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
-                          defaultValue={store || ""}
                         />
                       </label>
                       <button
@@ -107,70 +131,38 @@ const IntegrationPage = () => {
                   )}
                 </AnimatePresence>
                 <div className="w-full flex flex-col md:flex-row items-end justify-between gap-1.5">
-                  <label className="flex items-start w-full flex-col gap-1">
-                    <span className="text-sm">Shopify</span>
-                    <input
-                      type="text"
-                      className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
-                      defaultValue={shop?.shop}
-                    />
-                  </label>
-                  <button className=" w-fit bg-[#303030] border border-[#4A4A4A] text-white border-b-2  capitalize px-2.5 hover:cursor-pointer  text-sm py-1.5 rounded-lg flex items-center gap-1">
-                    <p>edit</p>
-                    <PencilSimpleIcon size={17} />
-                  </button>
+                  {userShops &&
+                    userShops.documents.map((store) => (
+                      <div
+                        key={store?.$id}
+                        className="w-full flex flex-row items-end flex-1"
+                      >
+                        <label className="flex items-start w-full flex-col gap-1">
+                          <span className="text-sm">Shopify</span>
+                          <input
+                            type="text"
+                            className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                            defaultValue={store?.shop}
+                          />
+                        </label>
+                        <div className="flex items-center gap-0.5">
+                          <button className=" w-fit bg-transparent hover:bg-[var(--background)] text-black/80  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1">
+                            <PencilSimpleIcon size={17} />
+                          </button>
+                          <button
+                            onClick={() => deleteShop(store?.$id)}
+                            className=" w-fit bg-transparent text-red-600 hover:bg-[var(--background)]  capitalize px-2.5 cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1"
+                          >
+                            <TrashIcon size={17} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               </label>
             </div>
-            {/* <div className="flex  w-full flex-col gap-2  pt-2 ">
-                <label className="flex flex-col gap-1">
-                  <span className="text-sm capitalize ">customthem</span>
-                  <span className="text-sm text-black/70">
-                    johnfre@gmail.com
-                  </span>
-                </label>
-              </div> */}
           </div>
         </div>
-        {/* <div className="flex flex-col border-t border-[#E3E3E3]">
-            <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 py-2">
-              <h2 className="text-base">Twilio WhatsApp API Configuration</h2>
-              <p className="text-sm  w-full text-black/70">
-                Configure your Twilio WhatsApp API settings to enable BunnyBite
-                to send WhatsApp messages.
-              </p>
-            </div>
-            <div className="flex  w-full flex-col gap-2 px-3 pt-2 relative">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="absolute hover:bg-[#F7F7F7] p-1.5 rounded-sm cursor-pointer top-[10px] right-[10px]"
-              >
-                <PencilSimpleIcon size={17} />
-              </button>
-              <label className="flex flex-col  w-full gap-1">
-                <span className="text-sm capitalize ">Phone Number</span>
-                <span className="text-sm text-black/70">09161076598</span>
-              </label>
-              <div className="flex flex-wrap items-center justify-between  w-full gap-2">
-                <label className="flex items-center gap-1">
-                  <span className="text-sm"> Account SID:</span>
-                  <span className="text-sm text-black/70">
-                    083************************sk
-                  </span>
-                  <CopyIcon
-                    size={17}
-                    className="text-black/70 cursor-copy hover:text-black"
-                  />
-                </label>
-                <label className="flex items-center gap-1">
-                  <span className="text-sm"> Auth Token:</span>
-                  <span className="text-sm text-black/70">
-                    083************************sk
-                  </span>
-                </label>
-              </div>
-            </div>
-          </div> */}
       </div>
     </>
   );

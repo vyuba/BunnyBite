@@ -1,4 +1,5 @@
 import { clientDatabase } from "@/app/lib/client-appwrite";
+import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 // import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { ArrowLeftIcon, RobotIcon } from "@phosphor-icons/react";
 import Image from "next/image";
@@ -19,14 +20,8 @@ const changeAiToggle = async (Id, value) => {
     console.log(error);
   }
 };
-const ChatHeader = ({
-  id,
-  setIsChatOpen,
-  svg,
-  selectedChat,
-  setMessage,
-  message,
-}) => {
+const ChatHeader = ({ id, svg, setMessage, message }) => {
+  const { selectedChat, setIsChatOpen } = useChatProvider();
   //   const { shop } = useCounterStore((state) => state);
   // console.log(id);
   return (
@@ -52,7 +47,7 @@ const ChatHeader = ({
       </div>
       <div className="flex w-fit h-full justify-center items-center gap-1 relative">
         <RobotIcon size={20} fill="#303030" />
-        <label className="switch">
+        <label className="switch cursor-pointer">
           <input
             type="checkbox"
             checked={message.toggleAI}

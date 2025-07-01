@@ -1,8 +1,10 @@
 import { BellIcon, GearIcon } from "@phosphor-icons/react";
 import PopOver from "./Popover";
 import Link from "next/link";
+import { useState } from "react";
 
 const AnouncementBanner = () => {
+  const [isProfileClicked, setIsProfileClicked] = useState(false);
   return (
     <div className="w-full h-14 bg-[#EBEBEB]  flex flex-row-reverse md:flex-row justify-between items-center">
       <div className="flex items-center gap-1 px-4">
@@ -21,12 +23,17 @@ const AnouncementBanner = () => {
           <BellRingingIcon weight={`regular`} fill="#303030" size={20} />
         </button> */}
         <PopOver
+          isProfileClicked={isProfileClicked}
+          setIsProfileClicked={setIsProfileClicked}
           icon={<BellIcon weight={`regular`} fill="#303030" size={18} />}
         >
           <div className="w-full h-[400px]">
             <span className=" p-3 w-full flex items-center justify-between">
               <p className=" text-sm md:text-base">Notifications</p>
-              <Link href={"/dashboard/settings"}>
+              <Link
+                onClick={() => setIsProfileClicked(!isProfileClicked)}
+                href={"/dashboard/settings"}
+              >
                 <GearIcon weight={`regular`} fill="#303030" size={20} />
               </Link>
             </span>

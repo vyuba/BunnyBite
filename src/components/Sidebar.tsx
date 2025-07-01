@@ -7,6 +7,7 @@ import {
   UserCircleIcon,
   DoorOpenIcon,
   CaretUpDownIcon,
+  StorefrontIcon,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
@@ -50,17 +51,12 @@ const SideBarLinks = {
   ],
 };
 
-export const SideBar = ({
-  shop,
-  user,
-}: {
-  shop: string | null;
-  user: string | null;
-}) => {
+export const SideBar = ({ user }: { user: string | null }) => {
   const pathname = usePathname();
   const [isProfileClicked, setIsProfileClicked] = useState(false);
   const router = useRouter();
-  const { isSidebar, setSidebar } = useCounterStore((state) => state);
+  const { isSidebar, setSidebar, userShops, shop, setActiveShop } =
+    useCounterStore((state) => state);
   const inputRef = useRef(null);
   const PopUpref = useRef(null);
   const [isToolKit, setToolKit] = useState(false);
@@ -84,6 +80,7 @@ export const SideBar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isProfileClicked]);
 
+  console.log(userShops);
   //SIGN OUT USER
   async function signOut() {
     toast.loading("Signing out...", {
@@ -139,13 +136,19 @@ export const SideBar = ({
                 setHovered(null);
               }}
               className={` ${
-                link.link == pathname
+                link.link === pathname
                   ? " border-[#E3E3E3] hover:border-b-2 bg-[var(--background)]"
                   : "hover:border-[var(--background)] hover:bg-[var(--background)]"
               } border border-[#EBEBEB] transition-all flex items-center justify-center hover:cursor-pointer  text-black/70 capitalize px-3  text-sm py-3 rounded-lg`}
             >
               <link.icon
-                weight={`${link.link == pathname ? "fill" : "regular"}`}
+                weight={`${
+                  link.link === pathname ||
+                  (link.link === "/dashboard/chat" &&
+                    pathname.includes(link.link))
+                    ? "fill"
+                    : "regular"
+                }`}
                 fill="#303030"
                 size={20}
               />
@@ -229,10 +232,32 @@ export const SideBar = ({
           <div className="size-7 rounded-sm bg-[#303030]" />
           <div className="flex flex-col items-start">
             <span className="text-sm">{user}</span>
-            <span className="text-xs">{shop}</span>
+            <span className="text-xs">{shop?.shop}</span>
           </div>
           <CaretUpDownIcon size={18} />
         </button>
+        {userShops?.total > 1 && (
+          <div className="w-full flex flex-col pb-1.5 px-1">
+            <div className="flex items-center w-full justify-start cursor-pointer gap-1 pb-0.5 transition-all hover:bg-[#EBEBEB] rounded-sm">
+              <StorefrontIcon weight="fill" fill="#303030" size={15} />
+              <span className="text-sm">shops</span>
+            </div>
+            {userShops?.documents.map((store) => {
+              if (store?.$id !== shop?.$id) {
+                return (
+                  <button
+                    onClick={() => setActiveShop(store)}
+                    key={store?.$id}
+                    className="cursor-pointer text-xs flex items-center gap-1 hover:bg-white rounded-sm p-1.5"
+                  >
+                    <span className="inline-block w-[8px] h-[8px] rounded-[5px] border border-solid border-yellow-500 transition-colors duration-200 ease bg-yellow-400"></span>
+                    {store?.shop}
+                  </button>
+                );
+              }
+            })}
+          </div>
+        )}
         <div className="bg-white text-sm w-full rounded-sm flex flex-col py-1 px-1 gap-2">
           {/* <span className=" px-2">{user}</span> */}
           <button className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-[#EBEBEB] rounded-sm p-1">

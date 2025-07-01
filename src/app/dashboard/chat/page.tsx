@@ -2,18 +2,15 @@
 
 // import { getChats, getMessages } from "@/helpers/shopifyQuery";
 // import { fetchCustomerCount } from "@/helpers/shopifyQuery";
-import { Chats } from "@/types";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
-import { useState } from "react";
-import { clientDatabase } from "@/app/lib/client-appwrite";
-import { ID } from "appwrite";
-import { Models } from "appwrite";
+// import { clientDatabase } from "@/app/lib/client-appwrite";
+// import { ID } from "appwrite";
+// import { Models } from "appwrite";
 // import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import { createAvatar } from "@dicebear/core";
 import { lorelei } from "@dicebear/collection";
 import ChatListSection from "@/components/ChatListSection";
 // import ChatHeader from "@/components/ChatHeader";
-import MessageContainer from "@/components/MessageContainer";
+// import MessageContainer from "@/components/MessageContainer";
 // import AnalyticCard from "@/components/AnalyticsCard";
 
 const avatar = createAvatar(lorelei, {
@@ -35,95 +32,55 @@ export interface Message {
 }
 
 const Page = () => {
-  const { shop } = useCounterStore((state) => state);
-  const [selectedChat, setSelectedChat] = useState<Chats | null>(null);
   // const [customerCount, setCustomerCount] = useState<number>(0);
-  const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
-  const [messages, setMessages] =
-    useState<Models.DocumentList<Models.Document> | null>(null);
-  const [message, setMessage] = useState<Message | null>({
-    sender_type: "shop",
-    messageId: ID.unique(),
-    shop_phone: shop?.shop_number,
-    customer_phone: selectedChat?.customer_phone,
-    Receiver_id: selectedChat?.customer_name,
-    chat_id: selectedChat?.chat_id || "",
-    toggleAI: selectedChat?.isAIActive,
-  });
 
-  console.log(
-    "--MESSAGE-PAYLOAD--",
-    message,
-    "--SELECTED-CHAT--",
-    selectedChat
-  );
-  const sendMessage = async (content) => {
-    try {
-      // const response = fetch("/api/send-message", {
-      //   method: "POST",
-      //   body: JSON.stringify(message),
-      // });
-      const response = await clientDatabase.createDocument(
-        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-        ID.unique(),
-        {
-          sender_type: message.sender_type,
-          content: content,
-          messageId: message.messageId,
-          Receiver_id: message.Receiver_id,
-          chat_id: message.chat_id,
-          customer_number: message.customer_phone,
-          shop_phone: message.shop_phone,
-        }
-      );
-      console.log("--MESAGE-SENT--", response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   // console.log(customerCount);
   // console.log(chats);
   // console.log("message", message?.content);
 
-  return (
-    <div className="flex flex-col md:z-0 w-full h-fit gap-2 pb-15">
-      {/* chat analytics data section  */}
-      {/* <div className="w-full flex flex-wrap gap-1.5 items-center">
-        <AnalyticCard title={"No Of Customers"} count={customerCount} />
-      </div> */}
-      <div className="w-full relative md:z-0 overflow-hidden h-[calc(100dvh-135px)] flex gap-2">
-        {/* container for chat list  */}
-        <ChatListSection
-          setMessages={setMessages}
-          setMessage={setMessage}
-          setSelectedChat={setSelectedChat}
-          selectedChat={selectedChat}
-          svg={svg}
-          shop={shop?.shop_number || ""}
-          isChatOpen={isChatOpen}
-          setIsChatOpen={setIsChatOpen}
-        />
-        {/* container for chat section  */}
-        <MessageContainer
-          isChatOpen={isChatOpen}
-          message={message}
-          messages={messages}
-          selectedChat={selectedChat}
-          setIsChatOpen={setIsChatOpen}
-          setMessage={setMessage}
-          setMessages={setMessages}
-          sendMessage={sendMessage}
-          shop={shop}
-          svg={svg}
-        />
-      </div>
-    </div>
-  );
+  {
+    /* chat analytics data section  */
+  }
+  // <div className="flex flex-col md:z-0 w-full h-fit gap-2 pb-15">
+  {
+    /* <div className="w-full flex flex-wrap gap-1.5 items-center">
+      <AnalyticCard title={"No Of Customers"} count={customerCount} />
+    </div> */
+  }
+  {
+    /* <div className="w-full relative md:z-0 overflow-hidden h-[calc(100dvh-135px)] flex gap-2"> */
+  }
+  {
+    /* container for chat list  */
+  }
+  return <ChatListSection svg={svg} />;
 };
 
 export default Page;
 
+{
+  /* container for chat section  */
+}
+{
+  /* <MessageContainer
+      isChatOpen={isChatOpen}
+      message={message}
+      messages={messages}
+      selectedChat={selectedChat}
+      setIsChatOpen={setIsChatOpen}
+      setMessage={setMessage}
+      setMessages={setMessages}
+      sendMessage={sendMessage}
+      shop={shop}
+      svg={svg}
+    /> */
+}
+{
+  /* </div> */
+}
+{
+  /* </div> */
+}
 {
   /* not empty chat  */
 }

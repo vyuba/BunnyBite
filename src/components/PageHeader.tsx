@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 const PageHeader = ({ username }) => {
   const { setSidebar, isSidebar } = useCounterStore((state) => state);
   const pathname = usePathname();
+  console.log(pathname);
   return (
     <div className="flex pb-3  items-center gap-1.5">
       <button
@@ -19,6 +20,10 @@ const PageHeader = ({ username }) => {
       <h1 className="capitalize font-medium text-base text-black/90">
         {pathname === "/dashboard"
           ? `Dashboard, welcome ${username}`
+          : pathname.split("/").includes("chat")
+          ? pathname.split("/").at(-1) === "chat"
+            ? "Chats"
+            : `Chats / ${pathname.split("/").at(-1)}`
           : pathname.split("/").at(-1)}
       </h1>
     </div>

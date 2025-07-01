@@ -14,7 +14,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const store = searchParams.get("shop");
-  const { setCurrentUser, setUserShop, shop, user, isSidebar, setSidebar } =
+  const { setCurrentUser, setUserShop, user, isSidebar, setSidebar } =
     useCounterStore((state) => state);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -42,9 +42,10 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   if (isLoading) {
     return <Loading />;
   }
+
   return (
     <div className="flex w-full h-dvh">
-      <SideBar shop={shop?.shop} user={user?.name} />
+      <SideBar user={user?.name} />
       <div className="h-screen overflow-hidden flex-[85%] bg-[#EBEBEB] ">
         {!isSidebar && (
           <motion.div
