@@ -1,8 +1,4 @@
-import {
-  sessionStorage,
-  shopify,
-  appwritesessionStorage,
-} from "@/app/lib/shopify";
+import { shopify, appwritesessionStorage } from "@/app/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
 // import { Models } from "node-appwrite";
 
@@ -49,7 +45,7 @@ export const GET = async (req: NextRequest) => {
       console.log(draftOrders.errors);
       return NextResponse.json(draftOrders.errors);
     }
-    await sessionStorage.disconnect();
+    // await sessionStorage.disconnect();
     return NextResponse.json(draftOrders.data);
   } catch (error) {
     console.log(error);
