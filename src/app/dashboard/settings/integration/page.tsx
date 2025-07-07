@@ -118,6 +118,7 @@ const IntegrationPage = () => {
                           type="text"
                           name="store"
                           className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                          value={store || ""}
                         />
                       </label>
                       <button
