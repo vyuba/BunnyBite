@@ -3,7 +3,7 @@ import {
   LATEST_API_VERSION,
   DeliveryMethod,
 } from "@shopify/shopify-api";
-import { MySQLSessionStorage } from "@shopify/shopify-app-session-storage-mysql";
+// import { MySQLSessionStorage } from "@shopify/shopify-app-session-storage-mysql";
 import "@shopify/shopify-api/adapters/web-api";
 import { AppwriteSessionStorage } from "@/helpers/appwrite-session-storage";
 import { appwriteClient } from "./node-appwrite";
@@ -23,7 +23,7 @@ const appUninstallHandler = async (
   console.log("webhook id", webhookId);
   console.log("api version", apiVersion);
   console.log("topic", topic);
-  await sessionStorage.deleteSession(sessionId);
+  // await sessionStorage.deleteSession(sessionId);
   await appwritesessionStorage.deleteSession(sessionId);
 };
 const customerCreateHandler = async (
@@ -51,13 +51,13 @@ const customerCreateHandler = async (
 };
 
 // MySQL Session Storage
-const sessionStorage = MySQLSessionStorage.withCredentials(
-  process.env.MYSQL_HOST!,
-  process.env.MYSQL_DB!,
-  process.env.MYSQL_USER!,
-  process.env.MYSQL_PASS!,
-  { connectionPoolLimit: 100000 }
-);
+// const sessionStorage = MySQLSessionStorage.withCredentials(
+//   process.env.MYSQL_HOST!,
+//   process.env.MYSQL_DB!,
+//   process.env.MYSQL_USER!,
+//   process.env.MYSQL_PASS!,
+//   { connectionPoolLimit: 100000 }
+// );
 
 // // Appwrite Session Storage
 // Create session storage instance
@@ -167,4 +167,4 @@ shopify.webhooks.addHandlers({
 
 shopify.webhooks.getTopicsAdded();
 
-export { shopify, sessionStorage, appwritesessionStorage };
+export { shopify, appwritesessionStorage };
