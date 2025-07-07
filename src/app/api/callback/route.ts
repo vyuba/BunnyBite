@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  sessionStorage,
+  // sessionStorage,
   appwritesessionStorage,
   shopify,
 } from "../../lib/shopify";
@@ -61,8 +61,8 @@ export const GET = async (req: NextRequest) => {
       rawResponse: NextResponse,
     });
     // console.log("Authenticated:", callback.session);
-    sessionStorage.storeSession(callback.session);
-    appwritesessionStorage.storeSession(callback.session);
+    // sessionStorage.storeSession(callback.session);
+    await appwritesessionStorage.storeSession(callback.session);
     // const checkShop = await databases.listDocuments<Models.Document>(
     //   process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     //   process.env.NEXT_PUBLIC_USER_COLLECTION_ID!,
