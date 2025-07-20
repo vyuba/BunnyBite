@@ -6,10 +6,11 @@ import {
 // import { MySQLSessionStorage } from "@shopify/shopify-app-session-storage-mysql";
 import "@shopify/shopify-api/adapters/web-api";
 import { AppwriteSessionStorage } from "@/helpers/appwrite-session-storage";
-import { appwriteClient } from "./node-appwrite";
+import { createClient } from "./node-appwrite";
 
 // handlers for webhook events
 
+const { appwriteClient } = await createClient();
 const appUninstallHandler = async (
   topic: string,
   shop: string,
@@ -61,6 +62,7 @@ const customerCreateHandler = async (
 
 // // Appwrite Session Storage
 // Create session storage instance
+
 const appwritesessionStorage = new AppwriteSessionStorage(
   appwriteClient,
   process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,

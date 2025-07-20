@@ -3,9 +3,9 @@ const BillingPage = () => {
     <>
       <div className="grid gap-3 py-3 w-full">
         <div className="flex flex-col w-full">
-          <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 pb-2">
+          <div className="w-full border-b grid gap-1 border-border px-3 pb-2">
             <h2 className="text-base">Overview</h2>
-            <p className="text-sm text-black/70">Info on your billing plan</p>
+            <p className="text-sm">Info on your billing plan</p>
           </div>
           <div className=" px-3">
             <div className="flex  w-full flex-col gap-2 pt-2">
@@ -14,7 +14,7 @@ const BillingPage = () => {
                   <span className="capitalize text-sm md:text-base ">
                     manage plan
                   </span>
-                  <button className="border w-fit border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg">
+                  <button className="border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg">
                     change plan
                   </button>
                 </div>
@@ -23,7 +23,7 @@ const BillingPage = () => {
                     <span className="text-sm">Billing Information</span>
                     <input
                       type="text"
-                      className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                      className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                       defaultValue={"shop?.shop"}
                     />
                   </label>

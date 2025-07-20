@@ -28,8 +28,44 @@
 
 :root {
   --background: #f1f1f1;
+  --primary-background: #ffffff;
   --foreground: #0a0a0a;
+  --teitary-background: #f7f7f7;
+  --icon-background: #303030;
+  --secondary-background: #ebebeb;
+  --border: #e3e3e3;
   /* --font-neue: 'Neue', sans-serif; */
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Set dark mode variables when data-theme="dark" is present on :root (html) */
+:root[data-theme="dark"] {
+  --background: #151515;
+  --primary-background: #151515;
+  --icon-background: #cfcfcf;
+  --secondary-background: #232323;
+  --teitary-background: #202020;
+  --border: #282828;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-secondary-background: var(--secondary-background);
+  --color-tertiay-background: var(--teitary-background);
+  --color-primary-background: var(--primary-background);
+  --color-icon: var(--icon-background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-neue: var(--font-neue);
+}
+
+body {
+  background: var(--background);
+  /* color: var(--foreground); */
+  font-family: var(--font-neue);
+  transition: background 0.5s, color 0.5s;
 }
 
 .shared-style {
@@ -88,27 +124,6 @@
   to {
     transform: rotateY(360deg) rotateX(360deg);
   }
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-neue: var(--font-neue);
-}
-
-@media (prefers-color-scheme: dark) {
-  /* :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  } */
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-neue);
 }
 
 input:-webkit-autofill,

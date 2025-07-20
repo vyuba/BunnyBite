@@ -12,7 +12,7 @@ const ToolKit = ({ title, index, isHovered, isToolKit }) => {
         opacity: index === isHovered && isToolKit ? 1 : 0,
       }}
       exit={{ opacity: 0, visibility: "hidden" }}
-      className="fixed w-fit z-[9000] py-2 px-3 rounded-md bg-[#EBEBEB] left-[65px] border border-[#E3E3E3]"
+      className="fixed w-fit z-[9000] py-2 px-3 rounded-md text-black/70 dark:text-white/70 bg-secondary-background left-[65px] border border-border"
     >
       {title}
     </motion.div>

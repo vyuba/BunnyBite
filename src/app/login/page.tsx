@@ -10,6 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Status } from "@/components/pages/RegisterPage";
 import Image from "next/image";
 import { SmileyXEyesIcon } from "@phosphor-icons/react";
+import { setJwtCookie } from "@/utils";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -52,15 +53,17 @@ const LoginPage = () => {
       const jwt = await clientAccount.createJWT();
       console.log(session);
       console.log("jwt", jwt);
+      await setJwtCookie(jwt);
       setStatus({
         message: "Sucessfully Logged In",
         type: "success",
       });
-      toast.success(status.message, {
-        id: "Login",
-      });
       setLoading(false);
       toast.loading("Redirecting...", {
+        id: "Login",
+      });
+
+      toast.success(status.message, {
         id: "Login",
       });
       router.push("/dashboard");
@@ -81,10 +84,10 @@ const LoginPage = () => {
     }
   }
   return (
-    <div className=" w-full h-screen flex items-center justify-center bg-[#EBEBEB] px-4">
+    <div className=" w-full h-screen flex items-center justify-center bg-secondary-background px-4">
       <div className="flex flex-col w-full max-w-[400px]">
         <div className="flex flex-col gap-2 items-center justify-center pb-8">
-          <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize  bg-[#303030] flex items-center justify-center text-sm  rounded-lg">
+          <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 dark:text-white capitalize  bg-icon flex items-center justify-center text-sm  rounded-lg">
             <Image
               width={40}
               height={40}
@@ -93,7 +96,7 @@ const LoginPage = () => {
               className="p-1"
             />
           </div>
-          <h1 className="text-center text-lg md:text-xl font-medium">
+          <h1 className="text-center text-black/70 dark:text-white  text-lg md:text-xl font-medium">
             Sign in
           </h1>
         </div>
@@ -105,20 +108,20 @@ const LoginPage = () => {
             <input
               id="email"
               name="email"
-              className="bg-[#F1F1F1] text-[#6b6b6b] focus:bg-[#f9fafb] focus:outline-none focus:border-[#cacaca] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-3 px-3 w-full text-base md:text-lg border border-[#E3E3E3]"
+              className="bg-background text-[#6b6b6b] focus:bg-background focus:outline-none focus:border-border focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3 px-3 w-full text-base md:text-lg border border-border"
               type="email"
               placeholder="Email address"
             />
             <input
               id="password"
               name="password"
-              className="bg-[#F1F1F1] text-[#6b6b6b] focus:bg-[#f9fafb] focus:outline-none focus:border-[#cacaca] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-3  px-3 w-full text-base md:text-lg border border-[#E3E3E3]"
+              className="bg-background text-[#6b6b6b] focus:bg-background focus:outline-none focus:border-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3  px-3 w-full text-base md:text-lg border border-border"
               type="password"
               placeholder="Password"
             />
           </div>
           <button
-            className="border overflow-hidden cursor-pointer max-h-[60px] rounded-md py-3 border-[#4A4A4A] w-full border-b-2 transition-[border] text-base md:text-lg text-white capitalize px-3 bg-[#303030]"
+            className="border overflow-hidden cursor-pointer max-h-[60px] rounded-md py-3 border-border w-full border-b-2 transition-[border] text-base md:text-lg text-black/70 dark:text-white capitalize px-3 bg-primary-background"
             type="submit"
           >
             <motion.div
@@ -145,18 +148,18 @@ const LoginPage = () => {
             </motion.div>
           </button>
         </form>
-        <p className="text-black/50 text-center font-medium mt-6">
+        <p className="text-black/50 dark:text-white text-center font-medium mt-6">
           <Link className="" href="/forgotpassword">
             Forget your password?
           </Link>
         </p>
         <div className=" text-center pt-8 flex flex-col gap-2">
-          <p className="text-base md:text-lg">
+          <p className="text-base text-black/70 dark:text-white md:text-lg">
             Don&apos;t have a BunnyBite account?
           </p>
           <Link href="/register">
             <button
-              className="border cursor-pointer rounded-md py-3 border-[#E3E3E3] w-full border-b-2 transition-[border] text-black/70 text-base md:text-lg px-3 bg-white"
+              className="border cursor-pointer rounded-md py-3 border-border w-full border-b-2 transition-[border] text-black/70 dark:text-white text-base md:text-lg px-3 bg-primary-background"
               type="submit"
             >
               Create an account

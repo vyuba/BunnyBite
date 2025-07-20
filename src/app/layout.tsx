@@ -48,7 +48,7 @@ export default function RootLayout({
       <body
         className={`${neueMontreal.variable} ${neueMontreal.variable} antialiased`}
       >
-        <Toaster />
+        <Toaster richColors />
         <HomeLayout>{children}</HomeLayout>
       </body>
     </html>

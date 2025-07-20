@@ -1,39 +1,45 @@
 "use client";
+import { useCounterStore } from "@/app/providers/counter-store-provider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const SettingsNavLinks = [
   {
-    title: "Account",
-    link: "/dashboard/settings",
+    title: "account",
+    link: "/dashboard/settings/account",
   },
   {
-    title: "Security",
+    title: "security",
     link: "/dashboard/settings/security",
   },
   {
-    title: "Integration",
+    title: "integration",
     link: "/dashboard/settings/integration",
   },
   {
-    title: "Billing",
+    title: "billing",
     link: "/dashboard/settings/billing",
   },
 ];
 
 const SettingsNavber = () => {
+  const { shop } = useCounterStore((state) => state);
   const pathname = usePathname();
   return (
     <div className="w-full overflow-x-scroll">
-      <ul className="flex mt-2 gap-1 items-center p-0.5 bg-[#F7F7F7] w-fit rounded-md border border-[#E3E3E3]">
+      <ul className="flex mt-2 gap-1 items-center p-0.5 bg-tertiay-background w-fit rounded-md border border-border">
         {SettingsNavLinks.map((links, index) => (
           <Link
-            href={links.link}
+            href={
+              links.title === "security"
+                ? links.link + `/${shop?.$id}`
+                : links.link
+            }
             key={index}
-            className={`py-1 transition-colors cursor-pointer px-3 ${
-              pathname === links.link
-                ? "bg-white border border-[#E3E3E3]"
-                : "hover:bg-[#f0efef]"
+            className={`py-1 transition-colors text-black/70 dark:text-white capitalize cursor-pointer px-3 ${
+              pathname.includes(links.title)
+                ? "bg-primary-background border border-border"
+                : "hover:bg-[#f0efef] dark:hover:bg-[#111111] border-border"
             }  rounded-sm`}
           >
             <h2>{links.title}</h2>

@@ -8,9 +8,9 @@ const Loading = () => {
     <div
       className={`w-full ${
         isChatOpen ? "translate-x-full z-10" : " translate-x-0 z-20  "
-      } md:translate-x-0 md:z-0  h-full relative duration-300  bg-white overflow-hidden rounded-md border border-[#E3E3E3]`}
+      } md:translate-x-0 md:z-0  h-full relative duration-300  bg-white dark:bg-black/40 overflow-hidden rounded-md border border-border`}
     >
-      <div className="w-full h-full flex items-center bg-white justify-center overflow-hidden rounded-md border border-[#E3E3E3]">
+      <div className="w-full h-full flex items-center bg-white dark:bg-black/40 justify-center overflow-hidden rounded-md border border-border">
         <div className="flex flex-col items-center">
           <LoadingSpinner />
         </div>

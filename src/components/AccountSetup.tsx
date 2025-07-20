@@ -97,7 +97,7 @@ const AccountSetup = () => {
   }, [user]);
 
   return (
-    <motion.span className="w-full h-full max-w-[796px] bg-[#F7F7F7] mx-auto pt-3 px-1.5 rounded-lg border border-[#E3E3E3] ">
+    <motion.span className="w-full text-black/70 dark:text-white h-full max-w-[796px] bg-tertiay-background mx-auto pt-3 px-1.5 rounded-lg border border-border">
       <div className="flex items-center pb-3 gap-1.5  px-1">
         <motion.svg
           className="-rotate-90 fill-none"
@@ -106,7 +106,7 @@ const AccountSetup = () => {
           viewBox="0 0 16 16"
         >
           <circle
-            className="fill-none stroke-[#E3E3E3]"
+            className="fill-none stroke-border"
             cx="8"
             cy="8"
             r="6.5"
@@ -138,7 +138,7 @@ const AccountSetup = () => {
             style={{
               strokeLinecap: "round",
             }}
-            className="stroke-[#1A1A1A] fill-none"
+            className="stroke-[#1A1A1A] dark:stroke-[#e3e3e3] fill-none"
             cx="8"
             cy="8"
             r="6.5"
@@ -160,8 +160,11 @@ const AccountSetup = () => {
             <motion.div
               initial={{
                 backgroundColor:
-                  activeIndex === index ? "white" : "transparent",
-                border: activeIndex === index ? "1px solid #E3E3E3" : "none",
+                  activeIndex === index
+                    ? "var(--primary-background)"
+                    : "transparent",
+                border:
+                  activeIndex === index ? "1px solid var(--border)" : "none",
                 display:
                   activeIndex === index
                     ? "block"
@@ -173,10 +176,13 @@ const AccountSetup = () => {
               }}
               animate={{
                 backgroundColor:
-                  activeIndex === index ? "white" : "transparent",
+                  activeIndex === index
+                    ? "var(--primary-background)"
+                    : "transparent",
                 paddingBlock:
                   activeIndex === index ? "16px" : isSetupsVisible ? 0 : "16px",
-                border: activeIndex === index ? "1px solid #E3E3E3" : "none",
+                border:
+                  activeIndex === index ? "1px solid var(--border)" : "none",
                 display:
                   activeIndex === index
                     ? "block"
@@ -277,7 +283,7 @@ const AccountSetup = () => {
                     dangerouslySetInnerHTML={{ __html: status.description }}
                   />
                 </p>
-                <div className="bg-[#F7F7F7] gap-2 w-full py-2 rounded-md px-2 border border-[#E3E3E3] flex items-center justify-between">
+                <div className="bg-tertiay-background gap-2 w-full py-2 rounded-md px-2 border border-border flex items-center justify-between">
                   <p className="text-xs md:text-sm">
                     Use this personalized guide to get your store up and
                     running.
@@ -298,7 +304,7 @@ const AccountSetup = () => {
                         setActiveIndex(activeIndex + 1);
                       }
                     }}
-                    className="border border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2 md:px-3 hover:cursor-pointer bg-white text-xs md:text-sm py-2 rounded-md"
+                    className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-2 md:px-3 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm py-2 rounded-md"
                   >
                     next step
                   </button>
@@ -310,7 +316,7 @@ const AccountSetup = () => {
       </div>
       <button
         onClick={() => setIsSetupsVisible(!isSetupsVisible)}
-        className="px-1 py-3 w-full flex items-center justify-between cursor-pointer"
+        className="px-1 py-3 w-full flex items-center text-black/70 dark:text-white justify-between cursor-pointer"
       >
         <span className="text-xs capitalize">view all</span>
         {!isSetupsVisible ? (

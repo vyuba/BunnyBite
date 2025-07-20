@@ -149,9 +149,9 @@ const MessageContainer = ({ id }: { id: string }) => {
     <div
       className={`w-full ${
         isChatOpen ? "translate-x-full z-10" : " translate-x-0 z-20  "
-      } md:translate-x-0 md:z-0  h-full relative duration-300  bg-white overflow-hidden rounded-md border border-[#E3E3E3]`}
+      } md:translate-x-0 md:z-0  h-full relative duration-300  bg-primary-background overflow-hidden rounded-md border border-border`}
     >
-      <div className="bg-white/20 bg-repeat bg-[url('/whatsappbackground.png')] w-full h-full">
+      <div className="bg-white/20 dark:bg-black/90 bg-repeat bg-[url('/whatsappbackground.png')] w-full h-full">
         {messages && messages.total > 0 ? (
           <div className="w-full h-full flex flex-col">
             <ChatHeader svg={svg} />
@@ -163,9 +163,9 @@ const MessageContainer = ({ id }: { id: string }) => {
               {messages?.documents.map((message) => (
                 <div
                   key={message?.$id}
-                  className={`bg-white border   ${
+                  className={`bg-primary-background border   ${
                     message?.sender_type === "shop" ? "self-end" : "self-start"
-                  } border-[#E3E3E3] py-1.5 px-3 ${
+                  } border-border py-1.5 px-3 ${
                     message?.replied_msg
                       ? "rounded-lg flex flex-col gap-1"
                       : "rounded-xl"
@@ -174,24 +174,25 @@ const MessageContainer = ({ id }: { id: string }) => {
                   {message?.replied_msg && (
                     <span className="tagged-reply bg-[var(--background)] border-l-3 text-sm border-#4A4A4A] p-2 rounded-sm w-full h-fit">
                       <span className="font-semibold">You</span>
-                      <p className="text-black/70">
-                        Welcome to unruly store, can you provide the order id,
-                        so i can send the tracking link to you
+                      <p className="text-black/70 dark:text-white/70">
+                        {message?.replied_msg}
                       </p>
                     </span>
                   )}
-                  <p className="text-sm text-black/70">{message?.content}</p>
+                  <p className="text-sm text-black/70 dark:text-white/70">
+                    {message?.content}
+                  </p>
                 </div>
               ))}
               <div ref={bottom_message} className="opacity-0 h-5" />
             </div>
 
             {/* Messaging input section  */}
-            <div className=" w-full h-13 p-2 bg-[var(--background)] flex items-center gap-1 border-t border-[#E3E3E3]">
+            <div className=" w-full h-13 p-2 bg-[var(--background)] flex items-center gap-1 border-t border-border">
               <input
                 value={content || ""}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full border border-[#E3E3E3] px-3 h-full text-black/70 outline-0 bg-white rounded-full"
+                className="w-full border border-border px-3 h-full text-black/70 dark:text-white/70 outline-0 bg-primary-background rounded-full"
                 type="text"
               />
               <button
@@ -207,7 +208,7 @@ const MessageContainer = ({ id }: { id: string }) => {
                   setContent("");
                 }}
               >
-                <PaperPlaneRightIcon size={20} />
+                <PaperPlaneRightIcon fill="var(--icon-background)" size={20} />
               </button>
             </div>
           </div>
@@ -315,7 +316,7 @@ const MessageContainer = ({ id }: { id: string }) => {
               </svg>
               <button
                 onClick={() => setIsChatOpen(!isChatOpen)}
-                className="border w-fit cursor-pointer border-[#E3E3E3]  text-black/70 capitalize px-3 hover:cursor-pointer bg-[var(--background)] text-sm py-2 rounded-lg"
+                className="border w-fit cursor-pointer border-borders  text-black/70 dark:text-white/70 capitalize px-3 hover:cursor-pointer bg-[var(--background)] text-sm py-2 rounded-lg"
               >
                 Select a chat
               </button>

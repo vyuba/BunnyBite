@@ -28,27 +28,6 @@ export interface Message {
 }
 
 const Page = () => {
-  // const [customerCount, setCustomerCount] = useState<number>(0);
-
-  // console.log(customerCount);
-  // console.log(chats);
-  // console.log("message", message?.content);
-
-  {
-    /* chat analytics data section  */
-  }
-  // <div className="flex flex-col md:z-0 w-full h-fit gap-2 pb-15">
-  {
-    /* <div className="w-full flex flex-wrap gap-1.5 items-center">
-      <AnalyticCard title={"No Of Customers"} count={customerCount} />
-    </div> */
-  }
-  {
-    /* <div className="w-full relative md:z-0 overflow-hidden h-[calc(100dvh-135px)] flex gap-2"> */
-  }
-  {
-    /* container for chat list  */
-  }
   return <ChatListSection svg={svg} />;
 };
 

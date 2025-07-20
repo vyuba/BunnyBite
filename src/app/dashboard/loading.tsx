@@ -11,7 +11,7 @@ export default function Loading() {
           <div className="shared-style bottom" />
           <div className="shared-style top" />
         </div>
-        <span>Loading...</span>
+        <span className="text-black/70 dark:text-white">Loading...</span>
       </div>
     </div>
   );

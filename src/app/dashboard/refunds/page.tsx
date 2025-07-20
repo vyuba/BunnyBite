@@ -32,26 +32,30 @@ const RefundPage = () => {
   }, [shop?.$id]);
   return (
     <div className="w-full h-screen">
-      <motion.div className="w-full max-w-[996px] bg-white mx-auto py-1.5 rounded-lg border border-[#E3E3E3] h-auto flex flex-col gap-1.5 ">
+      <motion.div className="w-full max-w-[996px] bg-primary-background mx-auto py-1.5 rounded-lg border border-border h-auto flex flex-col gap-1.5 ">
         <div className="px-1.5 py-1 text-sm mx-1.5 rounded-md  flex items-center gap-1">
           <MagnifyingGlassIcon
             size={17}
-            className="text-black/50"
+            color="var(--icon-background)"
             aria-hidden="true"
             weight="bold"
           />
           <input
-            className="w-full outline-none"
+            className="w-full outline-none  text-[var(--icon-background)]"
             type="text"
             placeholder="Search"
           />
         </div>
         <div className="w-full overflow-x-scroll pb-2">
-          <table className="w-full bg-white border-[#E3E3E3]">
-            <thead className="px-2 w-full overflow-hidden text-black/70">
-              <tr className=" bg-[#F7F7F7] border-y border-[#E3E3E3]">
-                <th className="text-nowrap text-left text-sm font-medium h-full p-2 sticky gap-2 flex items-center top-0 left-0 bg-[#F7F7F7]">
-                  <SquareIcon size={20} color="#303030" weight="regular" />
+          <table className="w-full bg-primary-background border-border">
+            <thead className="px-2 w-full overflow-hidden text-black/70 dark:text-white">
+              <tr className=" bg-tertiay-background border-y border-border">
+                <th className="text-nowrap text-left text-sm font-medium h-full p-2 sticky gap-2 flex items-center top-0 left-0 bg-tertiay-background">
+                  <SquareIcon
+                    size={20}
+                    color="var(--icon-background)"
+                    weight="regular"
+                  />
                   <span>Refund ID</span>
                 </th>
                 <th className="text-nowrap text-left text-sm font-medium h-full p-2">
@@ -76,10 +80,14 @@ const RefundPage = () => {
                 refunds.documents.map((refund, index) => (
                   <tr
                     key={refund?.$id}
-                    className="text-black/75 border-b border-[#E3E3E3] relative "
+                    className="text-black/75 dark:text-white/80 border-b border-border relative "
                   >
-                    <td className="text-nowrap text-left text-sm font-medium h-full p-2 bg-white flex items-center gap-2 sticky top-0 left-0">
-                      <SquareIcon size={20} color="#303030" weight="regular" />
+                    <td className="text-nowrap text-left text-sm font-medium h-full p-2 bg-primary-background flex items-center gap-2 sticky top-0 left-0">
+                      <SquareIcon
+                        size={20}
+                        color="var(--icon-background)"
+                        weight="regular"
+                      />
                       <span># {refund?.orderId} </span>
                     </td>
                     <td className="text-nowrap text-left text-sm font-medium h-full p-2">
@@ -98,13 +106,13 @@ const RefundPage = () => {
                       {refund?.details}
                     </td>
                     <td className="text-nowrap text-left text-sm font-medium h-full  p-2 ">
-                      <button className="flex gap-1 items-center cursor-pointer bg-[#f7f7f7] hover:bg-[#f5f5f5] transiton-all rounded-2xl border  px-2 py-1 border-[#E3E3E3]">
+                      <button className="flex gap-1 items-center cursor-pointer bg-tertiay-background hover:bg-[#f5f5f5] transiton-all rounded-2xl border  px-2 py-1 border-border">
                         <span className="inline-block w-[10px] h-[10px] rounded-[5px] border border-solid border-yellow-500 transition-colors duration-200 ease bg-yellow-400"></span>
                         <span>Pending</span>
                         <CaretDownIcon />
                       </button>
                       {index === 0 && (
-                        <div className="absolute hidden capitalize w-full rounded-md overflow-hidden max-w-[150px] top-10 right-23 z-50 bg-white border-none border-[#E3E3E3]">
+                        <div className="absolute hidden capitalize w-full rounded-md overflow-hidden max-w-[150px] top-10 right-23 z-50 bg-primary-background border-none border-border">
                           <ul className="w-full overflow-hidden">
                             <li className="capitalize overflow-hidden">
                               <button className="flex overflow-hidden w-full gap-1 items-center cursor-pointer bg-white hover:bg-[#f5f5f5] transiton-all border  px-2 py-1.5 border-[#E3E3E3]">

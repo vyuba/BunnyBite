@@ -73,11 +73,11 @@ const IntegrationPage = () => {
   };
   return (
     <>
-      <div className="grid gap-3 py-3 w-full">
+      <div className="grid gap-3 py-3 w-full text-black/70 dark:text-white">
         <div className="flex flex-col w-full">
-          <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 pb-2">
+          <div className="w-full border-b grid gap-1 border-border px-3 pb-2">
             <h2 className="text-base">Stores</h2>
-            <p className="text-sm text-black/70">
+            <p className="text-sm text-black/70 dark:text-white/70">
               Info&apos;s on all the stores you have installed
             </p>
           </div>
@@ -90,7 +90,7 @@ const IntegrationPage = () => {
                   </span>
                   <button
                     onClick={() => setShowConnect(!showConnect)}
-                    className="border w-fit border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg"
+                    className="border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer bg-tertiay-background text-sm py-1.5 rounded-lg"
                   >
                     connect new store
                   </button>
@@ -117,7 +117,7 @@ const IntegrationPage = () => {
                         <input
                           type="text"
                           name="store"
-                          className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                          className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                           value={store || ""}
                         />
                       </label>
@@ -142,13 +142,16 @@ const IntegrationPage = () => {
                           <span className="text-sm">Shopify</span>
                           <input
                             type="text"
-                            className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                            className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                             defaultValue={store?.shop}
                           />
                         </label>
                         <div className="flex items-center gap-0.5">
                           <button className=" w-fit bg-transparent hover:bg-[var(--background)] text-black/80  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1">
-                            <PencilSimpleIcon size={17} />
+                            <PencilSimpleIcon
+                              fill="var(--icon-background)"
+                              size={17}
+                            />
                           </button>
                           <button
                             onClick={() => deleteShop(store?.$id)}

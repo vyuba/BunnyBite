@@ -22,7 +22,7 @@ import Button from "@/components/Button";
 //     link: "/settings/notifications",
 //   },
 // ];
-const SettingsPage = () => {
+const AccountPage = () => {
   const router = useRouter();
   const { user } = useCounterStore((state) => state);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,9 +39,9 @@ const SettingsPage = () => {
     <div>
       <div className="grid gap-3 py-3 w-full">
         <div className="flex flex-col w-full">
-          <div className="w-full border-b grid gap-1 border-[#E3E3E3] px-3 pb-2">
+          <div className="w-full border-b grid gap-1 border-border px-3 pb-2">
             <h2 className="text-base">General</h2>
-            <p className="text-sm text-black/70">
+            <p className="text-sm text-black/70 dark:text-white/70">
               Configure your account settings to manage your account information
               and preferences.
             </p>
@@ -53,19 +53,19 @@ const SettingsPage = () => {
                   <span className="capitalize text-sm md:text-base ">
                     Profile
                   </span>
-                  <button className="border w-fit border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg">
+                  <button className="border w-fit border-border border-b-2 text-black/70 dark:text-white/70 capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg">
                     save
                   </button>
                 </div>
                 <div className="w-full flex flex-col md:flex-row items-center gap-1.5">
                   <input
                     type="text"
-                    className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
-                    defaultValue={user.name}
+                    className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
+                    defaultValue={user?.name}
                   />
                   <input
                     type="text"
-                    className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-[#E3E3E3]"
+                    className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                     defaultValue={user?.email}
                   />
                 </div>
@@ -167,4 +167,4 @@ const SettingsPage = () => {
     </div>
   );
 };
-export default SettingsPage;
+export default AccountPage;

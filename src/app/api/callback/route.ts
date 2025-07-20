@@ -11,7 +11,7 @@ import { createSHA256HMAC, HashFormat } from "@shopify/shopify-api/runtime";
 interface Params {
   [key: string]: string;
 }
-export const GET = async (req: NextRequest) => {
+export const GET = async (req: NextRequest, res: NextResponse) => {
   console.log("shopify Callback route hit");
   const { searchParams } = new URL(req.url);
   const hmac = searchParams.get("hmac");
@@ -58,7 +58,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const callback = await shopify.auth.callback({
       rawRequest: req,
-      rawResponse: NextResponse,
+      rawResponse: res,
     });
     // console.log("Authenticated:", callback.session);
     // sessionStorage.storeSession(callback.session);
@@ -89,6 +89,7 @@ export const GET = async (req: NextRequest) => {
     const webhookResponse = await shopify.webhooks.register({
       session: callback.session,
     });
+
 
     console.log(webhookResponse["APP_UNINSTALLED"]);
     console.log(

@@ -46,7 +46,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex w-full h-dvh">
       <SideBar user={user?.name} />
-      <div className="h-screen overflow-hidden flex-[85%] bg-[#EBEBEB] ">
+      <div className="h-screen overflow-hidden flex-[85%] bg-secondary-background ">
         {isSidebar && (
           <motion.div
             onClick={() => setSidebar(!isSidebar)}
@@ -62,7 +62,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
           </motion.div>
         )}
         <AnouncementBanner />
-        <div className="rounded-tl-xl bg-[var(--background)] border border-[#E3E3E3] h-full p-3">
+        <div className="rounded-tl-xl bg-[var(--background)] border border-border h-full p-3">
           <PageHeader username={user?.name} />
           <div className="overflow-y-scroll h-fit">{children}</div>
         </div>

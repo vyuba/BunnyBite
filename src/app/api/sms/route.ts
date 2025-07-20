@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { createMessage } from "@/app/lib/twillio";
 // import { TwillioClient } from "@/app/lib/twillio";
-import { databases } from "@/app/lib/node-appwrite";
-import { ID, Permission, Query, Role } from "node-appwrite";
+import { createClient } from "@/app/lib/node-appwrite";
+import { ID, Query } from "node-appwrite";
 // import { createHmac } from "crypto";
 // import { graph } from "@/agent/model";
 // import { Command } from "@langchain/langgraph";
@@ -23,6 +23,7 @@ import { ID, Permission, Query, Role } from "node-appwrite";
 // };
 
 export const POST = async (req: NextRequest) => {
+  const { databases } = await createClient();
   const twiml = new MessagingResponse();
   const bodyText = await req.text();
   console.log(typeof bodyText);
@@ -93,12 +94,12 @@ export const POST = async (req: NextRequest) => {
       chat_id: newChatId,
       customer_number: from,
       shop_phone: to,
-    },
-    [
-      Permission.read(Role.user("684e2a400021d564a828")),
-      Permission.write(Role.user("684e2a400021d564a828")),
-      Permission.update(Role.user("684e2a400021d564a828")),
-    ]
+    }
+    // [
+    //   Permission.read(Role.user("684e2a400021d564a828")),
+    //   Permission.write(Role.user("684e2a400021d564a828")),
+    //   Permission.update(Role.user("684e2a400021d564a828")),
+    // ]
   );
 
   if (newChat?.isAIActive === true) {
