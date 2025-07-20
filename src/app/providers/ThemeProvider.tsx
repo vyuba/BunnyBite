@@ -27,6 +27,10 @@ export function ThemeProvider({ children }) {
     // root.classList.remove("light", "dark");
     // root.classList.add(appliedTheme);
     root.setAttribute("data-theme", appliedTheme);
+    const themeColor = document.querySelector("meta[name=theme-color]");
+    if (themeColor) {
+      themeColor.setAttribute("content", appliedTheme);
+    }
     localStorage.setItem("theme", theme);
   }, [theme]);
 
