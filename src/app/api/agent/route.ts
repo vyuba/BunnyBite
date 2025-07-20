@@ -10,6 +10,7 @@ export const POST = async (req: NextRequest) => {
   console.log("---CALLING-AGENT---");
   const message = await req.json();
   console.log(message);
+
   const threadConfig = { configurable: { thread_id: message?.chat_id } };
   const GraphResponse = await graph.invoke(
     {

@@ -9,6 +9,7 @@ import { useCounterStore } from "@/app/providers/counter-store-provider";
 import PageHeader from "@/components/PageHeader";
 import AnouncementBanner from "@/components/AnouncementBanner";
 import { useSearchParams } from "next/navigation";
+import AppwriteJWTRefresher from "../AppwriteJwtRefresher";
 
 const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -44,30 +45,33 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="flex w-full h-dvh">
-      <SideBar user={user?.name} />
-      <div className="h-screen overflow-hidden flex-[85%] bg-secondary-background ">
-        {isSidebar && (
-          <motion.div
-            onClick={() => setSidebar(!isSidebar)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className={`fixed md:hidden flex justify-end inset-0 z-[1000] bg-[#EBEBEB]/45 backdrop-blur-lg`}
-          >
-            <span className="capitalize m-2 text-sm md:text-base text-[#303030]">
-              click me to close
-            </span>
-          </motion.div>
-        )}
-        <AnouncementBanner />
-        <div className="rounded-tl-xl bg-[var(--background)] border border-border h-full p-3">
-          <PageHeader username={user?.name} />
-          <div className="overflow-y-scroll h-fit">{children}</div>
+    <>
+      <AppwriteJWTRefresher />
+      <div className="flex w-full h-dvh">
+        <SideBar user={user?.name} />
+        <div className="h-screen overflow-hidden flex-[85%] bg-secondary-background ">
+          {isSidebar && (
+            <motion.div
+              onClick={() => setSidebar(!isSidebar)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className={`fixed md:hidden flex justify-end inset-0 z-[1000] bg-[#EBEBEB]/45 backdrop-blur-lg`}
+            >
+              <span className="capitalize m-2 text-sm md:text-base text-[#303030]">
+                click me to close
+              </span>
+            </motion.div>
+          )}
+          <AnouncementBanner />
+          <div className="rounded-tl-xl bg-[var(--background)] border border-border h-full p-3">
+            <PageHeader username={user?.name} />
+            <div className="overflow-y-scroll h-fit">{children}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

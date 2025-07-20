@@ -51,7 +51,7 @@ const SideBarLinks = {
       id: 4,
       title: "Settings",
       icon: GearIcon,
-      link: "/dashboard/settings/account",
+      link: "/dashboard/settings",
     },
   ],
 };
@@ -172,7 +172,7 @@ export const SideBar = ({ user }: { user: string | null }) => {
         {SideBarLinks["SidebarFooterLinks"].map((link, index) => (
           <Link
             className="flex items-center gap-2"
-            href={link.link}
+            href={link.link + "/account"}
             key={index}
             onClick={() => setSidebar(!isSidebar)}
           >
@@ -186,13 +186,13 @@ export const SideBar = ({ user }: { user: string | null }) => {
                 setHovered(null);
               }}
               className={` ${
-                link.link == pathname
+                pathname.includes(link.link)
                   ? " bg-[var(--background)]"
                   : "hover:bg-[var(--background)]"
               }  transition-all flex items-center justify-center hover:cursor-pointer text-black/70 capitalize px-3  text-sm py-3 rounded-lg`}
             >
               <link.icon
-                weight={`${link.link == pathname ? "fill" : "regular"}`}
+                weight={`${pathname.includes(link.link) ? "fill" : "regular"}`}
                 fill="var(--icon-background)"
                 size={20}
               />

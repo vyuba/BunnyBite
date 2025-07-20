@@ -93,35 +93,37 @@ const MessageContainer = ({ id }: { id: string }) => {
         block: "end",
       });
     }
-    const unsubscribe = client.subscribe(
-      `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
-      (response) => {
-        const document = response.payload as Models.Document;
-        const chatId = document?.chat_id;
-        // const customer = document?.sender_type === "customer";
-        if (
-          document &&
-          id === chatId &&
-          response.events[0].includes("create")
-        ) {
-          setMessages((prev) => ({
-            ...prev,
-            documents: [
-              ...(prev?.documents || []),
-              response.payload as Models.Document,
-            ],
-          }));
+    const unsubscribe =
+      selectedChat &&
+      client.subscribe(
+        `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
+        (response) => {
+          const document = response.payload as Models.Document;
+          const chatId = document?.chat_id;
+          // const customer = document?.sender_type === "customer";
+          if (
+            document &&
+            id === chatId &&
+            response.events[0].includes("create")
+          ) {
+            setMessages((prev) => ({
+              ...prev,
+              documents: [
+                ...(prev?.documents || []),
+                response.payload as Models.Document,
+              ],
+            }));
 
-          bottom_message.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "end",
-          });
+            bottom_message.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "end",
+            });
+          }
         }
-      }
-    );
+      );
 
     return () => unsubscribe();
-  }, [shop?.shop_number, id, bottom_message]);
+  }, [shop?.shop_number, id, bottom_message, selectedChat]);
 
   const sendMessage = async (content) => {
     try {
@@ -137,6 +139,7 @@ const MessageContainer = ({ id }: { id: string }) => {
           chat_id: selectedChat?.chat_id,
           customer_number: selectedChat?.customer_phone,
           shop_phone: shop?.shop_number,
+          shop_id: shop?.$id,
         }
       );
       console.log("--MESAGE-SENT--", response);

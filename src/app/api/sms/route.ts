@@ -102,7 +102,18 @@ export const POST = async (req: NextRequest) => {
     // ]
   );
 
-  if (newChat?.isAIActive === true) {
+  const shopResponse = await databases.listDocuments(
+    process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+    process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+    [Query.equal("shop_number", message?.shop_phone)]
+  );
+
+  const tokenAvailable =
+    shopResponse?.documents[0].tokensFunded -
+    shopResponse?.documents[0].tokensUsed;
+  console.log(tokenAvailable);
+
+  if (newChat?.isAIActive === true && tokenAvailable < 10000) {
     const response = await fetch(
       `https://${
         process.env.NEXT_PUBLIC_SHOPIFY_APP_URL || "bunny-bite.vercel.app"

@@ -20,6 +20,10 @@ const SettingsNavLinks = [
     title: "billing",
     link: "/dashboard/settings/billing",
   },
+  {
+    title: "credit-grants",
+    link: "/dashboard/settings/credit-grants",
+  },
 ];
 
 const SettingsNavber = () => {
@@ -42,7 +46,9 @@ const SettingsNavber = () => {
                 : "hover:bg-[#f0efef] dark:hover:bg-[#111111] border-border"
             }  rounded-sm`}
           >
-            <h2>{links.title}</h2>
+            <h2 className="text-nowrap">
+              {links.title === "credit-grants" ? "Credit grants" : links.title}
+            </h2>
           </Link>
         ))}
       </ul>

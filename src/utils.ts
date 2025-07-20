@@ -8,7 +8,7 @@ const setJwtCookie = async (key: Models.Jwt) => {
     maxAge: 30 * 24 * 60 * 60,
     httpOnly: true,
   });
-  console.log(key);
+  // console.log(key);
 };
 
 const getShopDetails = async (id: string) => {
