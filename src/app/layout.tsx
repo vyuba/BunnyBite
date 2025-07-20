@@ -45,6 +45,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* <link rel="icon" href="/favicon.ico" sizes="any" /> */}
+      <meta
+        name="theme-color"
+        content="#f1f1f1"
+        media="(prefers-color-scheme: light)"
+      />
+      <meta
+        name="theme-color"
+        content="#151515"
+        media="(prefers-color-scheme: dark)"
+      />
       <body
         className={`${neueMontreal.variable} ${neueMontreal.variable} antialiased`}
       >
