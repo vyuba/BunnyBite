@@ -1,8 +1,9 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { shopify } from "../../lib/shopify";
+import { getShopify } from "../../lib/shopify";
 
 export const GET = async (req: NextRequest) => {
+  const { shopify } = await getShopify();
   console.log("GET request received");
   // Guard: req.url may be undefined during build/static generation
   if (!req.url) {

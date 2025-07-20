@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { z } from "zod";
-import "./../../../envConfig";
+import "../../envConfig";
 // import { zodToJsonSchema } from "zod-to-json-schema";
 // import { StateGraph } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";

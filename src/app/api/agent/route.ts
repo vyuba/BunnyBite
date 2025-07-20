@@ -1,10 +1,11 @@
-import { graph } from "@/app/agent/model";
-import { createClient } from "@/app/lib/node-appwrite";
+import { graph } from "@/agent/model";
 import { Command } from "@langchain/langgraph";
 import { NextRequest, NextResponse } from "next/server";
-import { ID, Permission, Role } from "node-appwrite";
+import { ID } from "node-appwrite";
+// import { createClient } from "@/app/lib/node-appwrite";
 
 export const POST = async (req: NextRequest) => {
+  const { createClient } = await import("@/app/lib/node-appwrite");
   const { databases } = await createClient();
   console.log("---CALLING-AGENT---");
   const message = await req.json();
@@ -40,12 +41,13 @@ export const POST = async (req: NextRequest) => {
       chat_id: message?.chat_id,
       customer_number: message?.customer_number,
       shop_phone: message?.shop_phone,
-    },
-    [
-      Permission.read(Role.user("684e2a400021d564a828")),
-      Permission.write(Role.user("684e2a400021d564a828")),
-      Permission.update(Role.user("684e2a400021d564a828")),
-    ]
+    }
+    // },
+    // [
+    //   Permission.read(Role.user("684e2a400021d564a828")),
+    //   Permission.write(Role.user("684e2a400021d564a828")),
+    //   Permission.update(Role.user("684e2a400021d564a828")),
+    // ]
   );
   console.log(response);
   return NextResponse.json({ message: "Post recieved" }, { status: 200 });

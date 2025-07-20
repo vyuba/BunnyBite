@@ -1,10 +1,11 @@
-import { shopify, appwritesessionStorage } from "@/app/lib/shopify";
+import { getShopify } from "@/app/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
 // import { Models } from "node-appwrite";
 
 export const GET = async (req: NextRequest) => {
   // get the shop from the cookie store
 
+  const { shopify, appwritesessionStorage } = await getShopify();
   const shop = req.nextUrl.searchParams.get("shop");
   if (!shop) {
     return NextResponse.json(

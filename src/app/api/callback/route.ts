@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   // sessionStorage,
-  appwritesessionStorage,
-  shopify,
+  getShopify,
 } from "../../lib/shopify";
 import { createSHA256HMAC, HashFormat } from "@shopify/shopify-api/runtime";
 // import { databases } from "@/app/lib/node-appwrite";
@@ -12,6 +11,7 @@ interface Params {
   [key: string]: string;
 }
 export const GET = async (req: NextRequest) => {
+  const { shopify, appwritesessionStorage } = await getShopify();
   console.log("shopify Callback route hit");
   const { searchParams } = new URL(req.url);
   const hmac = searchParams.get("hmac");

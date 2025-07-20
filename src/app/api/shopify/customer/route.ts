@@ -1,4 +1,4 @@
-import { appwritesessionStorage, shopify } from "@/app/lib/shopify";
+import { getShopify } from "@/app/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -11,6 +11,7 @@ export const GET = async (req: NextRequest) => {
       { status: 400 }
     );
   }
+  const { shopify, appwritesessionStorage } = await getShopify();
   console.log("shop:", shop);
 
   // await sessionStorage.ready;

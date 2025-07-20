@@ -1,4 +1,4 @@
-import { shopify } from "@/app/lib/shopify";
+import { getShopify } from "@/app/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
 
 // Required to read the raw body
@@ -24,6 +24,7 @@ async function getRawBody(req: NextRequest) {
 }
 
 export const POST = async (req: NextRequest) => {
+  const { shopify } = await getShopify();
   console.log("Webhook Received!");
   const handlers = shopify.webhooks.getHandlers("APP_UNINSTALLED");
   // e.g. handlers[0].deliveryMethod
