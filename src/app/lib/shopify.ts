@@ -1,3 +1,4 @@
+"use server";
 import {
   shopifyApi,
   LATEST_API_VERSION,

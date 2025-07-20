@@ -1,3 +1,4 @@
+"use server";
 import { Client, Databases, Account } from "node-appwrite";
 import { cookies } from "next/headers";
 

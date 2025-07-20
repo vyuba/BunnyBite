@@ -31,7 +31,7 @@ const PopOver = ({
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isProfileClicked]);
+  }, [isProfileClicked, setIsProfileClicked]);
   return (
     <>
       <button

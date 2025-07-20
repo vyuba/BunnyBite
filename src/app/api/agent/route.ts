@@ -1,10 +1,11 @@
 import { graph } from "@/app/agent/model";
-import { databases } from "@/app/lib/node-appwrite";
+import { createClient } from "@/app/lib/node-appwrite";
 import { Command } from "@langchain/langgraph";
 import { NextRequest, NextResponse } from "next/server";
 import { ID, Permission, Role } from "node-appwrite";
 
 export const POST = async (req: NextRequest) => {
+  const { databases } = await createClient();
   console.log("---CALLING-AGENT---");
   const message = await req.json();
   console.log(message);
