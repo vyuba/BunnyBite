@@ -2,6 +2,7 @@
 import { cookies } from "next/headers";
 import { Models } from "node-appwrite";
 import { createClient } from "./app/lib/node-appwrite";
+import { api } from "./polar";
 
 const setJwtCookie = async (key: Models.Jwt) => {
   (await cookies()).set("jwt", key?.jwt, {
@@ -21,5 +22,12 @@ const getShopDetails = async (id: string) => {
 
   return response;
 };
+async function run(userid) {
+  const checkout = await api.checkouts.create({
+    products: ["02925bc2-8a50-4ab1-8d0d-efc181b481d1"],
+    externalCustomerId: userid,
+  });
 
-export { setJwtCookie, getShopDetails };
+  console.log(checkout.url);
+}
+export { setJwtCookie, getShopDetails, run };

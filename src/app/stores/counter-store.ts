@@ -57,19 +57,21 @@ export const createCounterStore = (
         [Query.equal("user", user_id || "")]
       );
 
-      //  const isSession =  sessionStorage.getItem('shop')
-      //  let shopSession
-      //  if (!isSession) {
-      //   shopSession = response?.documents[0]?.shop;
-      //   sessionStorage.setItem('shop', response?.documents[0]?.shop )
-      //  }
+      let shop;
 
-      const shop = response.documents[0]; // assuming you're fetching a single shop per user
+      const shopStorage = localStorage.getItem("shop");
+      if (!shopStorage) {
+        localStorage.setItem("shop", response.documents[0]?.shop);
+        shop = response.documents[0];
+      }
+
+      shop = response.documents.find((shop) => shop.shop === shopStorage);
       console.log(shop);
 
       set(() => ({ shop, userShops: response }));
     },
     setActiveShop: async (shop) => {
+      localStorage.setItem("shop", shop?.shop);
       set({ shop: shop });
       console.log(shop);
     },

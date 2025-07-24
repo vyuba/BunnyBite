@@ -1,3 +1,5 @@
+import { run } from "@/utils";
+
 const BillingPage = () => {
   return (
     <>
@@ -43,7 +45,10 @@ const BillingPage = () => {
                     Payment methods
                   </span>
 
-                  <button className="border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg">
+                  <button
+                    onClick={run}
+                    className="border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer bg-[var(--background)] text-sm py-1.5 rounded-lg"
+                  >
                     add method
                   </button>
                 </div>
@@ -90,7 +95,7 @@ const BillingPage = () => {
                         delete
                       </button>
                       <button className="text-black hover:bg-background px-2 py-1.5 rounded-md dark:text-white w-fit text-xs md:text-sm font-medium capitalize cursor-pointer">
-                        set at default
+                        set as default
                       </button>
                     </div>
                   </div>

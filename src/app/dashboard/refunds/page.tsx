@@ -1,7 +1,12 @@
 "use client";
 import {
   CaretDownIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+  CheckSquareIcon,
+  DotsThreeIcon,
   MagnifyingGlassIcon,
+  MinusSquareIcon,
   SquareIcon,
 } from "@phosphor-icons/react";
 import { motion } from "motion/react";
@@ -12,6 +17,7 @@ import { Models, Query } from "appwrite";
 
 const RefundPage = () => {
   const { shop } = useCounterStore((state) => state);
+  const [isCheckedList, setIsCheckedList] = useState([]);
   const [refunds, setRefunds] =
     useState<Models.DocumentList<Models.Document>>(null);
   useEffect(() => {
@@ -30,6 +36,21 @@ const RefundPage = () => {
     };
     fetchRefunds();
   }, [shop?.$id]);
+
+  const toggleChecked = (refund) => {
+    if (isCheckedList.some((item) => item.id === refund?.$id)) {
+      // Remove it if already checked
+      setIsCheckedList((prev) =>
+        prev.filter((item) => item.id !== refund?.$id)
+      );
+    } else {
+      // Add it
+      setIsCheckedList((prev) => [
+        ...prev,
+        { id: refund?.$id, isChecked: true },
+      ]);
+    }
+  };
   return (
     <div className="w-full h-screen">
       <motion.div className="w-full max-w-[996px] bg-primary-background mx-auto py-1.5 rounded-lg border border-border h-auto flex flex-col gap-1.5 ">
@@ -46,17 +67,74 @@ const RefundPage = () => {
             placeholder="Search"
           />
         </div>
-        <div className="w-full overflow-x-scroll pb-2">
+        <div className="w-full overflow-x-scroll">
           <table className="w-full bg-primary-background border-border">
-            <thead className="px-2 w-full overflow-hidden text-black/70 dark:text-white">
-              <tr className=" bg-tertiay-background border-y border-border">
-                <th className="text-nowrap text-left text-sm font-medium h-full p-2 sticky gap-2 flex items-center top-0 left-0 bg-tertiay-background">
-                  <SquareIcon
-                    size={20}
-                    color="var(--icon-background)"
-                    weight="regular"
-                  />
-                  <span>Refund ID</span>
+            <thead className="px-2 w-full overflow-hidden text-black/70 dark:text-white ">
+              <tr className=" bg-tertiay-background border-y border-border relative">
+                <th
+                  className={`text-nowrap text-left text-sm font-medium h-full p-2  gap-2 flex items-center top-0 left-0 bg-tertiay-background ${
+                    isCheckedList.length > 0
+                      ? "absolute w-full inset-0 justify-between"
+                      : "sticky"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="cursor-pointer"
+                      onClick={() => {
+                        if (isCheckedList.length === refunds.total) {
+                          // Deselect all
+                          setIsCheckedList([]);
+                        } else {
+                          // Select all
+                          const allChecked = refunds.documents.map(
+                            (refund) => ({
+                              id: refund.$id,
+                              isChecked: true,
+                            })
+                          );
+                          setIsCheckedList(allChecked);
+                        }
+                      }}
+                    >
+                      {isCheckedList.length > 0 ? (
+                        isCheckedList.length < refunds.total ? (
+                          <MinusSquareIcon
+                            size={20}
+                            color="var(--icon-background)"
+                            weight="fill"
+                          />
+                        ) : (
+                          <CheckSquareIcon
+                            size={20}
+                            color="var(--icon-background)"
+                            weight="fill"
+                          />
+                        )
+                      ) : (
+                        <SquareIcon
+                          size={20}
+                          color="var(--icon-background)"
+                          weight="regular"
+                        />
+                      )}
+                    </button>
+                    <span className="text-sm capitalize font-medium">
+                      {isCheckedList.length > 0
+                        ? `${isCheckedList.length} selected fields`
+                        : " Refund ID"}
+                    </span>
+                  </div>
+                  {isCheckedList.length > 0 && (
+                    <div className="w-full justify-between h-full  flex items-center  px-2 gap-1.5">
+                      <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-2 md:px-3 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm py-1 rounded-md">
+                        delete
+                      </button>
+                      <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize py-[1px] md:py-0.5 px-0.5 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm rounded-md">
+                        <DotsThreeIcon weight="bold" size={23} />
+                      </button>
+                    </div>
+                  )}
                 </th>
                 <th className="text-nowrap text-left text-sm font-medium h-full p-2">
                   Order ID
@@ -82,12 +160,28 @@ const RefundPage = () => {
                     key={refund?.$id}
                     className="text-black/75 dark:text-white/80 border-b border-border relative "
                   >
-                    <td className="text-nowrap text-left text-sm font-medium h-full p-2 bg-primary-background flex items-center gap-2 sticky top-0 left-0">
-                      <SquareIcon
-                        size={20}
-                        color="var(--icon-background)"
-                        weight="regular"
-                      />
+                    <td className="text-nowrap text-left text-sm font-medium h-full p-2 bg-primary-background flex items-center gap-2 sticky top-0 left-0 cursor-pointer">
+                      {isCheckedList.some(
+                        (list) => list?.id === refund?.$id
+                      ) ? (
+                        <CheckSquareIcon
+                          onClick={() => {
+                            toggleChecked(refund);
+                          }}
+                          size={20}
+                          color="var(--icon-background)"
+                          weight="fill"
+                        />
+                      ) : (
+                        <SquareIcon
+                          onClick={() => {
+                            toggleChecked(refund);
+                          }}
+                          size={20}
+                          color="var(--icon-background)"
+                          weight="regular"
+                        />
+                      )}
                       <span># {refund?.orderId} </span>
                     </td>
                     <td className="text-nowrap text-left text-sm font-medium h-full p-2">
@@ -106,7 +200,7 @@ const RefundPage = () => {
                       {refund?.details}
                     </td>
                     <td className="text-nowrap text-left text-sm font-medium h-full  p-2 ">
-                      <button className="flex gap-1 items-center cursor-pointer bg-tertiay-background hover:bg-[#f5f5f5] transiton-all rounded-2xl border  px-2 py-1 border-border">
+                      <button className="flex gap-1 items-center cursor-pointer bg-tertiay-background hover:bg-secondary-background transiton-all rounded-2xl border  px-2 py-1 border-border">
                         <span className="inline-block w-[10px] h-[10px] rounded-[5px] border border-solid border-yellow-500 transition-colors duration-200 ease bg-yellow-400"></span>
                         <span>Pending</span>
                         <CaretDownIcon />
@@ -142,6 +236,29 @@ const RefundPage = () => {
                 ))}
             </tbody>
           </table>
+        </div>
+        <div className="w-full py-2 px-3 flex items-center justify-between">
+          <span className="text-sm text-black/70 dark:text-white capitalize">
+            Refunds per page. Total: {refunds?.total}
+          </span>
+          <span className="flex items-center w-fit h-full gap-0.5">
+            <button className="bg-secondary-background transition-colors hover:bg-background cursor-pointer p-1.5 rounded-l-md">
+              <CaretLeftIcon
+                size={15}
+                color="var(--icon-background)"
+                aria-hidden="true"
+                weight="bold"
+              />
+            </button>
+            <button className="bg-secondary-background transition-colors hover:bg-background cursor-pointer p-1.5 rounded-r-md">
+              <CaretRightIcon
+                size={15}
+                color="var(--icon-background)"
+                aria-hidden="true"
+                weight="bold"
+              />
+            </button>
+          </span>
         </div>
       </motion.div>
     </div>

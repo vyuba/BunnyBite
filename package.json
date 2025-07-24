@@ -16,6 +16,8 @@
     "@langchain/core": "^0.3.59",
     "@langchain/langgraph": "^0.3.3",
     "@phosphor-icons/react": "^2.1.10",
+    "@polar-sh/nextjs": "^0.4.3",
+    "@polar-sh/sdk": "^0.34.6",
     "@shopify/shopify-api": "^11.12.0",
     "@shopify/shopify-app-session-storage": "^3.0.17",
     "@shopify/shopify-app-session-storage-mysql": "^4.0.17",

@@ -15,9 +15,9 @@ const IntegrationPage = () => {
   const store = searchParams.get("shop");
   useEffect(() => {
     if (store) {
-      setShowConnect(!showConnect);
+      setShowConnect(true);
     }
-  }, [store, showConnect]);
+  }, [store]);
 
   const ConnectShop = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -118,7 +118,8 @@ const IntegrationPage = () => {
                           type="text"
                           name="store"
                           className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
-                          value={store || ""}
+                          value={store}
+                          onChange={(e) => console.log(store, e)}
                         />
                       </label>
                       <button
