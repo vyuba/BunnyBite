@@ -1,8 +1,10 @@
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
+import { getProfileIcon } from "@/client-utils";
 import { Chats } from "@/types";
+import { lorelei } from "@dicebear/collection";
 // import { useCounterStore } from "@/app/providers/counter-store-provider";
-import { ArrowLeftIcon, RobotIcon } from "@phosphor-icons/react";
+import { ArrowLeftIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 
 const changeAiToggle = async (Id, value) => {
@@ -21,7 +23,7 @@ const changeAiToggle = async (Id, value) => {
     console.log(error);
   }
 };
-const ChatHeader = ({ svg }) => {
+const ChatHeader = () => {
   const { selectedChat, setIsChatOpen, setSelectedChat } = useChatProvider();
   //   const { shop } = useCounterStore((state) => state);
   // console.log(id);
@@ -36,18 +38,30 @@ const ChatHeader = ({ svg }) => {
           className="p-2 md:hidden text-black/70 dark:text-white/70 hover:bg-white rounded-md cursor-pointer size-fit "
         />
         <Image
-          src={svg}
-          alt=""
+          src={getProfileIcon(selectedChat?.customer_name, 100, lorelei)}
+          alt={selectedChat?.customer_name}
           width={30}
           height={30}
-          className="bg-white block border-border border rounded-full size-10"
+          className="bg-tertiay-background block border-border border rounded-full size-10"
         />
         <p className="text-sm  text-black/70 dark:text-white/70 capitalize font-medium">
           {selectedChat?.customer_name}
         </p>
       </div>
       <div className="flex w-fit h-full justify-center items-center gap-1 relative">
-        <RobotIcon size={20} fill="var(--icon-background)" />
+        <div className="size-6.5 cursor-pointer">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="#00BFAE"
+            // fill="#1DE9B6"
+            // fill="#FF6F61"
+            // fill="#2979FF"
+          >
+            <path d="M17.0007 1.20825 18.3195 3.68108 20.7923 4.99992 18.3195 6.31876 17.0007 8.79159 15.6818 6.31876 13.209 4.99992 15.6818 3.68108 17.0007 1.20825ZM10.6673 9.33325 15.6673 11.9999 10.6673 14.6666 8.00065 19.6666 5.33398 14.6666.333984 11.9999 5.33398 9.33325 8.00065 4.33325 10.6673 9.33325ZM11.4173 11.9999 9.18905 10.8115 8.00065 8.58325 6.81224 10.8115 4.58398 11.9999 6.81224 13.1883 8.00065 15.4166 9.18905 13.1883 11.4173 11.9999ZM19.6673 16.3333 18.0007 13.2083 16.334 16.3333 13.209 17.9999 16.334 19.6666 18.0007 22.7916 19.6673 19.6666 22.7923 17.9999 19.6673 16.3333Z"></path>
+          </svg>
+        </div>
+
         <label className="switch cursor-pointer">
           <input
             type="checkbox"

@@ -57,17 +57,15 @@ export const createCounterStore = (
         [Query.equal("user", user_id || "")]
       );
 
-      let shop;
-
       const shopStorage = localStorage.getItem("shop");
       if (!shopStorage) {
         localStorage.setItem("shop", response.documents[0]?.shop);
-        shop = response.documents[0];
+        set(() => ({ shop: response.documents[0], userShops: response }));
+        return;
       }
 
-      shop = response.documents.find((shop) => shop.shop === shopStorage);
+      const shop = response.documents.find((shop) => shop.shop === shopStorage);
       console.log(shop);
-
       set(() => ({ shop, userShops: response }));
     },
     setActiveShop: async (shop) => {

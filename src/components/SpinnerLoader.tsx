@@ -11,7 +11,7 @@ const SpinnerLoader = () => {
           viewBox="0 0 16 16"
         >
           <circle
-            className="fill-none stroke-[#E3E3E3]"
+            className="fill-none stroke-border"
             cx="8"
             cy="8"
             r="6.5"

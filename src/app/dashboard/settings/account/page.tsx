@@ -60,12 +60,12 @@ const AccountPage = () => {
                 <div className="w-full flex flex-col md:flex-row items-center gap-1.5">
                   <input
                     type="text"
-                    className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
+                    className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                     defaultValue={user?.name}
                   />
                   <input
                     type="text"
-                    className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
+                    className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                     defaultValue={user?.email}
                   />
                 </div>
@@ -134,25 +134,25 @@ const AccountPage = () => {
               <span className="text-sm">Phone Number</span>
               <input
                 type="text"
-                className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm md:text-lg border border-[#E3E3E3]"
+                className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm md:text-lg border border-border"
               />
             </label>
             <label className="flex flex-col gap-1 px-2">
               <span className="text-sm">Account SID</span>
               <input
                 type="password"
-                className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm md:text-lg border border-[#E3E3E3]"
+                className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm md:text-lg border border-border"
               />
             </label>
             <label className="flex flex-col gap-1 px-2">
               <span className="text-sm">Auth Token</span>
               <input
                 type="password"
-                className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm md:text-lg border border-[#E3E3E3]"
+                className="bg-[#F7F7F7] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm md:text-lg border border-border"
               />
             </label>
           </div>
-          <div className="w-full px-2 flex items-center gap-1 mt-1.5 pt-3 border-t border-[#E3E3E3]">
+          <div className="w-full px-2 flex items-center gap-1 mt-1.5 pt-3 border-t border-border">
             <Button variant="ghost" label="Cancel" />
             <Button customStyling="flex-1" variant="primary" label="Save" />
           </div>

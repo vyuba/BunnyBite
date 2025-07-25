@@ -15,7 +15,7 @@ const Instrument = Instrument_Serif({
 export default async function Home() {
   return (
     <div className={`w-full h-full md:h-screen p-2 `}>
-      <div className="w-full overflow-hidden relative h-full px-2 pb-2 pt-30 lg:pt-0 flex-col flex items-center justify-center bg-[#F1F1F1] border border-[#E3E3E3] rounded-lg">
+      <div className="w-full overflow-hidden relative h-full px-2 pb-2 pt-30 lg:pt-0 flex-col flex items-center justify-center bg-[#F1F1F1] border border-border rounded-lg">
         <Navbar />
         <Image
           src={"/shopifybox.svg"}
@@ -50,20 +50,20 @@ export default async function Home() {
           </div>
           <div className="flex items-center gap-2">
             <Link href="/login">
-              <button className="border border-[#E3E3E3] border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-white text-sm md:text-base py-2 rounded-lg">
+              <button className="border border-border border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-white text-sm md:text-base py-2 rounded-lg">
                 Install app
               </button>
             </Link>
             <Link href="/login">
-              <button className="border border-[#E3E3E3] border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-[white] text-sm md:text-base py-2 rounded-lg">
+              <button className="border border-border border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-[white] text-sm md:text-base py-2 rounded-lg">
                 sign in
               </button>
             </Link>
           </div>
         </div>
-        <div className="w-full max-w-[800px] bg-white border border-[#E3E3E3] h-[400px] rounded-lg" />
+        <div className="w-full max-w-[800px] bg-white border border-border h-[400px] rounded-lg" />
       </div>
     </div>
   );
 }
-// border-r border-[#E3E3E3]
+// border-r border-border

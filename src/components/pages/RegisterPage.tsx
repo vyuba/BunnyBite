@@ -138,14 +138,14 @@ const RegisterPage = () => {
             <input
               id="email"
               name="email"
-              className="bg-[#F1F1F1] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[#f9fafb] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-3 px-3 w-full text-base md:text-lg border border-[#E3E3E3]"
+              className="bg-[#F1F1F1] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[#f9fafb] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3 px-3 w-full text-base md:text-lg border border-border"
               type="email"
               placeholder="Email address"
             />
             <input
               id="password"
               name="password"
-              className="bg-[#F1F1F1] text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[#f9fafb] focus-border-2 focus:ring focus:ring-[#E3E3E3] focus:ring-opacity-50 rounded-md py-3  px-3 w-full text-base md:text-lg border border-[#E3E3E3]"
+              className="bg-[#F1F1F1] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[#f9fafb] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3  px-3 w-full text-base md:text-lg border border-border"
               type="password"
               placeholder="Password"
             />
@@ -184,7 +184,7 @@ const RegisterPage = () => {
           </p>
           <Link href="/login">
             <button
-              className="border cursor-pointer rounded-md py-3 border-[#E3E3E3] w-full border-b-2 transition-[border] text-black/70 text-base md:text-lg px-3 bg-white"
+              className="border cursor-pointer rounded-md py-3 border-border w-full border-b-2 transition-[border] text-black/70 text-base md:text-lg px-3 bg-white"
               type="submit"
             >
               Sign in

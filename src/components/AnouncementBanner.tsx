@@ -16,6 +16,40 @@ const AnouncementBanner = () => {
             manage plan
           </button>
         </Link>
+        <div className="md:hidden">
+          <PopOver
+            isProfileClicked={isProfileClicked}
+            setIsProfileClicked={setIsProfileClicked}
+            icon={
+              <BellIcon
+                weight={`regular`}
+                fill="var(--icon-background)"
+                size={18}
+              />
+            }
+          >
+            <div className="w-full h-[400px]">
+              <span className=" p-3 w-full flex items-center justify-between">
+                <p className=" text-sm md:text-base">Notifications</p>
+                <Link
+                  onClick={() => setIsProfileClicked(!isProfileClicked)}
+                  href={"/dashboard/settings/account"}
+                >
+                  <GearIcon
+                    weight={`regular`}
+                    fill="var(--icon-background)"
+                    size={20}
+                  />
+                </Link>
+              </span>
+              <ul className="w-full flex flex-col">
+                <li className="w-full cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3">
+                  🎉 Welcome to BunnyBite Hope you have a wonderful time here
+                </li>
+              </ul>
+            </div>
+          </PopOver>
+        </div>
       </div>
       <div className="flex items-center gap-1.5 px-4">
         <p className="capitalize text-xs  md:text-sm text-black/70 dark:text-white ">
@@ -24,38 +58,40 @@ const AnouncementBanner = () => {
         {/* <button className="cursor-pointer  px-3 py-3 bg-[var(--background)] hover:bg-[var(--background)] rounded-sm">
           <BellRingingIcon weight={`regular`} fill="#303030" size={20} />
         </button> */}
-        <PopOver
-          isProfileClicked={isProfileClicked}
-          setIsProfileClicked={setIsProfileClicked}
-          icon={
-            <BellIcon
-              weight={`regular`}
-              fill="var(--icon-background)"
-              size={18}
-            />
-          }
-        >
-          <div className="w-full h-[400px]">
-            <span className=" p-3 w-full flex items-center justify-between">
-              <p className=" text-sm md:text-base">Notifications</p>
-              <Link
-                onClick={() => setIsProfileClicked(!isProfileClicked)}
-                href={"/dashboard/settings/account"}
-              >
-                <GearIcon
-                  weight={`regular`}
-                  fill="var(--icon-background)"
-                  size={20}
-                />
-              </Link>
-            </span>
-            <ul className="w-full flex flex-col">
-              <li className="w-full cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3">
-                🎉 Welcome to BunnyBite Hope you have a wonderful time here
-              </li>
-            </ul>
-          </div>
-        </PopOver>
+        <div className="hidden md:block">
+          <PopOver
+            isProfileClicked={isProfileClicked}
+            setIsProfileClicked={setIsProfileClicked}
+            icon={
+              <BellIcon
+                weight={`regular`}
+                fill="var(--icon-background)"
+                size={18}
+              />
+            }
+          >
+            <div className="w-full h-[400px]">
+              <span className=" p-3 w-full flex items-center justify-between">
+                <p className=" text-sm md:text-base">Notifications</p>
+                <Link
+                  onClick={() => setIsProfileClicked(!isProfileClicked)}
+                  href={"/dashboard/settings/account"}
+                >
+                  <GearIcon
+                    weight={`regular`}
+                    fill="var(--icon-background)"
+                    size={20}
+                  />
+                </Link>
+              </span>
+              <ul className="w-full flex flex-col">
+                <li className="w-full cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3">
+                  🎉 Welcome to BunnyBite Hope you have a wonderful time here
+                </li>
+              </ul>
+            </div>
+          </PopOver>
+        </div>
       </div>
     </div>
   );

@@ -26,7 +26,7 @@ const BillingPage = () => {
                     <span className="text-sm">Billing Information</span>
                     <input
                       type="text"
-                      className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
+                      className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
                       defaultValue={"shop?.shop"}
                     />
                   </label>
@@ -55,7 +55,7 @@ const BillingPage = () => {
                 <div className="w-full flex flex-col md:flex-row  gap-1.5 pt-1">
                   {/* <span className="text-sm">Cards</span> */}
 
-                  <div className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[375px] py-2 px-3 grid gap-1.5 w-full text-xs md:text-sm border border-border">
+                  <div className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[375px] py-2 px-3 grid gap-1.5 w-full text-xs md:text-sm border border-border">
                     <div className="flex items-start justify-between w-full">
                       <div className="flex items-center gap-2 w-full">
                         <div className="size-8 border border-border bg-secondary-background rounded-sm" />
@@ -75,7 +75,7 @@ const BillingPage = () => {
                     </button>
                   </div>
 
-                  <div className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-[#cacaca] focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[375px] py-2 px-3 grid gap-1.5 w-full text-xs md:text-sm border border-border">
+                  <div className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[white] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[375px] py-2 px-3 grid gap-1.5 w-full text-xs md:text-sm border border-border">
                     <div className="flex items-start justify-between w-full">
                       <div className="flex items-center gap-2 w-full">
                         <div className="size-8 border border-border bg-secondary-background rounded-sm" />

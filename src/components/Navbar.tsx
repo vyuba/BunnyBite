@@ -6,7 +6,7 @@ const Navbar = () => {
       <div className="flex w-full justify-between items-center">
         <p className="text-sm md:text-base font-medium">BunnyBite</p>
         <Link href={"/login"}>
-          <button className="border border-[#E3E3E3] border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-[white] text-sm md:text-base py-2 rounded-lg">
+          <button className="border border-border border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-[white] text-sm md:text-base py-2 rounded-lg">
             sign in
           </button>
         </Link>

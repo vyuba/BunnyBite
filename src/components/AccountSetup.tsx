@@ -138,7 +138,7 @@ const AccountSetup = () => {
             style={{
               strokeLinecap: "round",
             }}
-            className="stroke-[#1A1A1A] dark:stroke-[#e3e3e3] fill-none"
+            className="stroke-[#1A1A1A] dark:stroke-primary-background  fill-none"
             cx="8"
             cy="8"
             r="6.5"
@@ -330,58 +330,3 @@ const AccountSetup = () => {
 };
 
 export default AccountSetup;
-
-// <div className="w-full p-4 bg-white h-full rounded-lg border border-[#E3E3E3] ">
-//   <div className=" grid gap-2">
-//     <h1 className="text-sm font-medium">
-//       Setup guide 1: Create a Twilio Account
-//     </h1>
-//     <p className="text-sm">
-//       To begin, go to{" "}
-//       <a className="text-[#0077CC]" href="https://www.twilio.com/">
-//         twilio.com
-//       </a>{" "}
-//       and sign up for an account. Once you&apos;re in the dashboard,
-//       find the WhatsApp Sandbox. This is a testing environment that
-//       allows you to connect your WhatsApp number before going live.
-//       You&apos;ll be given a test number and a join code to link your
-//       own WhatsApp to the sandbox.
-//     </p>
-//   </div>
-//   <div className="bg-[#F7F7F7] mt-3 gap-2 w-full py-2 rounded-md px-2 border border-[#E3E3E3] flex items-center justify-between">
-//     <p className="text-xs md:text-sm">
-//       Use this personalized guide to get your store up and running.
-//     </p>
-//     <button className="border border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2 md:px-3 hover:cursor-pointer bg-white text-xs md:text-sm py-2 rounded-md">
-//       next step
-//     </button>
-//   </div>
-// </div>;
-
-// <motion.div className="w-full cursor-pointer p-4 hover:bg-[#f0efef] h-full rounded-lg">
-//   <span className="text-sm font-medium flex items-center gap-1">
-//     <CircleDashedIcon size={20} weight="regular" />
-//     {/* <CheckCircleIcon size={20} weight="fill" display={"none"} /> */}
-//     <p>Connect Your WhatsApp Number to Twilio</p>
-//   </span>
-//   <motion.div
-//     initial={{ height: 0, paddingTop: 0 }}
-//     animate={{ height: 0 }}
-//     className="grid gap-2  overflow-hidden"
-//   >
-//     <p className="text-sm ">
-//       From the Twilio WhatsApp Sandbox section, follow the instructions
-//       to send a message (e.g., “join XYZ”) from your WhatsApp to the
-//       test number. This connects your personal WhatsApp so you can send
-//       and receive messages while testing the bot.
-//     </p>
-//     <div className="bg-[#F7F7F7] gap-2 w-full py-2 rounded-md px-2 border border-[#E3E3E3] flex items-center justify-between">
-//       <p className="text-xs md:text-sm">
-//         Use this personalized guide to get your store up and running.
-//       </p>
-//       <button className="border border-[#E3E3E3] border-b-2 text-black/70 capitalize px-2 md:px-3 hover:cursor-pointer bg-white text-xs md:text-sm py-2 rounded-md">
-//         next step
-//       </button>
-//     </div>
-//   </motion.div>
-// </motion.div>;

@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 const createClient = async () => {
   const cookieStore = await cookies();
   const token = cookieStore.get("jwt")?.value;
+  console.log(token);
   const appwriteClient = new Client()
     .setEndpoint(
       process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT ||
@@ -21,17 +22,5 @@ const createClient = async () => {
     databases,
   };
 };
-
-// client session helper
-
-// server session helper
-
-// async function createAdminClient() {
-//   return {
-//     get account() {
-//       return new Account(appwriteClient);
-//     },
-//   };
-// }
 
 export { createClient };

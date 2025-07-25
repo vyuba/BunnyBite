@@ -6,9 +6,9 @@ const buttonStyles = {
   primary:
     "bg-[#303030] border border-[#4A4A4A] text-white border-b-2 hover:border-b hover:border-t-2",
   secondary:
-    "border border-[#E3E3E3] border-b-2 text-black/70 hover:border-t-2 hover:border-b bg-[var(--background)]",
+    "border border-border border-b-2 text-black/70 hover:border-t-2 hover:border-b bg-[var(--background)]",
   tertiary:
-    "border border-[#E3E3E3] border-b-2 transition-[border] text-black/70 bg-white",
+    "border border-border border-b-2 transition-[border] text-black/70 bg-white",
   ghost: "bg-transparent hover:bg-[#F7F7F7]",
   danger: "bg-red-600 text-white hover:bg-red-700",
   success: "bg-green-600 text-white hover:bg-green-700",

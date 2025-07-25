@@ -25,6 +25,7 @@ import Image from "next/image";
 import { MoonIcon } from "@phosphor-icons/react/dist/ssr";
 import { useTheme } from "@/app/providers/ThemeProvider";
 // import { signOut } from "@/helpers/appwrite-helpers";
+import { getProfileIcon } from "@/client-utils";
 const SideBarLinks = {
   DashboardLinks: [
     {
@@ -111,9 +112,9 @@ export const SideBar = ({ user }: { user: string | null }) => {
     <motion.div
       className={`fixed md:static top-0 left-0 ${
         !isSidebar
-          ? "-translate-x-[100px] md:translate-x-0"
+          ? "-translate-x-[100%] md:translate-x-0"
           : "translate-x-[0] md:translate-x-0"
-      } z-[2000]  border border-border  md:border-0  md:static md:w-fit  flex transition-all flex-col justify-between h-dvh bg-secondary-background `}
+      } z-[2000] w-full border border-border  md:border-0  md:static md:w-fit  flex transition-all flex-col justify-between h-dvh bg-secondary-background `}
     >
       <ul className="flex flex-col gap-3 px-3 mt-3">
         <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 capitalize  bg-[#303030] flex items-center justify-center text-sm  rounded-lg">
@@ -143,7 +144,7 @@ export const SideBar = ({ user }: { user: string | null }) => {
               }}
               className={` ${
                 link.link === pathname
-                  ? " border-[#E3E3E3] hover:border-b-2 bg-[var(--background)]"
+                  ? " border-border hover:border-b-2 bg-[var(--background)]"
                   : "hover:border-[var(--background)] hover:bg-[var(--background)]"
               } border border-border transition-all flex items-center justify-center hover:cursor-pointer  text-black/70 capitalize px-3  text-sm py-3 rounded-lg`}
             >
@@ -162,9 +163,21 @@ export const SideBar = ({ user }: { user: string | null }) => {
                 isToolKit={isToolKit}
                 isHovered={isHovered}
                 index={link.id}
-                title={link.title}
-              />
+              >
+                {link.title}
+              </ToolKit>
             </motion.div>
+            <p
+              className={` md:hidden ${
+                link.link === pathname ||
+                (link.link === "/dashboard/chat" &&
+                  pathname.includes(link.link))
+                  ? "text-icon"
+                  : "text-black/70 dark:text-white"
+              }`}
+            >
+              {link.title}
+            </p>
           </Link>
         ))}
       </ul>
@@ -200,26 +213,43 @@ export const SideBar = ({ user }: { user: string | null }) => {
                 isToolKit={isToolKit}
                 isHovered={isHovered}
                 index={link.id}
-                title={link.title}
-              />
+              >
+                {link.title}
+              </ToolKit>
             </div>
+            <p
+              className={` md:hidden ${
+                pathname.includes(link.link)
+                  ? "text-icon"
+                  : "text-black/70 dark:text-white"
+              }`}
+            >
+              {link.title}
+            </p>
           </Link>
         ))}
-        <button
+        <div
           onClick={() => setIsProfileClicked(!isProfileClicked)}
           ref={inputRef}
-          className={`${
-            isProfileClicked
-              ? " bg-[var(--background)]"
-              : "hover:bg-[var(--background)]"
-          }  transition-all flex items-center justify-center hover:cursor-pointer text-black/70 dark:text-white capitalize px-3  text-sm py-3 rounded-lg`}
+          className="flex items-center gap-2"
         >
-          <UserCircleIcon
-            weight={`${isProfileClicked ? "fill" : "regular"}`}
-            fill="var(--icon-background)"
-            size={20}
-          />
-        </button>
+          <button
+            className={`${
+              isProfileClicked
+                ? " bg-[var(--background)]"
+                : "hover:bg-[var(--background)]"
+            }  transition-all flex items-center justify-center w-fit hover:cursor-pointer text-black/70 dark:text-white capitalize px-3  text-sm py-3 rounded-lg`}
+          >
+            <UserCircleIcon
+              weight={`${isProfileClicked ? "fill" : "regular"}`}
+              fill="var(--icon-background)"
+              size={20}
+            />
+          </button>
+          <p className={` capitalize md:hidden "text-black/70 dark:text-white`}>
+            account
+          </p>
+        </div>
       </ul>
       <motion.div
         ref={PopUpref}
@@ -235,7 +265,14 @@ export const SideBar = ({ user }: { user: string | null }) => {
         className="fixed bottom-10 z-[9000] left-10 dark:text-white rounded-md bg-secondary-background border border-border px-1 pb-1 max-w-[240px]"
       >
         <button className="cursor-pointer w-full flex items-center gap-1 py-1 hover:bg-primary-background rounded-sm px-1 my-1.5">
-          <div className="size-7 rounded-sm bg-[#303030]" />
+          <div className="size-7 rounded-sm bg-[#303030] relative overflow-hidden border-border border">
+            <Image
+              fill={true}
+              src={getProfileIcon(user)}
+              alt={user}
+              blurDataURL={getProfileIcon(user)}
+            />
+          </div>
           <div className="flex flex-col items-start">
             <span className="text-sm">{user}</span>
             <span className="text-xs">{shop?.shop}</span>
@@ -319,14 +356,17 @@ export const SideBar = ({ user }: { user: string | null }) => {
             </div>
             <span>Theme</span>
           </div>
-          <button className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-secondary-background rounded-sm p-1">
+          <Link
+            href={"/dashboard/settings/account"}
+            className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-secondary-background rounded-sm p-1"
+          >
             <UserCircleIcon
               weight="fill"
               fill="var(--icon-background)"
               size={15}
             />
             <span>Account</span>
-          </button>
+          </Link>
           <button
             onClick={signOut}
             className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-secondary-background rounded-sm p-1"

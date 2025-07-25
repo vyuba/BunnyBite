@@ -9,6 +9,8 @@ import HighlightedText from "./HighlightedText";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import Link from "next/link";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
+import { getProfileIcon } from "@/client-utils";
+import { lorelei } from "@dicebear/collection";
 
 const getChats = async (
   shopNumber: string
@@ -52,7 +54,7 @@ const getChats = async (
   }
 };
 
-const ChatListSection = ({ svg }) => {
+const ChatListSection = () => {
   const { isChatOpen, setIsChatOpen, setSelectedChat } = useChatProvider();
   const [chats, setChats] = useState<Chats[] | null>(null);
   const { shop } = useCounterStore((state) => state);
@@ -139,7 +141,7 @@ const ChatListSection = ({ svg }) => {
       {isLoading ? (
         <SpinnerLoader />
       ) : chats && filteredChats.length > 0 ? (
-        <div className="bg-white dark:bg-black/40 mx-1 mb-1 p-2 h-full rounded-lg border-t border-border">
+        <div className="bg-primary-background mx-1 mb-1 p-2 h-full rounded-lg border-t border-border">
           {filteredChats.map((chat) => (
             <Link
               href={`/dashboard/chat/${chat?.chat_id}`}
@@ -150,11 +152,11 @@ const ChatListSection = ({ svg }) => {
               data-chat-id={chat.$id}
               className={`
 
-              flex items-center gap-2 cursor-pointer hover:bg-background rounded-sm transition-all  pl-2 py-3 `}
+              flex items-center gap-2 cursor-pointer  hover:bg-tertiay-background rounded-sm transition-all  pl-2 py-3 `}
               key={chat.$id}
             >
               <Image
-                src={svg}
+                src={getProfileIcon(chat?.customer_name, 100, lorelei)}
                 alt=""
                 width={30}
                 height={30}

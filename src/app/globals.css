@@ -34,6 +34,7 @@
   --icon-background: #303030;
   --secondary-background: #ebebeb;
   --border: #e3e3e3;
+  --focused-border: #cacaca;
   /* --font-neue: 'Neue', sans-serif; */
 }
 
@@ -47,6 +48,7 @@
   --secondary-background: #232323;
   --teitary-background: #202020;
   --border: #282828;
+  --focused-border: #1e1e1e;
 }
 @theme inline {
   --color-background: var(--background);
@@ -59,6 +61,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-neue: var(--font-neue);
+  --color-focused-border: var(--focused-border);
 }
 
 body {
@@ -132,7 +135,7 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   box-shadow: 0 0 0 30px #f9fafb inset !important; /* Example background color */
   -webkit-text-fill-color: #6b6b6b !important; /* Example text color */
-  border: 1px solid #cacaca !important; /* Example border color */
+  border: 1px solid var(--focused-border) !important; /* Example border color */
 }
 
 /* toggle ui  */
@@ -142,13 +145,14 @@ input:-webkit-autofill:active {
   --button-height: 1.5em;
   --toggle-diameter: 1em;
   --button-toggle-offset: calc(
-    (var(--button-height) - var(--toggle-diameter)) / 2
+    (var(--button-height) - var(--toggle-diameter)) / 2 - 0.6px
   );
   --toggle-shadow-offset: 10px;
   --toggle-wider: 3em;
-  --color-grey: #cccccc;
+  --color-grey: var(--secondary-background);
   height: var(--button-height);
-  --color-green: #4296f4;
+  --color-green: #00bfae;
+  /* --color-green: #4296f4; */
   overflow: hidden;
 }
 
@@ -157,6 +161,7 @@ input:-webkit-autofill:active {
   width: var(--button-width);
   height: var(--button-height);
   background-color: var(--color-grey);
+  border: 1px solid var(--border);
   border-radius: calc(var(--button-height) / 2);
   position: relative;
   transition: 0.3s all ease-in-out;
