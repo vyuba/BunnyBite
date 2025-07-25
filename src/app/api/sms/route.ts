@@ -101,6 +101,7 @@ export const POST = async (req: NextRequest) => {
       chat_id: newChatId,
       customer_number: from,
       shop_phone: to,
+      shop_id: shopResponse?.documents[0]?.$id,
     },
     [Permission.read(Role.any())]
   );
