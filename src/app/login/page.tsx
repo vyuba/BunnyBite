@@ -10,7 +10,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Status } from "@/components/pages/RegisterPage";
 import Image from "next/image";
 import { SmileyXEyesIcon } from "@phosphor-icons/react";
-import { setJwtCookie } from "@/utils";
+// import { setJwtCookie } from "@/utils";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -50,10 +50,10 @@ const LoginPage = () => {
         email as string,
         password as string
       );
-      const jwt = await clientAccount.createJWT();
+      // const jwt = await clientAccount.createJWT();
       console.log(session);
-      console.log("jwt", jwt);
-      await setJwtCookie(jwt);
+      // console.log("jwt", jwt);
+      // await setJwtCookie(jwt);
       setStatus({
         message: "Sucessfully Logged In",
         type: "success",

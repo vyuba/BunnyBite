@@ -76,7 +76,7 @@ const RefundPage = () => {
                 <th
                   className={`text-nowrap text-left text-sm font-medium h-full p-2  gap-2 flex items-center top-0 left-0 bg-tertiay-background ${
                     isCheckedList.length > 0
-                      ? "absolute w-full inset-0 justify-between"
+                      ? "absolute w-full justify-between"
                       : "sticky"
                   }`}
                 >

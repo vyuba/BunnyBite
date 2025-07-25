@@ -1,5 +1,6 @@
 // "use client";
 
+import { createClient } from "@/app/lib/node-appwrite";
 import { getShopDetails } from "@/utils";
 
 // import { useCounterStore } from "@/app/providers/counter-store-provider";
@@ -10,7 +11,8 @@ const SecurityPage = async ({
 }) => {
   const { id } = await params;
   const shop = await getShopDetails(id);
-  console.log(shop);
+  // console.log(shop);
+  createClient();
   return (
     <div className="flex  w-full flex-col gap-2 pt-2 text-black/70 dark:text-white">
       <label className="flex flex-col gap-1">

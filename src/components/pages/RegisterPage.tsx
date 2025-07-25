@@ -58,19 +58,6 @@ const RegisterPage = () => {
         password as string
       );
 
-      // if (shop) {
-      // await clientDatabase.createDocument(
-      //   process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      //   process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-      //   ID.unique(),
-      //   {
-      //     shop: shop,
-      //     user: user.$id,
-      //   }
-      // );
-      // router.push(`/dashboard/settings/integration?shop=${shop}`);
-      // }
-
       setStatus({
         message: "Account created successfully",
         type: "success",

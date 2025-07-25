@@ -1,17 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import { clientAccount, client } from "@/app/lib/client-appwrite";
+import { clientAccount } from "@/app/lib/client-appwrite";
 import { setJwtCookie } from "@/utils";
+// import { createClient } from "@/app/lib/node-appwrite";
 
 const AppwriteJWTRefresher = () => {
   useEffect(() => {
     const refreshJWT = async () => {
       try {
         const jwt = await clientAccount.createJWT();
-        client.headers["X-Appwrite-JWT"] = jwt.jwt;
+
+        // client.headers["X-Appwrite-JWT"] = jwt.jwt;
         // console.log("New JWT set:", jwt.jwt);
         setJwtCookie(jwt);
+        // const { appwriteClient } = await createClient();
+
+        // appwriteClient.headers["X-Appwrite-JWT"] = jwt.jwt;
       } catch (err) {
         console.error("Failed to refresh JWT:", err);
       }

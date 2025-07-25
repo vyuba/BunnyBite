@@ -9,6 +9,14 @@ const setJwtCookie = async (key: Models.Jwt) => {
     maxAge: 30 * 24 * 60 * 60,
     httpOnly: true,
   });
+
+  const { appwriteClient } = await createClient();
+
+  // console.log(key?.jwt);
+
+  appwriteClient.headers["X-Appwrite-JWT"] = key?.jwt;
+
+  // console.log(appwriteClient.headers["X-Appwrite-JWT"]);
   // console.log(key);
 };
 
@@ -22,6 +30,7 @@ const getShopDetails = async (id: string) => {
 
   return response;
 };
+
 async function run(userid) {
   const checkout = await api.checkouts.create({
     products: ["02925bc2-8a50-4ab1-8d0d-efc181b481d1"],
