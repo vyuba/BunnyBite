@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
   let newChatId = isChatAvailable.documents[0]?.chat_id;
   let newChat = isChatAvailable.documents[0];
   if (isChatAvailable.total === 0) {
-    const response = await databases.createDocument(
+    const response = await adminDatabase.createDocument(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
       ID.unique(),
@@ -90,7 +90,7 @@ export const POST = async (req: NextRequest) => {
     [Query.equal("shop_number", to)]
   );
 
-  const message = await databases.createDocument(
+  const message = await adminDatabase.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
     ID.unique(),
