@@ -3,7 +3,7 @@ import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { createMessage } from "@/app/lib/twillio";
 // import { TwillioClient } from "@/app/lib/twillio";
 import { createClient, CreateAdminClient } from "@/app/lib/node-appwrite";
-import { ID, Query } from "node-appwrite";
+import { ID, Permission, Query, Role } from "node-appwrite";
 // import { createHmac } from "crypto";
 // import { graph } from "@/agent/model";
 // import { Command } from "@langchain/langgraph";
@@ -78,11 +78,17 @@ export const POST = async (req: NextRequest) => {
         customer_name,
         chat_id: ID.unique(),
         shop_phone: to,
-      }
+      },
+      [Permission.read(Role.any())]
     );
     newChat = response;
     newChatId = response?.chat_id;
   }
+  const shopResponse = await adminDatabase.listDocuments(
+    process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+    process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+    [Query.equal("shop_number", to)]
+  );
 
   const message = await databases.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
@@ -92,22 +98,12 @@ export const POST = async (req: NextRequest) => {
       sender_type: "customer",
       content: body,
       messageId: ID.unique(),
-      Receiver_id: "customthem.myshopify.com",
+      Receiver_id: shopResponse?.documents[0]?.shop,
       chat_id: newChatId,
       customer_number: from,
       shop_phone: to,
-    }
-    // [
-    //   Permission.read(Role.user("684e2a400021d564a828")),
-    //   Permission.write(Role.user("684e2a400021d564a828")),
-    //   Permission.update(Role.user("684e2a400021d564a828")),
-    // ]
-  );
-
-  const shopResponse = await databases.listDocuments(
-    process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-    process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-    [Query.equal("shop_number", message?.shop_phone)]
+    },
+    [Permission.read(Role.any())]
   );
 
   const tokenAvailable =
