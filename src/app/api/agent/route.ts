@@ -1,12 +1,12 @@
 import { graph } from "@/agent/model";
 import { Command } from "@langchain/langgraph";
 import { NextRequest, NextResponse } from "next/server";
-import { ID } from "node-appwrite";
+import { ID, Permission, Role } from "node-appwrite";
+import { CreateAdminClient } from "@/app/lib/node-appwrite";
 // import { createClient } from "@/app/lib/node-appwrite";
 
 export const POST = async (req: NextRequest) => {
-  const { createClient } = await import("@/app/lib/node-appwrite");
-  const { databases } = await createClient();
+  const { adminDatabase } = CreateAdminClient();
   console.log("---CALLING-AGENT---");
   const message = await req.json();
   console.log(message);
@@ -30,7 +30,7 @@ export const POST = async (req: NextRequest) => {
     threadConfig
   );
 
-  await databases.createDocument(
+  await adminDatabase.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
     ID.unique(),
@@ -42,13 +42,8 @@ export const POST = async (req: NextRequest) => {
       chat_id: message?.chat_id,
       customer_number: message?.customer_number,
       shop_phone: message?.shop_phone,
-    }
-    // },
-    // [
-    //   Permission.read(Role.user("684e2a400021d564a828")),
-    //   Permission.write(Role.user("684e2a400021d564a828")),
-    //   Permission.update(Role.user("684e2a400021d564a828")),
-    // ]
+    },
+    [Permission.read(Role.any())]
   );
   console.log(response);
   return NextResponse.json({ message: "Post recieved" }, { status: 200 });
