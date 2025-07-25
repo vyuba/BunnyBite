@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { createMessage } from "@/app/lib/twillio";
 // import { TwillioClient } from "@/app/lib/twillio";
-import { createClient, CreateAdminClient } from "@/app/lib/node-appwrite";
+import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { ID, Permission, Query, Role } from "node-appwrite";
 // import { createHmac } from "crypto";
 // import { graph } from "@/agent/model";
@@ -23,7 +23,6 @@ import { ID, Permission, Query, Role } from "node-appwrite";
 // };
 
 export const POST = async (req: NextRequest) => {
-  const { databases } = await createClient();
   const { adminDatabase } = await CreateAdminClient();
   const twiml = new MessagingResponse();
   const bodyText = await req.text();
