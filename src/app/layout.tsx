@@ -3,6 +3,7 @@ import LocalFont from "next/font/local";
 import "./globals.css";
 import { CounterStoreProvider } from "./providers/counter-store-provider";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "./providers/ThemeProvider";
 const neueMontreal = LocalFont({
   src: [
     {
@@ -58,7 +59,16 @@ export default function RootLayout({
       <body
         className={`${neueMontreal.variable} ${neueMontreal.variable} antialiased`}
       >
-        <Toaster richColors />
+        <Toaster
+          richColors
+          toastOptions={{
+            style: {
+              background: "var(--background)",
+              color: "var(--text-color)",
+              borderColor: "var(--border)",
+            },
+          }}
+        />
         <HomeLayout>{children}</HomeLayout>
       </body>
     </html>
@@ -67,5 +77,9 @@ export default function RootLayout({
 
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   "use client";
-  return <CounterStoreProvider>{children}</CounterStoreProvider>;
+  return (
+    <CounterStoreProvider>
+      <ThemeProvider>{children}</ThemeProvider>
+    </CounterStoreProvider>
+  );
 };

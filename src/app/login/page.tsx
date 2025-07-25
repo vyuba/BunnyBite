@@ -76,10 +76,11 @@ const LoginPage = () => {
       toast.error(status.message, {
         id: "Login",
         icon: <SmileyXEyesIcon fill="#303030" />,
+        description: error?.message,
       });
       console.error("Error:", error);
     } finally {
-      toast.dismiss("Login");
+      // toast.dismiss("Login");
       setLoading(false);
     }
   }
@@ -87,7 +88,7 @@ const LoginPage = () => {
     <div className=" w-full h-screen flex items-center justify-center bg-secondary-background px-4">
       <div className="flex flex-col w-full max-w-[400px]">
         <div className="flex flex-col gap-2 items-center justify-center pb-8">
-          <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 dark:text-white capitalize  bg-icon flex items-center justify-center text-sm  rounded-lg">
+          <div className="border hover:cursor-pointer size-10 border-[#4A4A4A] hover:border-b-2 transition-[border] text-black/70 dark:text-white capitalize  bg-[#303030] flex items-center justify-center text-sm  rounded-lg">
             <Image
               width={40}
               height={40}

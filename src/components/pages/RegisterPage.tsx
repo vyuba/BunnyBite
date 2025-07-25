@@ -91,6 +91,7 @@ const RegisterPage = () => {
       toast.error(status.message, {
         id: "Register",
         icon: <SmileyXEyesIcon weight="fill" fill="#303030" />,
+        description: error?.message,
       });
       setLoading(false);
       console.log(error);
@@ -100,7 +101,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className=" w-full h-screen flex items-center justify-center bg-[#EBEBEB] px-4">
+    <div className=" w-full h-screen flex items-center justify-center bg-secondary-background px-4">
       <div className="flex flex-col w-full max-w-[400px]">
         <div className="flex flex-col gap-2 items-center justify-center pb-8">
           <div className="flex items-center gap-3">
@@ -126,7 +127,7 @@ const RegisterPage = () => {
               </>
             )}
           </div>
-          <h1 className="text-center text-lg md:text-xl font-medium">
+          <h1 className="text-center text-lg md:text-xl font-medium text-black/70 dark:text-white">
             Sign up
           </h1>
         </div>
@@ -138,20 +139,20 @@ const RegisterPage = () => {
             <input
               id="email"
               name="email"
-              className="bg-[#F1F1F1] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[#f9fafb] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3 px-3 w-full text-base md:text-lg border border-border"
+              className="bg-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3 px-3 w-full text-base md:text-lg border border-border"
               type="email"
               placeholder="Email address"
             />
             <input
               id="password"
               name="password"
-              className="bg-[#F1F1F1] text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-[#f9fafb] focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3  px-3 w-full text-base md:text-lg border border-border"
+              className="bg-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-3  px-3 w-full text-base md:text-lg border border-border"
               type="password"
               placeholder="Password"
             />
           </div>
           <button
-            className="border overflow-hidden cursor-pointer max-h-[60px] rounded-md py-3 border-[#4A4A4A] w-full border-b-2 transition-[border] text-base md:text-lg text-white capitalize px-3 bg-[#303030]"
+            className="border overflow-hidden cursor-pointer max-h-[60px] rounded-md py-3 border-border w-full border-b-2 transition-[border] text-base md:text-lg text-black/70 dark:text-white capitalize px-3 bg-primary-background"
             type="submit"
           >
             <motion.div
@@ -179,12 +180,12 @@ const RegisterPage = () => {
           </button>
         </form>
         <div className=" text-center pt-8 flex flex-col gap-2">
-          <p className="text-base md:text-lg">
+          <p className="text-base md:text-lg text-black/70 dark:text-white">
             Already have a BunnyBite account?
           </p>
           <Link href="/login">
             <button
-              className="border cursor-pointer rounded-md py-3 border-border w-full border-b-2 transition-[border] text-black/70 text-base md:text-lg px-3 bg-white"
+              className="border cursor-pointer rounded-md py-3 border-border w-full border-b-2 transition-[border] text-black/70 dark:text-white text-base md:text-lg px-3  bg-primary-background"
               type="submit"
             >
               Sign in
