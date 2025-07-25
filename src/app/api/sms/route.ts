@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { createMessage } from "@/app/lib/twillio";
 // import { TwillioClient } from "@/app/lib/twillio";
-import { createClient } from "@/app/lib/node-appwrite";
+import { createClient, CreateAdminClient } from "@/app/lib/node-appwrite";
 import { ID, Query } from "node-appwrite";
 // import { createHmac } from "crypto";
 // import { graph } from "@/agent/model";
@@ -24,6 +24,7 @@ import { ID, Query } from "node-appwrite";
 
 export const POST = async (req: NextRequest) => {
   const { databases } = await createClient();
+  const { adminDatabase } = await CreateAdminClient();
   const twiml = new MessagingResponse();
   const bodyText = await req.text();
   console.log(typeof bodyText);
@@ -58,12 +59,13 @@ export const POST = async (req: NextRequest) => {
   //   }
   // );
   //   twiml.message("The Robots are coming! Head for the hills!");
-  const isChatAvailable = await databases.listDocuments(
+  const isChatAvailable = await adminDatabase.listDocuments(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
     [Query.equal("shop_phone", to), Query.equal("customer_phone", from)]
   );
 
+  console.log("IS-CHAT-AVAILABLE", isChatAvailable);
   let newChatId = isChatAvailable.documents[0]?.chat_id;
   let newChat = isChatAvailable.documents[0];
   if (isChatAvailable.total === 0) {
