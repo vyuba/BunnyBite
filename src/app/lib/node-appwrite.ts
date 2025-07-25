@@ -25,10 +25,9 @@ const createClient = async () => {
   }
   // console.log(appwriteClient.headers["X-Appwrite-JWT"]);
 
-  const databases = new Databases(appwriteClient);
   return {
     appwriteClient,
-    databases,
+    databases: new Databases(appwriteClient),
   };
 };
 
