@@ -135,7 +135,7 @@ const ChatListSection = () => {
           type="text"
           placeholder="Search"
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full border-none outline-none bg-transparent text-sm py-1.5"
+          className="w-full border-none outline-none bg-transparent text-sm md:text-base py-1.5"
         />
       </div>
       {isLoading ? (

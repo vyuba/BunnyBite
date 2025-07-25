@@ -129,11 +129,12 @@ const MessageContainer = ({ id }: { id: string }) => {
           Receiver_id: messages.documents.find(
             (message) => message?.Receiver_id
           )?.Receiver_id,
-          chat_id: messages.documents.find((message) => message?.chat_id)
-            ?.chat_id,
+          chat_id: messages.documents.find(
+            (message) => message?.chat_id !== null
+          )?.chat_id,
           customer_number: messages.documents.find(
-            (message) => message?.customer_number
-          ),
+            (message) => message?.customer_number !== null
+          )?.customer_number,
           shop_phone: shop?.shop_number,
           shop_id: shop?.$id,
         }
