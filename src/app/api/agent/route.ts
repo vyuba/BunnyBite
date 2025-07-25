@@ -42,9 +42,10 @@ export const POST = async (req: NextRequest) => {
       chat_id: message?.chat_id,
       customer_number: message?.customer_number,
       shop_phone: message?.shop_phone,
+      shop_id: message?.shop_id,
     },
     [Permission.read(Role.any())]
   );
-  console.log(response);
+  // console.log(response);
   return NextResponse.json({ message: "Post recieved" }, { status: 200 });
 };

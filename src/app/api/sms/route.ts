@@ -129,11 +129,12 @@ export const POST = async (req: NextRequest) => {
           chat_id: message.chat_id,
           customer_number: from,
           shop_phone: to,
+          shop_id: message?.shop_id,
         }),
       }
     );
-    const data = await response.json();
-    console.log(data);
+    console.log(response);
+    return response;
   }
 
   return new NextResponse(twiml.toString(), {
