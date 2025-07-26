@@ -73,6 +73,7 @@ export const createCounterStore = (
     },
     setActiveShop: async (shop) => {
       localStorage.setItem("shop", shop?.shop);
+      setCurrentShopCookie(shop?.shop);
       set({ shop: shop });
       console.log(shop);
     },

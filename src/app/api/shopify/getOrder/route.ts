@@ -11,6 +11,10 @@ export const GET = async (req: NextRequest) => {
   const cookieStore = await cookies();
   const shop = cookieStore.get("shop");
 
+  console.log(cookieStore);
+
+  console.log("--SHOP--", shop);
+
   if (!shop) {
     return NextResponse.json(
       { error: "Missing shop parameter" },
