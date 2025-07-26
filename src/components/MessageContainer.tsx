@@ -64,6 +64,23 @@ const getMessages = async (
     return null;
   }
 };
+const getMessage = async (id: string) => {
+  if (!id) {
+    return null;
+  }
+  // console.log(chat_id);
+  try {
+    const document = await clientDatabase.getDocument(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+      id
+    );
+    return document.content;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 
 const MessageContainer = ({ id }: { id: string }) => {
   const { isChatOpen, setIsChatOpen } = useChatProvider();
@@ -178,7 +195,7 @@ const MessageContainer = ({ id }: { id: string }) => {
                     <span className="tagged-reply bg-[var(--background)] border-l-3 text-sm border-#4A4A4A] p-2 rounded-sm w-full h-fit">
                       <span className="font-semibold">You</span>
                       <p className="text-black/70 dark:text-white/70">
-                        {message?.replied_msg}
+                        {getMessage(message?.replied_msg)}
                       </p>
                     </span>
                   )}

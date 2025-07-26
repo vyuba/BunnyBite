@@ -4,6 +4,7 @@ import MessagingResponse from "twilio/lib/twiml/MessagingResponse";
 // import { TwillioClient } from "@/app/lib/twillio";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { ID, Permission, Query, Role } from "node-appwrite";
+import { TwillioClient } from "@/app/lib/twillio";
 // import { createHmac } from "crypto";
 // import { graph } from "@/agent/model";
 // import { Command } from "@langchain/langgraph";
@@ -25,28 +26,36 @@ import { ID, Permission, Query, Role } from "node-appwrite";
 export const POST = async (req: NextRequest) => {
   const { adminDatabase } = await CreateAdminClient();
   const twiml = new MessagingResponse();
-  const bodyText = await req.text();
-  // const bodyText = await req.json();
-  console.log(bodyText);
-  // const Body = JSON.parse(bodyText);
-  // console.log(Body);
-  console.log(typeof bodyText);
-  const params = new URLSearchParams(bodyText);
-  const obj = Object.fromEntries(params);
-  console.log(obj);
+  const body = await req.text();
+  console.log(body);
+  console.log(typeof body);
+  const params = new URLSearchParams(body);
   console.log(params);
 
   const from = params.get("From"); // sender's number (e.g., 'whatsapp:+234...')
   const content = params.get("Body"); // message text
   const customer_name = params.get("ProfileName");
   const messageSid = params.get("MessageSid");
-  // const repliedMessage = params.get("OriginalRepliedMessageSid");
+  const repliedMessage = params.get("OriginalRepliedMessageSid");
   const to = params.get("To"); // your Twilio number
   console.log("from:", from);
   console.log("body:", content);
   console.log("to:", to);
   const messageType = params.get("MessageType");
   console.log("MESSAGE-TYPE", messageType);
+
+  if (messageType !== "text") {
+    const reponse = await TwillioClient.messages.create({
+      body: "We can only accept text currently, thank you",
+      from: to,
+      to: from,
+    });
+
+    return new NextResponse(reponse.body, {
+      status: 200,
+      headers: { "Content-Type": "text/xml" },
+    });
+  }
 
   // twiml.message(response.output);
 
@@ -109,7 +118,7 @@ export const POST = async (req: NextRequest) => {
       messageId: ID.unique(),
       Receiver_id: shopResponse?.documents[0]?.shop,
       chat_id: newChatId,
-      // replied_msg: null,
+      replied_msg: repliedMessage,
       customer_number: from,
       shop_phone: to,
       shop_id: shopResponse?.documents[0]?.$id,
