@@ -25,13 +25,15 @@ import { ID, Permission, Query, Role } from "node-appwrite";
 export const POST = async (req: NextRequest) => {
   const { adminDatabase } = await CreateAdminClient();
   const twiml = new MessagingResponse();
-  // const bodyText = await req.text();
-  const bodyText = await req.json();
+  const bodyText = await req.text();
+  // const bodyText = await req.json();
   console.log(bodyText);
   // const Body = JSON.parse(bodyText);
   // console.log(Body);
   console.log(typeof bodyText);
   const params = new URLSearchParams(bodyText);
+  const obj = Object.fromEntries(params);
+  console.log(obj);
   console.log(params);
 
   const from = params.get("From"); // sender's number (e.g., 'whatsapp:+234...')
