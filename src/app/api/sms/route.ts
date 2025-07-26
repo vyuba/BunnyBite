@@ -26,8 +26,10 @@ export const POST = async (req: NextRequest) => {
   const { adminDatabase } = await CreateAdminClient();
   const twiml = new MessagingResponse();
   const bodyText = await req.text();
-  const Body = JSON.parse(bodyText);
-  console.log(Body);
+  const Text = await req.json();
+  console.log(Text);
+  // const Body = JSON.parse(bodyText);
+  // console.log(Body);
   console.log(typeof bodyText);
   const params = new URLSearchParams(bodyText);
   console.log(params);
