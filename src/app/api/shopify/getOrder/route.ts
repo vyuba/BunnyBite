@@ -1,4 +1,5 @@
 import { getShopify } from "@/app/lib/shopify";
+import { ApiVersion } from "@shopify/shopify-api";
 // import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -36,50 +37,61 @@ export const GET = async (req: NextRequest) => {
     );
   }
   try {
-    const queryString = `query {
-            orderByIdentifier(identifier: { name: ${orderId} }) {
-                id
-                name
-                email
-                fulfillments(first: 10) {
-                    trackingInfo {
-                        number
-                        url
-                        company
-                    }
-                }
-                totalPriceSet {
-                    shopMoney {
-                        amount
-                        currencyCode
-                    }
-                }
-                createdAt
-                lineItems(first: 10) {
-                    edges {
-                        node {
-                            title
-                            quantity
-                        }
-                    }
-                }
-            }
-          }`;
+    // const queryString = `query {
+    //         orderByIdentifier(identifier: { name: ${orderId} }) {
+    //             id
+    //             name
+    //             email
+    //             fulfillments(first: 10) {
+    //                 trackingInfo {
+    //                     number
+    //                     url
+    //                     company
+    //                 }
+    //             }
+    //             totalPriceSet {
+    //                 shopMoney {
+    //                     amount
+    //                     currencyCode
+    //                 }
+    //             }
+    //             createdAt
+    //             lineItems(first: 10) {
+    //                 edges {
+    //                     node {
+    //                         title
+    //                         quantity
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //       }`;
 
     // shopify client initialization
 
-    const client = new shopify.clients.Graphql({ session });
-    const order = await client.request(queryString);
+    const client = new shopify.clients.Rest({
+      session,
+      apiVersion: ApiVersion.July23,
+    });
+    const order = await client.get({
+      path: `orders/#${orderId}`,
+      query: { status: "any" },
+    });
+    // const order = await client.request(queryString);
 
     console.log(order);
 
-    if (order.errors) {
-      console.log(order.errors);
-      return NextResponse.json(order.errors);
-    }
+    // if (order.errors) {
+    //   console.log(order.errors);
+    //   return NextResponse.json(order.errors);
+    // }
     // await sessionStorage.disconnect();
-    return NextResponse.json(order.data);
+    return NextResponse.json(order);
   } catch (error) {
     console.log(error);
+    return NextResponse.json(
+      { message: "server error" + error },
+      { status: 500 }
+    );
   }
 };
