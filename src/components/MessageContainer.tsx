@@ -10,30 +10,6 @@ import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 import { sendTwillioMessage } from "@/utils";
 import Message from "./Message";
-// import { ID } from "appwrite";
-
-// const sendAIMessage = async (message, payload) => {
-//   console.log(message);
-//   const response = await fetch(
-//     `${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
-//     {
-//       method: "POST",
-//       // headers: {
-//       //   "Content-Type": "application/json",
-//       // },
-//       body: JSON.stringify({
-//         sender_type: message.sender_type,
-//         content: payload?.content,
-//         messageId: ID.unique(),
-//         shop_phone: message.shop_number,
-//         Receiver_id: message.Receiver_id,
-//         chat_id: message.chat_id,
-//       }),
-//     }
-//   );
-//   const data = await response.json();
-//   console.log(data);
-// };
 
 const getMessages = async (
   chat_id: string,
@@ -55,7 +31,7 @@ const getMessages = async (
       [
         Query.equal("chat_id", chat_id),
         Query.equal("shop_phone", shop_number),
-        Query.orderAsc("$updatedAt"),
+        Query.orderDesc("$updatedAt"),
         Query.limit(100),
       ]
     );
