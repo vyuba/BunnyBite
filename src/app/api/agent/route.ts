@@ -1,8 +1,9 @@
 import { graph } from "@/agent/model";
 import { Command } from "@langchain/langgraph";
 import { NextRequest, NextResponse } from "next/server";
-import { ID, Permission, Role } from "node-appwrite";
+import { Permission, Role } from "node-appwrite";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
+import { sendTwillioMessage } from "@/utils";
 // import { createClient } from "@/app/lib/node-appwrite";
 
 export const POST = async (req: NextRequest) => {
@@ -30,10 +31,18 @@ export const POST = async (req: NextRequest) => {
     threadConfig
   );
 
+  const twillioMessage = {
+    content: response?.output,
+    shop_phone: message?.shop_phone,
+    customer_number: message?.customer_number,
+  };
+
+  const id = await sendTwillioMessage(twillioMessage);
+
   await adminDatabase.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-    ID.unique(),
+    id,
     {
       sender_type: message?.sender_type,
       content: response?.output,
