@@ -115,7 +115,7 @@ const trackingOrder = tool(
 
     try {
       const response = await fetch(
-        `https://bunny-bite.vercel.app/api/shopify/getOrder?orderId=${orderId}`,
+        `https://bunny-bite.vercel.app/api/shopify/getOrder?orderId=${orderId}&shop=customthem.myshopify.com`,
         {
           credentials: "include",
         }

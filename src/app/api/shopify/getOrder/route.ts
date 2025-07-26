@@ -1,5 +1,5 @@
 import { getShopify } from "@/app/lib/shopify";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -7,13 +7,14 @@ export const GET = async (req: NextRequest) => {
 
   const { searchParams } = new URL(req.url);
   const orderId = searchParams.get("orderId");
+  const shop = searchParams.get("shop");
 
-  const cookieStore = await cookies();
-  const shop = cookieStore.get("shop");
+  //   const cookieStore = await cookies();
+  //   const shop = cookieStore.get("shop");
 
-  console.log(cookieStore);
+  //   console.log(cookieStore);
 
-  console.log("--SHOP--", shop);
+  //   console.log("--SHOP--", shop);
 
   if (!shop) {
     return NextResponse.json(
