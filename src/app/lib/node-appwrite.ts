@@ -46,6 +46,7 @@ const CreateAdminClient = () => {
     const adminDatabase = new Databases(adminClient);
 
     return {
+      adminClient,
       adminDatabase,
     };
   } catch (error) {
