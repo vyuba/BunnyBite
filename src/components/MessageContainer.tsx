@@ -164,10 +164,10 @@ const MessageContainer = ({ id }: { id: string }) => {
               {messages?.documents.map((message) => (
                 <div
                   key={message?.$id}
-                  className={`bg-primary-background border   ${
+                  className={` border   ${
                     message?.sender_type === "shop"
-                      ? "self-end shop"
-                      : "self-start customer"
+                      ? "self-end shop bg-primary-background"
+                      : "self-start customer bg-tertiay-background"
                   } border-border py-1.5 px-3 ${
                     message?.replied_msg
                       ? "rounded-lg flex flex-col gap-1"

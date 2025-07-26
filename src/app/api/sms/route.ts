@@ -26,6 +26,8 @@ export const POST = async (req: NextRequest) => {
   const { adminDatabase } = await CreateAdminClient();
   const twiml = new MessagingResponse();
   const bodyText = await req.text();
+  const Body = JSON.parse(bodyText);
+  console.log(Body);
   console.log(typeof bodyText);
   const params = new URLSearchParams(bodyText);
   console.log(params);
@@ -33,10 +35,14 @@ export const POST = async (req: NextRequest) => {
   const from = params.get("From"); // sender's number (e.g., 'whatsapp:+234...')
   const body = params.get("Body"); // message text
   const customer_name = params.get("ProfileName");
+  const messageSid = params.get("MessageSid");
+  const repliedMessage = params.get("OriginalRepliedMessageSid");
   const to = params.get("To"); // your Twilio number
   console.log("from:", from);
   console.log("body:", body);
   console.log("to:", to);
+  const messageType = params.get("MessageType");
+  console.log("MESSAGE-TYPE", messageType);
 
   // twiml.message(response.output);
 
@@ -92,13 +98,14 @@ export const POST = async (req: NextRequest) => {
   const message = await adminDatabase.createDocument(
     process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
     process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-    ID.unique(),
+    messageSid,
     {
       sender_type: "customer",
       content: body,
       messageId: ID.unique(),
       Receiver_id: shopResponse?.documents[0]?.shop,
       chat_id: newChatId,
+      replied_msg: repliedMessage,
       customer_number: from,
       shop_phone: to,
       shop_id: shopResponse?.documents[0]?.$id,
