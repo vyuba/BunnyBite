@@ -2,8 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import { z } from "zod";
 import "../../envConfig";
-// import { zodToJsonSchema } from "zod-to-json-schema";
-// import { StateGraph } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { END, interrupt, MemorySaver } from "@langchain/langgraph";
 import { clientDatabase } from "@/app/lib/client-appwrite";
@@ -18,6 +16,22 @@ import {
   HumanMessage,
   // SystemMessage,
 } from "@langchain/core/messages";
+
+export type OrderByIdentifierResponse = {
+  data: {
+    orderByIdentifier: {
+      id: string;
+      name: string;
+      fulfillments: {
+        trackingInfo: Array<{
+          number: string | null;
+          url: string | null;
+          company: string | null;
+        }>;
+      }[];
+    } | null;
+  };
+};
 const SYSTEM_PROMPT = `
 You are a friendly customer support agent with an e-commerce brand, conversational tone. Your role is to assist with ONLY the following:
 1. Refund requests (using the save-refund tool).
@@ -39,7 +53,8 @@ Steps:
 
 - **Tracking Request**:
   - Ask for the Order ID.
-  - Call the **tracking_tool** with the Order ID and share the tracking details.
+  - Call the **tracking_tool** with the Order ID and share the tracking details also tell the customer about what they ordered.
+  - The **tracking_tool** returns an Order back with a order json back response so you can get all the details if nothing is returned then the customer does not have any active order.
 
 - **Save and Finish Request**:
   - Ask: “Do you want to save your session and finish later?”
@@ -89,17 +104,37 @@ const saveRefund = tool(
     }),
   }
 );
+
 const trackingOrder = tool(
-  async ({ orderId }) => {
+  async ({ orderId }): Promise<OrderByIdentifierResponse> => {
     console.log("--CALLING-THE-GET-TRACKING-FUNCTION--");
+
     if (!orderId) {
       throw new Error("Provide all the fields");
     }
-    return "this is your tracking id";
+
+    try {
+      const response = await fetch(
+        `https://bunny-bite.vercel.app/api/shopify/getOrder?orderId=${orderId}`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (!response?.ok) {
+        throw new Error(`Failed to fetch order: ${response?.statusText}`);
+      }
+
+      const order = await response.json();
+
+      return order;
+    } catch (error) {
+      return error;
+    }
   },
   {
     name: "tracking_tool",
-    description: "Retrieves tracking information for an order.",
+    description: "Retrieves tracking information from the order json order.",
     schema: z.object({
       orderId: z.string(),
     }),

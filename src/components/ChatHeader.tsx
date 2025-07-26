@@ -3,7 +3,6 @@ import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 import { getProfileIcon } from "@/client-utils";
 import { Chats } from "@/types";
 import { lorelei } from "@dicebear/collection";
-// import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 
@@ -49,7 +48,7 @@ const ChatHeader = () => {
         </p>
       </div>
       <div className="flex w-fit h-full justify-center items-center gap-1 relative">
-        <div className="size-6.5 cursor-pointer">
+        <div className="size-5 cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

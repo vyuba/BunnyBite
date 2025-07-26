@@ -70,13 +70,13 @@ const RefundPage = () => {
           />
         </div>
         <div className="w-full overflow-x-scroll">
-          <table className="w-full bg-primary-background border-border">
-            <thead className="px-2 w-full overflow-hidden text-black/70 dark:text-white ">
+          <table className="w-full bg-primary-background border-border relative">
+            <thead className="px-2 w-full overflow-hidden text-black/70 dark:text-white  relative">
               <tr className=" bg-tertiay-background border-y border-border relative">
                 <th
                   className={`text-nowrap text-left text-sm font-medium h-full p-2  gap-2 flex items-center top-0 left-0 bg-tertiay-background ${
                     isCheckedList.length > 0
-                      ? "absolute w-full justify-between"
+                      ? "absolute w-full top-0 left-0 justify-between"
                       : "sticky"
                   }`}
                 >

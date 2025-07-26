@@ -26,7 +26,7 @@ const BillingPage = () => {
                     <span className="text-sm">Billing Information</span>
                     <input
                       type="text"
-                      className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-xs md:text-sm border border-border"
+                      className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-sm border border-border"
                       defaultValue={"shop?.shop"}
                     />
                   </label>

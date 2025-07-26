@@ -9,6 +9,7 @@ import { ID, Query } from "appwrite";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 import { sendTwillioMessage } from "@/utils";
+import Message from "./Message";
 // import { ID } from "appwrite";
 
 // const sendAIMessage = async (message, payload) => {
@@ -65,25 +66,6 @@ const getMessages = async (
     return null;
   }
 };
-
-const getMessage = async (id: string) => {
-  if (!id) {
-    return null;
-  }
-  // console.log(chat_id);
-  try {
-    const document = await clientDatabase.getDocument(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-      id
-    );
-    return document.content;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
-
 const MessageContainer = ({ id }: { id: string }) => {
   const { isChatOpen, setIsChatOpen } = useChatProvider();
   const { shop } = useCounterStore((state) => state);
@@ -191,30 +173,13 @@ const MessageContainer = ({ id }: { id: string }) => {
               className="w-full flex-1 flex flex-col gap-2 py-16 px-3 overflow-auto "
             >
               {messages?.documents.map((message) => (
-                <div
+                <Message
                   key={message?.$id}
-                  className={` border   ${
-                    message?.sender_type === "shop"
-                      ? "self-end shop bg-primary-background"
-                      : "self-start customer bg-tertiay-background"
-                  } border-border py-1.5 px-3 ${
-                    message?.replied_msg
-                      ? "rounded-lg flex flex-col gap-1"
-                      : "rounded-xl"
-                  }  w-fit max-w-[70%] h-fit`}
-                >
-                  {message?.replied_msg && (
-                    <span className="tagged-reply bg-[var(--background)] border-l-3 text-sm border-#4A4A4A] p-2 rounded-sm w-full h-fit">
-                      <span className="font-semibold">You</span>
-                      <p className="text-black/70 dark:text-white/70">
-                        {getMessage(message?.replied_msg)}
-                      </p>
-                    </span>
-                  )}
-                  <p className="text-sm text-black/70 dark:text-white/70">
-                    {message?.content}
-                  </p>
-                </div>
+                  senderType={message?.sender_type}
+                  messageId={message?.$id}
+                  repliedId={message?.replied_msg}
+                  content={message?.content}
+                />
               ))}
               <div ref={bottom_message} className="opacity-0 h-5" />
             </div>
