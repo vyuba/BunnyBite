@@ -2,6 +2,7 @@ import { Models } from "appwrite";
 import { createStore } from "zustand/vanilla";
 import { clientDatabase } from "../lib/client-appwrite";
 import { Query } from "appwrite";
+import { setCurrentShopCookie } from "@/utils";
 
 export type CounterState = {
   count: number;
@@ -60,12 +61,14 @@ export const createCounterStore = (
       const shopStorage = localStorage.getItem("shop");
       if (!shopStorage) {
         localStorage.setItem("shop", response.documents[0]?.shop);
+        setCurrentShopCookie(response.documents[0]?.shop);
         set(() => ({ shop: response.documents[0], userShops: response }));
         return;
       }
 
       const shop = response.documents.find((shop) => shop.shop === shopStorage);
       console.log(shop);
+      setCurrentShopCookie(shopStorage);
       set(() => ({ shop, userShops: response }));
     },
     setActiveShop: async (shop) => {

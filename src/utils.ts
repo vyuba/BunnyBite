@@ -32,6 +32,11 @@ const getShopDetails = async (id: string) => {
   return response;
 };
 
+const setCurrentShopCookie = async (shop: string) => {
+  const cookieStore = await cookies();
+  cookieStore.set("shop", shop);
+};
+
 const sendTwillioMessage = async (message) => {
   try {
     const response = await TwillioClient.messages.create({
@@ -54,4 +59,10 @@ async function run(userid) {
 
   console.log(checkout.url);
 }
-export { setJwtCookie, getShopDetails, run, sendTwillioMessage };
+export {
+  setJwtCookie,
+  getShopDetails,
+  run,
+  sendTwillioMessage,
+  setCurrentShopCookie,
+};
