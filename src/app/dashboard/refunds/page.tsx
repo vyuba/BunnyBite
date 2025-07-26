@@ -74,69 +74,73 @@ const RefundPage = () => {
             <thead className="px-2 w-full overflow-hidden text-black/70 dark:text-white  relative">
               <tr className=" bg-tertiay-background border-y border-border relative h-full">
                 <th
-                  className={`text-nowrap text-left text-sm font-medium h-full p-2  gap-2 flex items-center  bg-tertiay-background ${
-                    isCheckedList.length > 0
-                      ? "absolute w-full top-0 left-0 justify-between"
-                      : "sticky top-0 left-0"
-                  }`}
+                  className={`text-nowrap text-left text-sm w-full font-medium h-full  bg-tertiay-background`}
                 >
-                  <div className="flex items-center gap-2">
-                    <button
-                      className="cursor-pointer"
-                      onClick={() => {
-                        if (isCheckedList.length === refunds.total) {
-                          // Deselect all
-                          setIsCheckedList([]);
-                        } else {
-                          // Select all
-                          const allChecked = refunds.documents.map(
-                            (refund) => ({
-                              id: refund.$id,
-                              isChecked: true,
-                            })
-                          );
-                          setIsCheckedList(allChecked);
-                        }
-                      }}
-                    >
-                      {isCheckedList.length > 0 ? (
-                        isCheckedList.length < refunds.total ? (
-                          <MinusSquareIcon
-                            size={20}
-                            color="var(--icon-background)"
-                            weight="fill"
-                          />
+                  <div
+                    className={`text-nowrap text-left text-sm font-medium h-full max-h-[35px] p-2 gap-2 flex items-center  bg-tertiay-background ${
+                      isCheckedList.length > 0
+                        ? "absolute w-full top-0 left-0 justify-between"
+                        : "sticky top-0 left-0"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="cursor-pointer"
+                        onClick={() => {
+                          if (isCheckedList.length === refunds.total) {
+                            // Deselect all
+                            setIsCheckedList([]);
+                          } else {
+                            // Select all
+                            const allChecked = refunds.documents.map(
+                              (refund) => ({
+                                id: refund.$id,
+                                isChecked: true,
+                              })
+                            );
+                            setIsCheckedList(allChecked);
+                          }
+                        }}
+                      >
+                        {isCheckedList.length > 0 ? (
+                          isCheckedList.length < refunds.total ? (
+                            <MinusSquareIcon
+                              size={20}
+                              color="var(--icon-background)"
+                              weight="fill"
+                            />
+                          ) : (
+                            <CheckSquareIcon
+                              size={20}
+                              color="var(--icon-background)"
+                              weight="fill"
+                            />
+                          )
                         ) : (
-                          <CheckSquareIcon
+                          <SquareIcon
                             size={20}
                             color="var(--icon-background)"
-                            weight="fill"
+                            weight="regular"
                           />
-                        )
-                      ) : (
-                        <SquareIcon
-                          size={20}
-                          color="var(--icon-background)"
-                          weight="regular"
-                        />
-                      )}
-                    </button>
-                    <span className="text-sm capitalize font-medium">
-                      {isCheckedList.length > 0
-                        ? `${isCheckedList.length} selected fields`
-                        : " Refund ID"}
-                    </span>
-                  </div>
-                  {isCheckedList.length > 0 && (
-                    <div className="w-full justify-between h-full  flex items-center  px-2 gap-1.5">
-                      <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-2 md:px-3 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm py-1 rounded-md">
-                        delete
+                        )}
                       </button>
-                      <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize py-[1px] md:py-0.5 px-0.5 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm rounded-md">
-                        <DotsThreeIcon weight="bold" size={23} />
-                      </button>
+                      <span className="text-sm capitalize font-medium">
+                        {isCheckedList.length > 0
+                          ? `${isCheckedList.length} selected fields`
+                          : " Refund ID"}
+                      </span>
                     </div>
-                  )}
+                    {isCheckedList.length > 0 && (
+                      <div className="w-full justify-between h-full  flex items-center  px-2 gap-1.5">
+                        <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-2 md:px-3 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm py-1 rounded-md">
+                          delete
+                        </button>
+                        <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize py-[1px] md:py-0.5 px-0.5 hover:cursor-pointer text-nowrap bg-white dark:bg-black/40 text-xs md:text-sm rounded-md">
+                          <DotsThreeIcon weight="bold" size={23} />
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </th>
                 <th className="text-nowrap text-left text-sm font-medium h-full p-2">
                   Order ID
