@@ -8,6 +8,7 @@ import { Models } from "node-appwrite";
 import { ID, Query } from "appwrite";
 import { useCounterStore } from "@/app/providers/counter-store-provider";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
+import { sendTwillioMessage } from "@/utils";
 // import { ID } from "appwrite";
 
 // const sendAIMessage = async (message, payload) => {
@@ -64,6 +65,7 @@ const getMessages = async (
     return null;
   }
 };
+
 const getMessage = async (id: string) => {
   if (!id) {
     return null;
@@ -134,11 +136,21 @@ const MessageContainer = ({ id }: { id: string }) => {
   }, [shop?.shop_number, id, bottom_message]);
 
   const sendMessage = async (content) => {
+    const twillioMessage = {
+      content,
+      shop_phone: shop?.shop_number,
+      customer_number: messages.documents.find(
+        (message) => message?.customer_number !== null
+      )?.customer_number,
+    };
+
+    const id = await sendTwillioMessage(twillioMessage);
+
     try {
       const response = await clientDatabase.createDocument(
         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-        ID.unique(),
+        id,
         {
           sender_type: "shop",
           content: content,

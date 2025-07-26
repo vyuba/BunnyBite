@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { Models } from "node-appwrite";
 import { createClient } from "./app/lib/node-appwrite";
 import { api } from "./polar";
+import { TwillioClient } from "./app/lib/twillio";
 
 const setJwtCookie = async (key: Models.Jwt) => {
   (await cookies()).set("jwt", key?.jwt, {
@@ -31,6 +32,20 @@ const getShopDetails = async (id: string) => {
   return response;
 };
 
+const sendTwillioMessage = async (message) => {
+  try {
+    const response = await TwillioClient.messages.create({
+      body: message.content,
+      from: message.shop_phone,
+      to: message.customer_number,
+    });
+
+    return response.sid;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 async function run(userid) {
   const checkout = await api.checkouts.create({
     products: ["02925bc2-8a50-4ab1-8d0d-efc181b481d1"],
@@ -39,4 +54,4 @@ async function run(userid) {
 
   console.log(checkout.url);
 }
-export { setJwtCookie, getShopDetails, run };
+export { setJwtCookie, getShopDetails, run, sendTwillioMessage };
