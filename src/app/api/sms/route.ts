@@ -35,13 +35,13 @@ export const POST = async (req: NextRequest) => {
   console.log(params);
 
   const from = params.get("From"); // sender's number (e.g., 'whatsapp:+234...')
-  const body = params.get("Body"); // message text
+  const content = params.get("Body"); // message text
   const customer_name = params.get("ProfileName");
   const messageSid = params.get("MessageSid");
-  const repliedMessage = params.get("OriginalRepliedMessageSid");
+  // const repliedMessage = params.get("OriginalRepliedMessageSid");
   const to = params.get("To"); // your Twilio number
   console.log("from:", from);
-  console.log("body:", body);
+  console.log("body:", content);
   console.log("to:", to);
   const messageType = params.get("MessageType");
   console.log("MESSAGE-TYPE", messageType);
@@ -103,11 +103,11 @@ export const POST = async (req: NextRequest) => {
     messageSid,
     {
       sender_type: "customer",
-      content: body,
+      content: content,
       messageId: ID.unique(),
       Receiver_id: shopResponse?.documents[0]?.shop,
       chat_id: newChatId,
-      replied_msg: repliedMessage,
+      // replied_msg: null,
       customer_number: from,
       shop_phone: to,
       shop_id: shopResponse?.documents[0]?.$id,
@@ -132,7 +132,7 @@ export const POST = async (req: NextRequest) => {
         },
         body: JSON.stringify({
           sender_type: "shop",
-          content: body,
+          content: content,
           messageId: ID.unique(),
           Receiver_id: message.Receiver_id,
           chat_id: message.chat_id,
