@@ -10,7 +10,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import { Models, Query } from "appwrite";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 
 const setupStatus = [
   {
@@ -77,7 +77,7 @@ const getSetupProgress = async (id: string) => {
 };
 
 const AccountSetup = () => {
-  const { user } = useCounterStore((state) => state);
+  const { user } = useUserStore((state) => state);
   const [isSetupsVisible, setIsSetupsVisible] = useState(true);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [accountSetupStatus, setAccountSetupStatus] = useState(setupStatus);

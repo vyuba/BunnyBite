@@ -1,6 +1,6 @@
 "use client";
 import { clientDatabase } from "@/app/lib/client-appwrite";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import { TrashIcon } from "@phosphor-icons/react";
 import { PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { ID } from "appwrite";
@@ -10,7 +10,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 const IntegrationPage = () => {
   const searchParams = useSearchParams();
-  const { user, userShops } = useCounterStore((state) => state);
+  const { user, userShops } = useUserStore((state) => state);
   const [showConnect, setShowConnect] = useState(false);
   const store = searchParams.get("shop");
   useEffect(() => {

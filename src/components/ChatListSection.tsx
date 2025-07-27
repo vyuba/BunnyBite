@@ -6,7 +6,7 @@ import { Query } from "appwrite";
 import { client, clientDatabase } from "@/app/lib/client-appwrite";
 import SpinnerLoader from "./SpinnerLoader";
 import HighlightedText from "./HighlightedText";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import Link from "next/link";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 import { getProfileIcon } from "@/client-utils";
@@ -21,7 +21,7 @@ const getChats = async (
     const document = await clientDatabase.listDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      [Query.equal("shop_phone", shopNumber || "")]
+      [Query.equal("shop_phone", shopNumber), Query.orderDesc("$updatedAt")]
     );
     console.log(document);
     if (document.total === 0) {
@@ -36,7 +36,7 @@ const getChats = async (
           [
             Query.equal("chat_id", doc?.chat_id || ""),
             Query.equal("shop_phone", shopNumber || ""),
-            Query.orderDesc("$createdAt"),
+            Query.orderDesc("$updatedAt"),
             Query.limit(1),
           ]
         );
@@ -57,7 +57,7 @@ const getChats = async (
 const ChatListSection = () => {
   const { isChatOpen, setIsChatOpen, setSelectedChat } = useChatProvider();
   const [chats, setChats] = useState<Chats[] | null>(null);
-  const { shop } = useCounterStore((state) => state);
+  const { shop } = useUserStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   useEffect(() => {

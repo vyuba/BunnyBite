@@ -36,7 +36,6 @@
   --border: #e3e3e3;
   --focused-border: #cacaca;
   --text-color: #000000;
-  /* --font-neue: 'Neue', sans-serif; */
 }
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

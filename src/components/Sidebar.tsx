@@ -17,7 +17,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { clientAccount } from "@/app/lib/client-appwrite";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import { toast } from "sonner";
 import ToolKit from "./ToolKit";
 import { usePathname } from "next/navigation";
@@ -63,7 +63,7 @@ export const SideBar = ({ user }: { user: string | null }) => {
   const [isProfileClicked, setIsProfileClicked] = useState(false);
   const router = useRouter();
   const { isSidebar, setSidebar, userShops, shop, setActiveShop } =
-    useCounterStore((state) => state);
+    useUserStore((state) => state);
   const inputRef = useRef(null);
   const PopUpref = useRef(null);
   const [isToolKit, setToolKit] = useState(false);

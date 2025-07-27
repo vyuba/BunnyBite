@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import LocalFont from "next/font/local";
 import "./globals.css";
-import { CounterStoreProvider } from "./providers/counter-store-provider";
+import { UserStoreProvider } from "./providers/userStoreProvider";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "./providers/ThemeProvider";
 const neueMontreal = LocalFont({
@@ -78,8 +78,8 @@ export default function RootLayout({
 const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   "use client";
   return (
-    <CounterStoreProvider>
+    <UserStoreProvider>
       <ThemeProvider>{children}</ThemeProvider>
-    </CounterStoreProvider>
+    </UserStoreProvider>
   );
 };

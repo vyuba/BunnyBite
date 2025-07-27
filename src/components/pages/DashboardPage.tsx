@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { SideBar } from "@/components/Sidebar";
 import Loading from "@/app/dashboard/loading";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import PageHeader from "@/components/PageHeader";
 import AnouncementBanner from "@/components/AnouncementBanner";
 import { useSearchParams } from "next/navigation";
@@ -16,7 +16,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   const searchParams = useSearchParams();
   const store = searchParams.get("shop");
   const { setCurrentUser, setUserShop, user, isSidebar, setSidebar } =
-    useCounterStore((state) => state);
+    useUserStore((state) => state);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchSession = async () => {

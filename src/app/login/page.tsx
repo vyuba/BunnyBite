@@ -1,8 +1,8 @@
 "use client";
+
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-// import { getLoggedInUser } from "@/helpers/appwrite-helpers";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { clientAccount } from "../lib/client-appwrite";
@@ -10,7 +10,6 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Status } from "@/components/pages/RegisterPage";
 import Image from "next/image";
 import { SmileyXEyesIcon } from "@phosphor-icons/react";
-// import { setJwtCookie } from "@/utils";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -19,16 +18,18 @@ const LoginPage = () => {
     type: null,
   });
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const checkUser = async () => {
-      // const user = await getLoggedInUser();
       const user = await clientAccount.get();
       console.log(user);
       if (user) router.push("/dashboard");
     };
     checkUser();
   }, [router]);
+
   //SIGN IN USER WITH EMAIL AND PASSWORD
+
   async function signInWithEmail(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -84,6 +85,7 @@ const LoginPage = () => {
       setLoading(false);
     }
   }
+
   return (
     <div className=" w-full h-screen flex items-center justify-center bg-secondary-background px-4">
       <div className="flex flex-col w-full max-w-[400px]">

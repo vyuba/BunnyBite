@@ -11,13 +11,13 @@ import {
 } from "@phosphor-icons/react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import { Models, Query } from "appwrite";
 import Skeleton from "@/components/Skeleton";
 
 const RefundPage = () => {
-  const { shop } = useCounterStore((state) => state);
+  const { shop } = useUserStore((state) => state);
   const [isCheckedList, setIsCheckedList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refunds, setRefunds] =

@@ -12,13 +12,7 @@ const setJwtCookie = async (key: Models.Jwt) => {
   });
 
   const { appwriteClient } = await createClient();
-
-  // console.log(key?.jwt);
-
   appwriteClient.headers["X-Appwrite-JWT"] = key?.jwt;
-
-  // console.log(appwriteClient.headers["X-Appwrite-JWT"]);
-  // console.log(key);
 };
 
 const getShopDetails = async (id: string) => {

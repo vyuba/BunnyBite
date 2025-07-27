@@ -4,28 +4,24 @@ import { clientDatabase } from "../lib/client-appwrite";
 import { Query } from "appwrite";
 import { setCurrentShopCookie } from "@/utils";
 
-export type CounterState = {
-  count: number;
+export type UserState = {
   user: Models.User<Models.Preferences> | null;
   shop: Models.Document | null;
   userShops: Models.DocumentList<Models.Document> | null;
   isSidebar: boolean;
 };
 
-export type CounterActions = {
-  decrementCount: () => void;
-  incrementCount: () => void;
+export type UserActions = {
   setCurrentUser: (user: Models.User<Models.Preferences>) => void;
   setUserShop: (user_id: Models.Identity["$id"]) => void;
   setActiveShop: (shop: Models.Document) => void;
   setSidebar: (isSidebar: boolean) => void;
 };
 
-export type CounterStore = CounterState & CounterActions;
+export type UserStore = UserState & UserActions;
 
-export const initCounterStore = (): CounterState => {
+export const initUserStore = (): UserState => {
   return {
-    count: new Date().getFullYear(),
     user: null,
     shop: null,
     userShops: null,
@@ -33,22 +29,17 @@ export const initCounterStore = (): CounterState => {
   };
 };
 
-export const defaultInitState: CounterState = {
-  count: 0,
+export const defaultInitState: UserState = {
   user: null,
   shop: null,
   userShops: null,
   isSidebar: false,
 };
 
-export const createCounterStore = (
-  initState: CounterState = defaultInitState
-) => {
-  return createStore<CounterStore>()((set) => ({
+export const createUserStore = (initState: UserState = defaultInitState) => {
+  return createStore<UserStore>()((set) => ({
     ...initState,
     setSidebar: (isSidebar: boolean) => set(() => ({ isSidebar })),
-    decrementCount: () => set((state) => ({ count: state.count - 1 })),
-    incrementCount: () => set((state) => ({ count: state.count + 1 })),
     setCurrentUser: (user: Models.User<Models.Preferences>) =>
       set(() => ({ user })),
     setUserShop: async (user_id) => {

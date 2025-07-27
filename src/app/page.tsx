@@ -15,7 +15,7 @@ const Instrument = Instrument_Serif({
 export default async function Home() {
   return (
     <div className={`w-full h-full md:h-screen p-2 `}>
-      <div className="w-full overflow-hidden relative h-full px-2 pb-2 pt-30 lg:pt-0 flex-col flex items-center justify-center bg-[#F1F1F1] border border-border rounded-lg">
+      <div className="w-full overflow-hidden relative h-full px-2 pb-2 pt-30 lg:pt-0 flex-col flex items-center justify-center bg-background border border-border rounded-lg">
         <Navbar />
         <Image
           src={"/shopifybox.svg"}
@@ -34,34 +34,34 @@ export default async function Home() {
         <div className="flex flex-col pb-15 items-center gap-5 ">
           <div className="text-center">
             <h1
-              className={`capitalize text-[clamp(28px,5vw,72px)]  pb-3 md:pb-0 `}
+              className={`capitalize text-[clamp(28px,5vw,72px)]  pb-3 md:pb-0 text-black/70 dark:text-white `}
             >
               customer service {""}
               <strong
-                className={`text-[clamp(33px,5vw,80px)]  ${Instrument.className}`}
+                className={`text-[clamp(33px,5vw,80px)] text-black/70 dark:text-white ${Instrument.className}`}
               >
                 Chatbot
               </strong>
             </h1>
-            <h2 className="capitalize text-[clamp(13px,1vw,20px)]">
+            <h2 className="capitalize text-[clamp(13px,1vw,20px)] text-black/70 dark:text-white">
               all you have to do is install it on your shopify store and ai
               handles the rest
             </h2>
           </div>
           <div className="flex items-center gap-2">
             <Link href="/login">
-              <button className="border border-border border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-white text-sm md:text-base py-2 rounded-lg">
+              <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-4 hover:cursor-pointer bg-primary-background text-sm md:text-base py-2 rounded-lg">
                 Install app
               </button>
             </Link>
             <Link href="/login">
-              <button className="border border-border border-b-2 text-black/70 capitalize px-4 hover:cursor-pointer bg-[white] text-sm md:text-base py-2 rounded-lg">
+              <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-4 hover:cursor-pointer bg-primary-background text-sm md:text-base py-2 rounded-lg">
                 sign in
               </button>
             </Link>
           </div>
         </div>
-        <div className="w-full max-w-[800px] bg-white border border-border h-[400px] rounded-lg" />
+        <div className="w-full max-w-[800px] bg-primary-background border border-border h-[400px] rounded-lg" />
       </div>
     </div>
   );

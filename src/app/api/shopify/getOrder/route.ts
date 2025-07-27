@@ -1,6 +1,5 @@
 import { getShopify } from "@/app/lib/shopify";
 import { ApiVersion } from "@shopify/shopify-api";
-// import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -10,13 +9,6 @@ export const GET = async (req: NextRequest) => {
   const orderId = searchParams.get("orderId");
   const shop = searchParams.get("shop");
 
-  //   const cookieStore = await cookies();
-  //   const shop = cookieStore.get("shop");
-
-  //   console.log(cookieStore);
-
-  //   console.log("--SHOP--", shop);
-
   if (!shop) {
     return NextResponse.json(
       { error: "Missing shop parameter" },
@@ -25,8 +17,6 @@ export const GET = async (req: NextRequest) => {
   }
 
   const session = await appwritesessionStorage.loadSession(`offline_${shop}`);
-
-  // console.log("testingSession:", testingSession);
 
   console.log("session:", session);
 
@@ -83,15 +73,9 @@ export const GET = async (req: NextRequest) => {
       path: `orders/#${orderId}`,
       query: { status: "any" },
     });
-    // const order = await client.request(queryString);
 
     console.log(order);
 
-    // if (order.errors) {
-    //   console.log(order.errors);
-    //   return NextResponse.json(order.errors);
-    // }
-    // await sessionStorage.disconnect();
     return NextResponse.json(order);
   } catch (error) {
     console.log(error);

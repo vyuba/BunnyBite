@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { client, clientDatabase } from "@/app/lib/client-appwrite";
 import { Models } from "node-appwrite";
 import { ID, Query } from "appwrite";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 import { sendTwillioMessage } from "@/utils";
 import Message from "./Message";
@@ -31,7 +31,7 @@ const getMessages = async (
       [
         Query.equal("chat_id", chat_id),
         Query.equal("shop_phone", shop_number),
-        Query.orderDesc("$updatedAt"),
+        Query.orderAsc("$createdAt"),
         Query.limit(100),
       ]
     );
@@ -44,7 +44,7 @@ const getMessages = async (
 };
 const MessageContainer = ({ id }: { id: string }) => {
   const { isChatOpen, setIsChatOpen } = useChatProvider();
-  const { shop } = useCounterStore((state) => state);
+  const { shop } = useUserStore((state) => state);
   const message_box = useRef<HTMLDivElement>(null);
   const bottom_message = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState("");

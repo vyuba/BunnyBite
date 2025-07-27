@@ -125,21 +125,4 @@ class AppwriteSessionStorage {
   }
 }
 
-// Initialize Appwrite client
-// const appwrite = new Client()
-//   .setEndpoint('https://your-appwrite-endpoint') // Replace with your Appwrite endpoint
-//   .setProject('your-project-id'); // Replace with your Appwrite project ID
-
-// Create session storage instance
-// const sessionStorage = new AppwriteSessionStorage(appwrite, 'your-database-id', 'shopify_sessions');
-
-// // Initialize Shopify app
-// const shopify = shopifyApp({
-//   sessionStorage,
-//   apiKey: 'your-api-key',
-//   apiSecret: 'your-api-secret',
-//   scopes: ['read_products', 'write_products'],
-//   hostName: 'your-app-hostname',
-// });
-
 export { AppwriteSessionStorage };

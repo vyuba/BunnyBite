@@ -1,5 +1,5 @@
-// ThemeProvider.js
 "use client";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 type ThemeContext = {
@@ -24,8 +24,6 @@ export function ThemeProvider({ children }) {
     if (theme === "system") {
       appliedTheme = getSystemTheme();
     }
-    // root.classList.remove("light", "dark");
-    // root.classList.add(appliedTheme);
     root.setAttribute("data-theme", appliedTheme);
     const themeColor = document.querySelector("meta[name=theme-color]");
     if (themeColor) {
@@ -40,8 +38,6 @@ export function ThemeProvider({ children }) {
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const handler = () => {
       const root = window.document.documentElement;
-      //   root.classList.remove("light", "dark");
-      //   root.classList.add(getSystemTheme());
       root.setAttribute("data-theme", getSystemTheme());
     };
     mq.addEventListener("change", handler);

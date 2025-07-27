@@ -1,8 +1,8 @@
 import { SidebarSimpleIcon } from "@phosphor-icons/react";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import { usePathname } from "next/navigation";
 const PageHeader = ({ username }) => {
-  const { setSidebar, isSidebar } = useCounterStore((state) => state);
+  const { setSidebar, isSidebar } = useUserStore((state) => state);
   const pathname = usePathname();
   console.log(pathname);
   return (

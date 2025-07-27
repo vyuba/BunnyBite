@@ -1,9 +1,9 @@
 "use client";
 
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 
 const CreditPage = () => {
-  const { shop } = useCounterStore((state) => state);
+  const { shop } = useUserStore((state) => state);
   console.log(shop);
   return (
     <>

@@ -1,5 +1,5 @@
 "use client";
-import { useCounterStore } from "@/app/providers/counter-store-provider";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -27,7 +27,7 @@ const SettingsNavLinks = [
 ];
 
 const SettingsNavber = () => {
-  const { shop } = useCounterStore((state) => state);
+  const { shop } = useUserStore((state) => state);
   const pathname = usePathname();
   return (
     <div className="w-full overflow-x-scroll">

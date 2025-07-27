@@ -1,8 +1,4 @@
 "use server";
-// import { headers } from "next/headers";
-// import { databases } from "@/app/lib/node-appwrite";
-// import { Models, Query } from "node-appwrite";
-// import { Chats } from "@/types";
 
 const fetchShop = async ({ shop }: { shop: string }) => {
   try {

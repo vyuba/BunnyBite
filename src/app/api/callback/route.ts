@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  // sessionStorage,
-  getShopify,
-} from "../../lib/shopify";
+import { getShopify } from "../../lib/shopify";
 import { createSHA256HMAC, HashFormat } from "@shopify/shopify-api/runtime";
-// import { databases } from "@/app/lib/node-appwrite";
-// import { Models, ID, Query } from "node-appwrite";
 
 interface Params {
   [key: string]: string;
@@ -21,8 +16,7 @@ export const GET = async (req: NextRequest) => {
 
   searchParams.forEach((value, key) => {
     if (key != "hmac") {
-      params[key] = value || ""; // Store the value in the object using the key as the property name
-      // console.log("value:", value, "key:", key);
+      params[key] = value;
     }
   });
 
@@ -60,31 +54,7 @@ export const GET = async (req: NextRequest) => {
       rawRequest: req,
       rawResponse: NextResponse,
     });
-    // console.log("Authenticated:", callback.session);
-    // sessionStorage.storeSession(callback.session);
     await appwritesessionStorage.storeSession(callback.session);
-    // const checkShop = await databases.listDocuments<Models.Document>(
-    //   process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-    //   process.env.NEXT_PUBLIC_USER_COLLECTION_ID!,
-    //   [Query.equal("shop", callback.session.shop)]
-    // );
-    // if (checkShop.documents.length > 0) {
-    //   console.log("Shop already exists");
-    //   return NextResponse.json(
-    //     { error: "Shop already exists" },
-    //     { status: 400 }
-    //   );
-    // }
-    // let promise = await databases.createDocument<Models.Document>(
-    //   process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-    //   process.env.NEXT_PUBLIC_USER_COLLECTION_ID!,
-    //   ID.unique(),
-    //   {
-    //     shop: callback.session.shop,
-    //   }
-    // );
-
-    // console.log(promise);
 
     const webhookResponse = await shopify.webhooks.register({
       session: callback.session,
@@ -108,6 +78,7 @@ export const GET = async (req: NextRequest) => {
     redirectUrl.searchParams.append("shop", shop);
 
     const response = NextResponse.redirect(redirectUrl);
+
     response.cookies.set("shop", shop, {
       httpOnly: false,
       sameSite: "none",

@@ -13,14 +13,8 @@ export const GET = async (req: NextRequest) => {
       { status: 400 }
     );
   }
-  // console.log("shop:", shop);
 
-  // await sessionStorage.ready;
-  // console.log("hasCookie:", hasCookie);
-  // const testingSession = await sessionStorage.loadSession(`offline_${shop}`);
   const session = await appwritesessionStorage.loadSession(`offline_${shop}`);
-
-  // console.log("testingSession:", testingSession);
 
   console.log("session:", session);
 

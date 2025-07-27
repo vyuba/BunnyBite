@@ -1,21 +1,22 @@
-import dotenv from "dotenv";
-dotenv.config();
 import { z } from "zod";
 import "../../envConfig";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { END, interrupt, MemorySaver } from "@langchain/langgraph";
 import { clientDatabase } from "@/app/lib/client-appwrite";
+// import readline from "readline";
+import { tool } from "@langchain/core/tools";
+import { ID } from "appwrite";
 import {
   Annotation,
   MessagesAnnotation,
   StateGraph,
 } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
-import {
-  AIMessage,
-  HumanMessage,
-  // SystemMessage,
-} from "@langchain/core/messages";
+import { AIMessage, HumanMessage } from "@langchain/core/messages";
+
+import "dotenv/config";
+
+//THE ORDER TYPE RESPONSE
 
 export type OrderByIdentifierResponse = {
   data: {
@@ -32,6 +33,9 @@ export type OrderByIdentifierResponse = {
     } | null;
   };
 };
+
+// SYSTEM PROMPT
+
 const SYSTEM_PROMPT = `
 You are a friendly customer support agent with an e-commerce brand, conversational tone. Your role is to assist with ONLY the following:
 1. Refund requests (using the save-refund tool).
@@ -66,6 +70,8 @@ Steps:
 Important: Do NOT perform any actions or call any tools except **save-refund**, **tracking_tool**, or setting the action to **'save'**.
 `;
 
+//THE SAVE REFUND TOOL
+
 const saveRefund = tool(
   async ({ name, id, reason }) => {
     console.log("--CALLING-THE-REFUND-FUNCTION--");
@@ -74,8 +80,8 @@ const saveRefund = tool(
     }
     try {
       const refund = await clientDatabase.createDocument(
-        "683b2cfa00237042d186",
-        "683b2de000309d5417cf",
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_REFUND_COLLECTION_ID!,
         ID.unique(),
         {
           isActive: true,
@@ -105,6 +111,8 @@ const saveRefund = tool(
   }
 );
 
+// THE ORDER TRACKING ORDER TOOL
+
 const trackingOrder = tool(
   async ({ orderId }): Promise<OrderByIdentifierResponse> => {
     console.log("--CALLING-THE-GET-TRACKING-FUNCTION--");
@@ -115,7 +123,8 @@ const trackingOrder = tool(
 
     try {
       const response = await fetch(
-        `https://bunny-bite.vercel.app/api/shopify/getOrder?orderId=${orderId}&shop=customthem.myshopify.com`,
+        `https://${process.env
+          .NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/shopify/getOrder?orderId=${orderId}&shop=customthem.myshopify.com`,
         {
           credentials: "include",
         }
@@ -141,6 +150,8 @@ const trackingOrder = tool(
   }
 );
 
+//THE OUTPUT SCHEMA FOR THE LLM
+
 const outputSchema = z.object({
   action: z
     .enum(["save", "update"])
@@ -150,14 +161,15 @@ const outputSchema = z.object({
   content: z.string().describe("This is where you put in your response"),
 });
 
-// Create the model
+// LLM INITIALIZATION
+
 const llm = new ChatOpenAI({
   modelName: "gpt-4o-mini",
   // temperature: 0,
-  apiKey:
-    process.env.OPENAI_API_KEY ||
-    "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",
+  apiKey: process.env.OPENAI_API_KEY!,
 });
+
+//THE REACT AGENT
 
 const agent = createReactAgent({
   llm,
@@ -168,21 +180,17 @@ const agent = createReactAgent({
 // .withStructuredOutput(zodToJsonSchema(outputSchema))
 // .bindTools(tools);
 
+//STATE ANNOTATOIN
+
 const State = Annotation.Root({
   ...MessagesAnnotation.spec,
   action: Annotation<"save" | "update">,
   some_text: Annotation<string>,
   output: Annotation<string>,
 });
-// import readline from "readline";
-import { tool } from "@langchain/core/tools";
-import { ID } from "appwrite";
 
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
-// import { StructuredOutputParser } from "@langchain/core/output_parsers";
+//THE FIRST NODE
+
 const myNode = async (state: typeof State.State) => {
   let user_message;
   if (state.messages.length === 0) {
@@ -202,6 +210,7 @@ const myNode = async (state: typeof State.State) => {
   //   ...state.messages,
   //   user_message,
   // ];
+
   const response = await agent.invoke({
     messages: [...state.messages, user_message],
   });
@@ -219,33 +228,7 @@ const myNode = async (state: typeof State.State) => {
   };
 };
 
-// const refundNode = async (state: typeof State.State) => {
-//   const SYSTEM_PROMPT = `
-// You are a helpful customer support agent who only assists with refund requests.
-
-// - If the customer is asking about something other than a refund, kindly let them know that you can only handle refund-related issues.
-
-// - If it's a refund request, ask the customer to provide:
-//   - Their full name
-//   - Order ID
-//   - A brief description of the issue
-
-// - After they provide these details, summarize the refund request and ask:
-//   "Is everything correct and would you like to proceed with the refund request?"
-// -If the user wants to save and finish, make sure to set the action to 'save'.
-
-// - Only proceed if the customer confirms.
-// `;
-//   const refundNodeResponse = await llm.invoke([
-//     ...state.messages,
-//     new SystemMessage({ content: SYSTEM_PROMPT }),
-//   ]);
-
-//   return {
-//     messages: [new AIMessage({ content: refundNodeResponse.content })],
-//     action: refundNodeResponse.action,
-//   };
-// };
+//ROUTING NODE
 
 const routingFunction = async (state: typeof State.State) => {
   if (state.action === "save") {
@@ -254,18 +237,25 @@ const routingFunction = async (state: typeof State.State) => {
   return "root";
 };
 
-// const myNode2 = async (state: typeof State.State) => {};
+// GRAPH INIT
 
 const checkpointer = new MemorySaver();
 export const graph = new StateGraph(State)
   .addNode("root", myNode)
-  //   .addNode("root2", myNode2)
   .addEdge("__start__", "root")
   .addConditionalEdges("root", routingFunction, {
     end: END,
     root: "root",
   })
   .compile({ checkpointer });
+
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout,
+// });
+
+// import { StructuredOutputParser } from "@langchain/core/output_parsers";
+
 // const main = async () => {
 //   const threadConfig = { configurable: { thread_id: "somdsfkle_id" } };
 //   const stream = await graph.stream(
