@@ -37,6 +37,12 @@ export const GET = async (req: NextRequest) => {
     );
   }
   try {
+    // const order = await shopify.rest.Order.find({
+    //   session: session,
+    //   apiVersion: ApiVersion.July23,
+    //   id: orderId,
+    // });
+
     // const queryString = `query {
     //         orderByIdentifier(identifier: { name: ${orderId} }) {
     //             id

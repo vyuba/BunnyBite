@@ -84,6 +84,7 @@ export async function getShopify() {
       "write_orders",
       "read_customers",
       "write_customers",
+      "read_all_orders",
     ],
     hostName: new URL(`https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}`)
       .host,
