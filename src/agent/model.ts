@@ -2,7 +2,7 @@ import { z } from "zod";
 import "../../envConfig";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { END, interrupt, MemorySaver } from "@langchain/langgraph";
-import { clientDatabase } from "@/app/lib/client-appwrite";
+import { CreateAdminClient } from "@/app/lib/node-appwrite";
 // import readline from "readline";
 import { tool } from "@langchain/core/tools";
 import { ID } from "appwrite";
@@ -15,6 +15,17 @@ import { ChatOpenAI } from "@langchain/openai";
 import { AIMessage, HumanMessage } from "@langchain/core/messages";
 
 import "dotenv/config";
+import { RunnableConfig } from "@langchain/core/runnables";
+
+//STATE ANNOTATOIN
+
+const State = Annotation.Root({
+  ...MessagesAnnotation.spec,
+  action: Annotation<"save" | "update">,
+  // shopId: Annotation<string>,
+  some_text: Annotation<string>,
+  output: Annotation<string>,
+});
 
 //THE ORDER TYPE RESPONSE
 
@@ -73,13 +84,23 @@ Important: Do NOT perform any actions or call any tools except **save-refund**, 
 //THE SAVE REFUND TOOL
 
 const saveRefund = tool(
-  async ({ name, id, reason }) => {
+  async (
+    params: { name: string; id: string; reason: string },
+    config: RunnableConfig
+  ) => {
+    const { adminDatabase } = CreateAdminClient();
+    const { name, id, reason } = params;
+    const shopId = config["configurable"].get("shop_id");
     console.log("--CALLING-THE-REFUND-FUNCTION--");
-    if (!name || !id || !reason) {
+
+    console.log({ name, reason, id, shop: shopId });
+
+    if (!name || !id || !reason || !shopId) {
       throw new Error("Provide all the fields");
     }
+
     try {
-      const refund = await clientDatabase.createDocument(
+      const refund = await adminDatabase.createDocument(
         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_REFUND_COLLECTION_ID!,
         ID.unique(),
@@ -87,11 +108,15 @@ const saveRefund = tool(
           isActive: true,
           user_name: name,
           details: reason,
+          orderId: id,
+          shopId: shopId,
         }
       );
       console.log(refund);
+      return refund;
     } catch (error) {
       console.log(error);
+      return error.message;
     }
   },
   {
@@ -165,7 +190,7 @@ const outputSchema = z.object({
 
 const llm = new ChatOpenAI({
   modelName: "gpt-4o-mini",
-  // temperature: 0,
+  temperature: 0,
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
@@ -179,15 +204,6 @@ const agent = createReactAgent({
 });
 // .withStructuredOutput(zodToJsonSchema(outputSchema))
 // .bindTools(tools);
-
-//STATE ANNOTATOIN
-
-const State = Annotation.Root({
-  ...MessagesAnnotation.spec,
-  action: Annotation<"save" | "update">,
-  some_text: Annotation<string>,
-  output: Annotation<string>,
-});
 
 //THE FIRST NODE
 
@@ -298,7 +314,12 @@ export const graph = new StateGraph(State)
 // main();
 
 // const main = async () => {
-//   const threadConfig = { configurable: { thread_id: "somdsfkle_id" } };
+//   const threadConfig = {
+//     configurable: {
+//       thread_id: "sdfsds8769we83dd",
+//       shop_id: "687d0189002ff188ad59",
+//     },
+//   };
 //   const GraphResponse = await graph.invoke(
 //     {
 //       action: "update",
@@ -318,16 +339,16 @@ export const graph = new StateGraph(State)
 //       });
 //     });
 
-//     const response = await graph.invoke(
+//     await graph.invoke(
 //       new Command({
 //         resume: { user_input: humanText, messages: GraphResponse.messages },
 //       }),
 //       threadConfig
 //     );
 //     // console.log(response);
-//     if (response.action && response.action === "save") {
-//       stop = "save";
-//     }
+//     // if (response.action && response.action === "save") {
+//     //   stop = "save";
+//     // }
 
 //     if (stop === "save") {
 //       break;
@@ -335,4 +356,4 @@ export const graph = new StateGraph(State)
 //   }
 //   rl.close();
 // };
-// // main();
+// main();

@@ -11,9 +11,7 @@ const createClient = async () => {
       process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT ||
         "https://fra.cloud.appwrite.io/v1"
     )
-    .setProject(
-      process.env.NEXT_PUBLIC_APPWRITE_PROJECT || "683b2c75001dafa45447"
-    )
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)
     .setJWT(token);
 
   // console.log(appwriteClient.headers);
@@ -38,9 +36,7 @@ const CreateAdminClient = () => {
         process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT ||
           "https://fra.cloud.appwrite.io/v1"
       )
-      .setProject(
-        process.env.NEXT_PUBLIC_APPWRITE_PROJECT || "683b2c75001dafa45447"
-      )
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)
       .setKey(process.env.NEXT_APPWRITE_KEY!);
 
     const adminDatabase = new Databases(adminClient);
