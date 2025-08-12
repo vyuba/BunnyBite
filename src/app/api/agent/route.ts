@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Permission, Role } from "node-appwrite";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { sendTwillioMessage } from "@/utils";
-// import { createClient } from "@/app/lib/node-appwrite";
 
 export const POST = async (req: NextRequest) => {
   const { adminDatabase } = CreateAdminClient();

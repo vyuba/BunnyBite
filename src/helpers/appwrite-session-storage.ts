@@ -21,7 +21,7 @@ class AppwriteSessionStorage {
       return false;
     }
     const sessionData = session.toObject();
-    console.log("sessionData", sessionData);
+    // console.log("sessionData", sessionData);
     const document = {
       shop: sessionData.shop,
       state: sessionData.state,

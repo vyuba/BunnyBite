@@ -2,73 +2,78 @@
 
 import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import ChatHeader from "./ChatHeader";
-import { useEffect, useRef, useState } from "react";
-import { client, clientDatabase } from "@/app/lib/client-appwrite";
+import { useEffect, useOptimistic, useRef, useState } from "react";
+import { client } from "@/app/lib/client-appwrite";
 import { Models } from "node-appwrite";
-import { ID, Query } from "appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
-import { sendTwillioMessage } from "@/utils";
+import { sendMessage } from "@/client-utils";
 import Message from "./Message";
+import { useSearchParams } from "next/navigation";
+import { getMessages } from "@/client-utils";
+import MessageLoader from "./MessageLoader";
+import { useTransition } from "react";
 
-const getMessages = async (
-  chat_id: string,
-  shop_number: string,
-  setMessages: React.Dispatch<
-    React.SetStateAction<Models.DocumentList<Models.Document> | null>
-  >
-) => {
-  console.log(chat_id, shop_number);
-
-  if (!chat_id || !shop_number) {
-    return [];
-  }
-  // console.log(chat_id);
-  try {
-    const document = await clientDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-      [
-        Query.equal("chat_id", chat_id),
-        Query.equal("shop_phone", shop_number),
-        Query.orderAsc("$createdAt"),
-        Query.limit(100),
-      ]
-    );
-    setMessages(document);
-    console.log(document);
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
+const scrollToBottom = (node) => {
+  node?.scrollIntoView({
+    behavior: "smooth",
+    block: "end",
+  });
 };
-const MessageContainer = ({ id }: { id: string }) => {
+
+const MessageContainer = () => {
   const { isChatOpen, setIsChatOpen } = useChatProvider();
   const { shop } = useUserStore((state) => state);
   const message_box = useRef<HTMLDivElement>(null);
-  const bottom_message = useRef<HTMLDivElement>(null);
+  // const bottom_message = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState("");
+  const searchParams = useSearchParams();
+  const chatId = searchParams.get("chat_id");
   const [messages, setMessages] =
     useState<Models.DocumentList<Models.Document> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isPending, startTransition] = useTransition();
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic<
+    Models.DocumentList<Models.Document>,
+    string
+  >(messages, (state, newMessage) => ({
+    total: state.total + 1,
+    documents: [
+      ...state.documents,
+      {
+        ...state.documents[0],
+        content: newMessage,
+        $id: crypto.randomUUID(),
+        sending: true,
+        sender_type: "shop",
+        $createdAt: new Date().toISOString(),
+        $updatedAt: new Date().toISOString(),
+      } as Models.Document,
+    ],
+  }));
 
   useEffect(() => {
-    getMessages(id, shop?.shop_number, setMessages);
+    const fetchMessages = async () => {
+      if (chatId) {
+        setIsLoading(true);
+        await getMessages(chatId, shop?.shop_number, setMessages);
+        setIsLoading(false);
+      }
+    };
+    fetchMessages();
+  }, [searchParams, chatId, shop?.shop_number]);
 
-    if (bottom_message && bottom_message.current) {
-      bottom_message.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
+  useEffect(() => {
     const unsubscribe = client.subscribe(
       `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
       (response) => {
         const document = response.payload as Models.Document;
-        const chatId = document?.chat_id;
+        const documentChatId = document?.chat_id;
         // const customer = document?.sender_type === "customer";
         if (
           document &&
-          id === chatId &&
+          chatId === documentChatId &&
           response.events[0].includes("create")
         ) {
           setMessages((prev) => ({
@@ -79,10 +84,10 @@ const MessageContainer = ({ id }: { id: string }) => {
             ],
           }));
 
-          bottom_message.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "end",
-          });
+          // bottom_message.current?.scrollIntoView({
+          //   behavior: "smooth",
+          //   block: "end",
+          // });
         }
       }
     );
@@ -91,47 +96,28 @@ const MessageContainer = ({ id }: { id: string }) => {
       return;
     }
     return () => unsubscribe();
-  }, [shop?.shop_number, id, bottom_message]);
+  }, [shop?.shop_number, chatId]);
 
-  const sendMessage = async (content) => {
-    const twillioMessage = {
-      content,
-      shop_phone: shop?.shop_number,
-      customer_number: messages.documents.find(
-        (message) => message?.customer_number !== null
-      )?.customer_number,
-    };
+  if (isLoading) {
+    return <MessageLoader />;
+  }
 
-    const id = await sendTwillioMessage(twillioMessage);
-
-    try {
-      const response = await clientDatabase.createDocument(
-        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-        id,
-        {
-          sender_type: "shop",
-          content: content,
-          messageId: ID.unique(),
-          Receiver_id: messages.documents.find(
-            (message) => message?.Receiver_id
-          )?.Receiver_id,
-          chat_id: messages.documents.find(
-            (message) => message?.chat_id !== null
-          )?.chat_id,
-          customer_number: messages.documents.find(
-            (message) => message?.customer_number !== null
-          )?.customer_number,
-          shop_phone: shop?.shop_number,
-          shop_id: shop?.$id,
-        }
-      );
-      console.log("--MESAGE-SENT--", response);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleSendMessage = async (
+    content: string,
+    messages: Models.DocumentList<Models.Document>,
+    shop: Models.Document
+  ) => {
+    startTransition(async () => {
+      addOptimisticMessage(content);
+      try {
+        await sendMessage(content, messages, shop);
+      } catch (error) {
+        console.error("Failed to add todo:", error);
+      }
+    });
   };
 
+  console.log(optimisticMessages);
   return (
     <div
       className={`w-full ${
@@ -140,7 +126,7 @@ const MessageContainer = ({ id }: { id: string }) => {
     >
       {/* bg-repeat bg-[url('/whatsappbackground.png')] */}
       <div className="bg-primary-background w-full h-full">
-        {messages && messages.total > 0 ? (
+        {optimisticMessages && optimisticMessages.total > 0 ? (
           <div className="w-full h-full flex flex-col">
             <ChatHeader />
 
@@ -148,16 +134,18 @@ const MessageContainer = ({ id }: { id: string }) => {
               ref={message_box}
               className="w-full flex-1 flex flex-col gap-2 py-16 px-3 overflow-auto "
             >
-              {messages?.documents.map((message) => (
+              {optimisticMessages?.documents.map((message) => (
                 <Message
                   key={message?.$id}
                   senderType={message?.sender_type}
                   messageId={message?.$id}
                   repliedId={message?.replied_msg}
                   content={message?.content}
+                  sending={message?.sending}
+                  createdAt={message?.$createdAt}
                 />
               ))}
-              <div ref={bottom_message} className="opacity-0 h-5" />
+              <div ref={scrollToBottom} className="opacity-0 h-5" />
             </div>
 
             {/* Messaging input section  */}
@@ -171,7 +159,7 @@ const MessageContainer = ({ id }: { id: string }) => {
                   if (e.key.toLowerCase() === "enter") {
                     e.preventDefault();
                     if (content.trim() === "") return;
-                    await sendMessage(content);
+                    await handleSendMessage(content, messages, shop);
                     setContent("");
                   }
                 }}
@@ -180,13 +168,14 @@ const MessageContainer = ({ id }: { id: string }) => {
                 className={` ${
                   content === "" ? "cursor-not-allowed" : "cursor-pointer"
                 } `}
-                disabled={content === "" ? true : false}
+                disabled={isPending}
                 onClick={async () => {
                   if (content === "") {
                     return;
                   }
 
-                  await sendMessage(content);
+                  await handleSendMessage(content, messages, shop);
+
                   setContent("");
                 }}
               >

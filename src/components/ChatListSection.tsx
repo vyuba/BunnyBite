@@ -1,70 +1,25 @@
-import Image from "next/image";
 import { Models } from "appwrite";
 import { useEffect, useState } from "react";
 import { Chats } from "@/types";
-import { Query } from "appwrite";
-import { client, clientDatabase } from "@/app/lib/client-appwrite";
+import { client } from "@/app/lib/client-appwrite";
 import SpinnerLoader from "./SpinnerLoader";
-import HighlightedText from "./HighlightedText";
 import { useUserStore } from "@/app/providers/userStoreProvider";
-import Link from "next/link";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
-import { getProfileIcon } from "@/client-utils";
-import { lorelei } from "@dicebear/collection";
-
-const getChats = async (
-  shopNumber: string
-): Promise<Chats[] | null | Models.DocumentList<Models.Document>> => {
-  // const cookieStore = await cookies();
-  // const shop = cookieStore.get("shop");
-  try {
-    const document = await clientDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      [Query.equal("shop_phone", shopNumber), Query.orderDesc("$updatedAt")]
-    );
-    console.log(document);
-    if (document.total === 0) {
-      return document as Models.DocumentList<Models.Document>;
-    }
-
-    const chatsWithMessages = await Promise.all(
-      document.documents.map(async (doc) => {
-        const messageDocument = await clientDatabase.listDocuments(
-          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-          [
-            Query.equal("chat_id", doc?.chat_id || ""),
-            Query.equal("shop_phone", shopNumber || ""),
-            Query.orderDesc("$updatedAt"),
-            Query.limit(1),
-          ]
-        );
-
-        return {
-          ...doc,
-          messages: messageDocument.documents as Models.Document[],
-        } as Chats;
-      })
-    );
-    return chatsWithMessages;
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
+import { getChats } from "@/client-utils";
+import Chat from "./Chat";
 
 const ChatListSection = () => {
-  const { isChatOpen, setIsChatOpen, setSelectedChat } = useChatProvider();
+  const { isChatOpen } = useChatProvider();
   const [chats, setChats] = useState<Chats[] | null>(null);
   const { shop } = useUserStore((state) => state);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
+
   useEffect(() => {
     const fetchChats = async () => {
       setIsLoading(true);
       const chats = (await getChats(shop?.shop_number || "")) as Chats[];
-      console.log("chats", chats);
+      // console.log("chats", chats);
       setChats(chats);
       setIsLoading(false);
     };
@@ -75,9 +30,6 @@ const ChatListSection = () => {
       (response) => {
         const document = response.payload as Models.Document;
         const chatId = document?.chat_id;
-        console.log("payload", document);
-        console.log("response", response);
-        // const customer = document?.sender_type === "customer";
         if (
           response.events[0].includes("update") &&
           document.shop_phone === shop?.shop_number
@@ -109,8 +61,45 @@ const ChatListSection = () => {
       }
     );
 
-    return () => unsubscribe();
+    const MessageUnsubscribe = client.subscribe(
+      `databases.${process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID}.collections.${process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID}.documents`,
+      (response) => {
+        const document = response.payload as Models.Document;
+        const documentChatId = document?.chat_id;
+        // const customer = document?.sender_type === "customer";
+        if (
+          document &&
+          documentChatId &&
+          response.events[0].includes("create")
+        ) {
+          console.log("new message added", document);
+          setChats((prev) =>
+            prev?.map((chat) =>
+              chat.chat_id === documentChatId
+                ? {
+                    ...chat,
+                    messages: [
+                      {
+                        ...document,
+                      },
+                      ...chat.messages,
+                    ],
+                    // $updatedAt: document?.$updatedAt,
+                  }
+                : chat
+            )
+          );
+        }
+      }
+    );
+
+    return () => {
+      unsubscribe();
+      MessageUnsubscribe();
+    };
   }, [shop]);
+
+  console.log(chats);
 
   const safeChats = Array.isArray(chats) ? chats : [];
   const filteredChats = safeChats.filter((chat) =>
@@ -143,35 +132,7 @@ const ChatListSection = () => {
       ) : chats && filteredChats.length > 0 ? (
         <div className="bg-primary-background mx-1 mb-1 p-2 h-full rounded-lg border-t border-border">
           {filteredChats.map((chat) => (
-            <Link
-              href={`/dashboard/chat/${chat?.chat_id}`}
-              onClick={async () => {
-                setIsChatOpen(false);
-                setSelectedChat(chat);
-              }}
-              data-chat-id={chat.$id}
-              className={`
-
-              flex items-center gap-2 cursor-pointer  hover:bg-tertiay-background rounded-sm transition-all  pl-2 py-3 `}
-              key={chat.$id}
-            >
-              <Image
-                src={getProfileIcon(chat?.customer_name, 100, lorelei)}
-                alt=""
-                width={30}
-                height={30}
-                className="bg-white dark:bg-black/40 block border-border border rounded-full size-10"
-              />
-              <div className="flex flex-col gap-1.5 overflow-hidden">
-                <h1 className={`text-sm capitalize font-medium `}>
-                  <HighlightedText text={chat?.customer_name} query={query} />
-                  {/* {chat?.customer_name} */}
-                </h1>
-                <span className="text-xs truncate">
-                  {chat?.messages[0]?.content}
-                </span>
-              </div>
-            </Link>
+            <Chat chat={chat} query={query} key={chat.$id} />
           ))}
         </div>
       ) : (
@@ -284,9 +245,3 @@ const ChatListSection = () => {
 };
 
 export default ChatListSection;
-
-// ${
-// selectedChat?.chat_id === chat?.chat_id
-//   ? "bg-[#F1F1F1]"
-//   : "bg-white"
-// }

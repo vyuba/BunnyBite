@@ -74,6 +74,7 @@ export const POST = async (req: NextRequest) => {
         customer_name,
         chat_id: ID.unique(),
         shop_phone: shopNumber,
+        unseen_messages: 0,
       },
       [Permission.read(Role.any())]
     );
@@ -107,6 +108,17 @@ export const POST = async (req: NextRequest) => {
       shop_id: shopResponse?.documents[0]?.$id,
     },
     [Permission.read(Role.any())]
+  );
+
+  // adding one to the unseen messages
+
+  await adminDatabase.updateDocument(
+    process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+    process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+    newChatId,
+    {
+      unseen_messages: newChat?.unseen_messages + 1,
+    }
   );
 
   // calculating the amount of token available

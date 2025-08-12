@@ -1,15 +1,7 @@
 "use client";
-
-// import { getChats, getMessages } from "@/helpers/shopifyQuery";
-// import { fetchCustomerCount } from "@/helpers/shopifyQuery";
-// import { clientDatabase } from "@/app/lib/client-appwrite";
-// import { ID } from "appwrite";
-// import { Models } from "appwrite";
-// import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import ChatListSection from "@/components/ChatListSection";
-// import ChatHeader from "@/components/ChatHeader";
-// import MessageContainer from "@/components/MessageContainer";
-// import AnalyticCard from "@/components/AnalyticsCard";
+import MessageContainer from "@/components/MessageContainer";
+import { Suspense } from "react";
 
 export interface Message {
   sender_type: string;
@@ -18,7 +10,14 @@ export interface Message {
 }
 
 const Page = () => {
-  return <ChatListSection />;
+  return (
+    <div className="w-full relative md:z-0 overflow-hidden h-[calc(100dvh-135px)] flex gap-2">
+      <ChatListSection />
+      <Suspense fallback={<MessageContainer />}>
+        <MessageContainer />
+      </Suspense>
+    </div>
+  );
 };
 
 export default Page;
