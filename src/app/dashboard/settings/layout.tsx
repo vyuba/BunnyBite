@@ -1,4 +1,10 @@
 import SettingsNavber from "@/components/SettingsNavber";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  metadataBase: new URL("https://bunny-bite.vercel.app/dashboard/settings"),
+  title: "Settings",
+};
 
 const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   return (

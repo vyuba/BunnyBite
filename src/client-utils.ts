@@ -145,6 +145,17 @@ const getChats = async (
   }
 };
 
+const updateChatUnseen = async (id: string) => {
+  await clientDatabase.updateDocument(
+    process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+    process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+    id,
+    {
+      unseen_messages: 0,
+    }
+  );
+};
+
 const convertTimestamp = (isoString: string) => {
   const date = new Date(isoString);
   return date
@@ -163,4 +174,5 @@ export {
   getMessages,
   getChats,
   convertTimestamp,
+  updateChatUnseen,
 };

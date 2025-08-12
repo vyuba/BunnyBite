@@ -14,18 +14,11 @@ import { getMessages } from "@/client-utils";
 import MessageLoader from "./MessageLoader";
 import { useTransition } from "react";
 
-const scrollToBottom = (node) => {
-  node?.scrollIntoView({
-    behavior: "smooth",
-    block: "end",
-  });
-};
-
 const MessageContainer = () => {
   const { isChatOpen, setIsChatOpen } = useChatProvider();
   const { shop } = useUserStore((state) => state);
   const message_box = useRef<HTMLDivElement>(null);
-  // const bottom_message = useRef<HTMLDivElement>(null);
+  const bottom_message = useRef<HTMLDivElement>(null);
   const [content, setContent] = useState("");
   const searchParams = useSearchParams();
   const chatId = searchParams.get("chat_id");
@@ -52,6 +45,13 @@ const MessageContainer = () => {
       } as Models.Document,
     ],
   }));
+
+  useEffect(() => {
+    bottom_message.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [messages]);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -145,7 +145,7 @@ const MessageContainer = () => {
                   createdAt={message?.$createdAt}
                 />
               ))}
-              <div ref={scrollToBottom} className="opacity-0 h-5" />
+              <div ref={bottom_message} className="opacity-0 h-5" />
             </div>
 
             {/* Messaging input section  */}

@@ -19,7 +19,6 @@ const ChatListSection = () => {
     const fetchChats = async () => {
       setIsLoading(true);
       const chats = (await getChats(shop?.shop_number || "")) as Chats[];
-      // console.log("chats", chats);
       setChats(chats);
       setIsLoading(false);
     };
@@ -44,6 +43,7 @@ const ChatListSection = () => {
                     customer_name: document?.customer_name,
                     customer_phone: document?.customer_phone,
                     isAIActive: document?.isAIActive,
+                    unseen_messages: document?.unseen_messages,
                   }
                 : chat
             )

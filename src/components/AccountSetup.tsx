@@ -162,7 +162,7 @@ const AccountSetup = () => {
                 backgroundColor:
                   activeIndex === index
                     ? "var(--primary-background)"
-                    : "transparent",
+                    : "rgba(21, 21, 21, 0)",
                 border:
                   activeIndex === index ? "1px solid var(--border)" : "none",
                 display:
@@ -178,7 +178,7 @@ const AccountSetup = () => {
                 backgroundColor:
                   activeIndex === index
                     ? "var(--primary-background)"
-                    : "transparent",
+                    : "rgba(21, 21, 21, 0)",
                 paddingBlock:
                   activeIndex === index ? "16px" : isSetupsVisible ? 0 : "16px",
                 border:

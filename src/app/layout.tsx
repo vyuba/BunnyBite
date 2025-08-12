@@ -33,7 +33,10 @@ const neueMontreal = LocalFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bunny-bite.vercel.app"),
-  title: "BunnyBite",
+  title: {
+    default: "BunnyBite",
+    template: "%s | BunnyBite",
+  },
   description:
     "AI chatbot that connects to your Shopify and e-commerce store. Automate refunds, order tracking, and customer support connect your store and let us handle the rest.",
 };

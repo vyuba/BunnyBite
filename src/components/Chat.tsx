@@ -1,6 +1,10 @@
 import Image from "next/image";
 import HighlightedText from "./HighlightedText";
-import { convertTimestamp, getProfileIcon } from "@/client-utils";
+import {
+  convertTimestamp,
+  getProfileIcon,
+  updateChatUnseen,
+} from "@/client-utils";
 import Link from "next/link";
 import { useCallback } from "react";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
@@ -9,29 +13,54 @@ import { lorelei } from "@dicebear/collection";
 import { Chats } from "@/types";
 
 const Chat = ({ chat, query }: { chat: Chats | null; query: string }) => {
-  const { setIsChatOpen, setSelectedChat } = useChatProvider();
+  const { setIsChatOpen, setSelectedChat, selectedChat } = useChatProvider();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
-    (name: string, value: string) => {
+    (updates: Record<string, string>) => {
       const params = new URLSearchParams(searchParams.toString());
-      params.set(name, value);
-
+      Object.entries(updates).forEach(([key, value]) => {
+        params.set(key, value);
+      });
       return params.toString();
     },
     [searchParams]
   );
+
+  const updateUnseen = async (chat: Chats) => {
+    if (chat?.unseen_messages > 0) {
+      await updateChatUnseen(chat.$id);
+      setSelectedChat({
+        ...chat,
+        unseen_messages: 0,
+      });
+    }
+  };
+
   return (
     <Link
-      href={pathname + "?" + createQueryString("chat_id", chat?.chat_id)}
+      href={
+        pathname +
+        "?" +
+        createQueryString({
+          chat_id: chat?.chat_id,
+          id: chat?.$id,
+        })
+      }
       onClick={async () => {
         setIsChatOpen(false);
         setSelectedChat(chat);
+        updateUnseen(chat);
       }}
       data-chat-id={chat.$id}
       className={`
-
+      ${
+        selectedChat?.$id === chat.$id ||
+        searchParams.get("chat_id") === chat.$id
+          ? "bg-tertiay-background"
+          : ""
+      }
               flex items-center gap-2 cursor-pointer  hover:bg-tertiay-background rounded-sm transition-all  pl-2 py-3 `}
       key={chat.$id}
     >

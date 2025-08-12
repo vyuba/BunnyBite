@@ -4,21 +4,40 @@ import { Chats } from "@/types";
 import { lorelei } from "@dicebear/collection";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
 import Image from "next/image";
-import { useTransition, useOptimistic } from "react";
+import { useTransition, useOptimistic, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { clientDatabase } from "@/app/lib/client-appwrite";
 
 const ChatHeader = () => {
   const { selectedChat, setIsChatOpen, setSelectedChat } = useChatProvider();
   // Optimistic state for AI toggle
   const [isPending, startTransition] = useTransition();
+
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+
   const [optimisticAIActive, toggleOptimisticAI] = useOptimistic(
     selectedChat?.isAIActive,
     (_currentState, newValue: boolean) => newValue
   );
 
-  const handleToggle = async () => {
-    // 1. Update UI instantly
+  useEffect(() => {
+    const getChat = async () => {
+      if (!selectedChat) {
+        const chat = await clientDatabase.getDocument(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+          id!
+        );
+        setSelectedChat(chat as Chats);
+        console.log("chat", chat);
+      }
+      return null;
+    };
+    getChat();
+  }, [id, setSelectedChat, selectedChat]);
 
-    // 2. Call server to persist change
+  const handleToggle = async () => {
     startTransition(async () => {
       toggleOptimisticAI(!optimisticAIActive);
       try {
@@ -28,7 +47,6 @@ const ChatHeader = () => {
         );
         setSelectedChat(response as Chats);
       } catch (error) {
-        // 3. Revert if server fails
         toggleOptimisticAI(optimisticAIActive);
         console.error("Failed to update AI toggle:", error);
       }
