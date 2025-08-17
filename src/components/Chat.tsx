@@ -5,16 +5,17 @@ import {
   getProfileIcon,
   updateChatUnseen,
 } from "@/client-utils";
-import Link from "next/link";
+// import Link from "next/link";
 import { useCallback } from "react";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { lorelei } from "@dicebear/collection";
 import { Chats } from "@/types";
 
 const Chat = ({ chat, query }: { chat: Chats | null; query: string }) => {
-  const { setIsChatOpen, setSelectedChat, selectedChat } = useChatProvider();
+  const { setIsChatOpen, setSelectedChat } = useChatProvider();
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const createQueryString = useCallback(
@@ -39,27 +40,23 @@ const Chat = ({ chat, query }: { chat: Chats | null; query: string }) => {
   };
 
   return (
-    <Link
-      href={
-        pathname +
-        "?" +
-        createQueryString({
-          chat_id: chat?.chat_id,
-          id: chat?.$id,
-        })
-      }
+    <div
       onClick={async () => {
         setIsChatOpen(false);
         setSelectedChat(chat);
         updateUnseen(chat);
+        router.push(
+          `${pathname}?${createQueryString({
+            chat_id: chat?.chat_id,
+            id: chat?.$id,
+          })}`
+        );
       }}
       data-chat-id={chat.$id}
       className={`
       ${
-        selectedChat?.$id === chat.$id ||
-        searchParams.get("chat_id") === chat.$id
-          ? "bg-tertiay-background"
-          : ""
+        // selectedChat?.$id === chat.$id ||
+        searchParams.get("id") === chat.$id ? "bg-tertiay-background" : ""
       }
               flex items-center gap-2 cursor-pointer  hover:bg-tertiay-background rounded-sm transition-all  pl-2 py-3 `}
       key={chat.$id}
@@ -87,7 +84,7 @@ const Chat = ({ chat, query }: { chat: Chats | null; query: string }) => {
           )}
         </span>
       </div>
-    </Link>
+    </div>
   );
 };
 

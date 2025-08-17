@@ -2,7 +2,7 @@
 
 import { PaperPlaneRightIcon } from "@phosphor-icons/react";
 import ChatHeader from "./ChatHeader";
-import { useEffect, useOptimistic, useRef, useState } from "react";
+import { useEffect, useMemo, useOptimistic, useRef, useState } from "react";
 import { client } from "@/app/lib/client-appwrite";
 import { Models } from "node-appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
@@ -98,10 +98,6 @@ const MessageContainer = () => {
     return () => unsubscribe();
   }, [shop?.shop_number, chatId]);
 
-  if (isLoading) {
-    return <MessageLoader />;
-  }
-
   const handleSendMessage = async (
     content: string,
     messages: Models.DocumentList<Models.Document>,
@@ -117,7 +113,29 @@ const MessageContainer = () => {
     });
   };
 
-  console.log(optimisticMessages);
+  const groupByDay = useMemo(() => {
+    if (optimisticMessages?.documents) {
+      return Object.groupBy(optimisticMessages?.documents, ({ $createdAt }) => {
+        const date = new Date($createdAt);
+        console.log(date.getDay());
+        return date.toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "short",
+          day: "2-digit",
+        });
+      });
+    } else {
+      return {};
+    }
+  }, [optimisticMessages?.documents]);
+
+  console.log("groupByDay", groupByDay);
+  // console.log(messages?.documents);
+
+  if (isLoading) {
+    return <MessageLoader />;
+  }
+
   return (
     <div
       className={`w-full ${
@@ -132,18 +150,25 @@ const MessageContainer = () => {
 
             <div
               ref={message_box}
-              className="w-full flex-1 flex flex-col gap-2 py-16 px-3 overflow-auto "
+              className="w-full flex-1 flex flex-col gap-2 py-16 px-3 overflow-auto relative "
             >
-              {optimisticMessages?.documents.map((message) => (
-                <Message
-                  key={message?.$id}
-                  senderType={message?.sender_type}
-                  messageId={message?.$id}
-                  repliedId={message?.replied_msg}
-                  content={message?.content}
-                  sending={message?.sending}
-                  createdAt={message?.$createdAt}
-                />
+              {Object.entries(groupByDay).map(([key, messages]) => (
+                <div key={key} className={`w-full flex flex-col gap-1.5`}>
+                  <span className="self-center py-1.5 px-2 border text-sm border-border bg-tertiay-background text-black/70 dark:text-white/70 rounded-xl">
+                    {key}
+                  </span>
+                  {messages.map((message) => (
+                    <Message
+                      key={message?.$id}
+                      senderType={message?.sender_type}
+                      messageId={message?.$id}
+                      repliedId={message?.replied_msg}
+                      content={message?.content}
+                      sending={message?.sending}
+                      createdAt={message?.$createdAt}
+                    />
+                  ))}
+                </div>
               ))}
               <div ref={bottom_message} className="opacity-0 h-5" />
             </div>

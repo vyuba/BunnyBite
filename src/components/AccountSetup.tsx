@@ -17,7 +17,9 @@ const setupStatus = [
     icon: CircleDashedIcon,
     text: "Setup guide 1: Create a Twilio Account",
     description:
-      "To begin, go to <a className='text-[#0077CC]' href='https://www.twilio.com/'> twilio.com </a> and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
+      "To begin, go to https://www.twilio.com and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
+    // description:
+    //   "To begin, go to <a className='text-[#0077CC]' href='https://www.twilio.com/'> twilio.com </a> and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
     checked: true,
   },
   {
@@ -279,9 +281,7 @@ const AccountSetup = () => {
                 className="grid gap-2  overflow-hidden"
               >
                 <p className="text-sm ">
-                  <span
-                    dangerouslySetInnerHTML={{ __html: status.description }}
-                  />
+                  <span>{status?.description}</span>
                 </p>
                 <div className="bg-tertiay-background gap-2 w-full py-2 rounded-md px-2 border border-border flex items-center justify-between">
                   <p className="text-xs md:text-sm">

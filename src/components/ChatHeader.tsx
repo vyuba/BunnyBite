@@ -5,14 +5,15 @@ import { lorelei } from "@dicebear/collection";
 import { ArrowLeftIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import { useTransition, useOptimistic, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 
 const ChatHeader = () => {
   const { selectedChat, setIsChatOpen, setSelectedChat } = useChatProvider();
+
   // Optimistic state for AI toggle
   const [isPending, startTransition] = useTransition();
-
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
@@ -23,19 +24,35 @@ const ChatHeader = () => {
 
   useEffect(() => {
     const getChat = async () => {
-      if (!selectedChat) {
-        const chat = await clientDatabase.getDocument(
-          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-          id!
-        );
+      if (!id) return null;
+      const chat = await clientDatabase.getDocument(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+        id!
+      );
+      if (selectedChat?.$id !== chat.$id) {
         setSelectedChat(chat as Chats);
-        console.log("chat", chat);
       }
-      return null;
+      console.log("chat", chat);
     };
     getChat();
-  }, [id, setSelectedChat, selectedChat]);
+  }, [id, searchParams, pathname, setSelectedChat, selectedChat]);
+
+  // useEffect(() => {
+  //   const getChat = async () => {
+  //     if (!selectedChat) {
+  //       const chat = await clientDatabase.getDocument(
+  //         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+  //         process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+  //         id!
+  //       );
+  //       setSelectedChat(chat as Chats);
+  //       console.log("chat", chat);
+  //     }
+  //     return null;
+  //   };
+  //   getChat();
+  // }, [id, setSelectedChat, selectedChat]);
 
   const handleToggle = async () => {
     startTransition(async () => {
