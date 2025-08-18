@@ -47,12 +47,13 @@ const sendTwillioMessage = async (message) => {
 
 async function run(userid) {
   const checkout = await api.checkouts.create({
-    products: ["02925bc2-8a50-4ab1-8d0d-efc181b481d1"],
+    products: [process.env.POLAR_PRODUCT_ID],
     externalCustomerId: userid,
   });
 
   console.log(checkout.url);
 }
+
 export {
   setJwtCookie,
   getShopDetails,

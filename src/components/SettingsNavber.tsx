@@ -1,5 +1,4 @@
 "use client";
-import { useUserStore } from "@/app/providers/userStoreProvider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -27,18 +26,13 @@ const SettingsNavLinks = [
 ];
 
 const SettingsNavber = () => {
-  const { shop } = useUserStore((state) => state);
   const pathname = usePathname();
   return (
     <div className="w-full overflow-x-scroll">
       <ul className="flex mt-2 gap-1 items-center p-0.5 bg-tertiay-background w-fit rounded-md border border-border">
         {SettingsNavLinks.map((links, index) => (
           <Link
-            href={
-              links.title === "security"
-                ? links.link + `/${shop?.$id}`
-                : links.link
-            }
+            href={links.link}
             key={index}
             className={`py-1 transition-colors text-black/70 dark:text-white capitalize cursor-pointer px-3 ${
               pathname.includes(links.title)

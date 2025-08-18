@@ -71,6 +71,10 @@ body {
   font-family: var(--font-neue);
   transition: background 0.5s, color 0.5s;
 }
+body::selection {
+  background-color: var(--icon-background);
+  color: var(--background);
+}
 
 .shared-style {
   @apply w-full h-full bg-[#303030];
