@@ -33,8 +33,6 @@ export const POST = async (req: NextRequest) => {
 
   // if sucessfull parse the payload
 
-  console.log("payload:", payload);
-
   const { shop, $id } = JSON.parse(payload);
 
   //init shopify
@@ -61,6 +59,16 @@ export const POST = async (req: NextRequest) => {
                     id
                     title
                     description
+                    priceRangeV2 {
+                      minVariantPrice {
+                        amount
+                        currencyCode
+                      }
+                      maxVariantPrice {
+                        amount
+                        currencyCode
+                      }
+                    }
                 }
             }
           }`;
@@ -69,10 +77,6 @@ export const POST = async (req: NextRequest) => {
 
     const client = new shopify.clients.Graphql({ session });
     const products = await client.request(queryString);
-
-    // logging the products
-
-    console.log(products);
 
     // logging when getting products error
 
@@ -88,6 +92,7 @@ export const POST = async (req: NextRequest) => {
       model: "text-embedding-3-large",
     });
 
+    console.log("model:", model);
     // creating an embedding for the products
 
     const productsEmbeding = await model.embedQuery(
@@ -98,10 +103,10 @@ export const POST = async (req: NextRequest) => {
 
     await pcIndex.upsert([
       {
-        id: crypto.randomUUID(),
+        id: products.data.id,
         values: productsEmbeding,
         metadata: {
-          name: "bunny-bite",
+          ...products.data,
           id: $id,
           shop: shop,
         },
