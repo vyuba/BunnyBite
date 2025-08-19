@@ -33,6 +33,8 @@ export const POST = async (req: NextRequest) => {
 
   // if sucessfull parse the payload
 
+  console.log("payload:", payload);
+
   const { shop, $id } = JSON.parse(payload);
 
   //init shopify
