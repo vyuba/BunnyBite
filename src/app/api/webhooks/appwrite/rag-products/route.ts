@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest) => {
 
   const expectedSignature = createHmac("sha1", signatureKey)
     .update(
-      `https://${webhookUrl}/api/webhooks/appwrite/send-message${payload}`
+      `https://${webhookUrl}/api/webhooks/appwrite/rag-products${payload}`
     )
     .digest("base64");
 
