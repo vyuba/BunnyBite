@@ -103,10 +103,11 @@ export const POST = async (req: NextRequest) => {
 
     await pcIndex.upsert([
       {
-        id: products.data.id,
+        id: products.data.id || crypto.randomUUID(),
         values: productsEmbeding,
         metadata: {
           ...products.data,
+          name: "bunny-bite",
           id: $id,
           shop: shop,
         },
