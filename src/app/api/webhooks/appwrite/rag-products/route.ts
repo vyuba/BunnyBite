@@ -61,10 +61,6 @@ export const POST = async (req: NextRequest) => {
                     id
                     title
                     description
-                    images {
-                        id
-                        url
-                    }
                 }
             }
           }`;
@@ -82,7 +78,7 @@ export const POST = async (req: NextRequest) => {
 
     if (products.errors) {
       console.log(products.errors);
-      return NextResponse.json(products.errors);
+      return NextResponse.json({ status: 400, error: products.errors });
     }
 
     // init the model for embedding
@@ -115,5 +111,6 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({ status: 200 });
   } catch (error) {
     console.log(error);
+    return NextResponse.json({ status: 500, error: "Internal server error" });
   }
 };
