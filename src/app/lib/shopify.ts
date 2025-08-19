@@ -8,7 +8,12 @@ import {
 import "@shopify/shopify-api/adapters/web-api";
 import { AppwriteSessionStorage } from "@/helpers/appwrite-session-storage";
 import { CreateAdminClient } from "./node-appwrite";
-import { shopifyWebhooks } from "@/utils";
+import {
+  appUninstallHandler,
+  productCreateHandler,
+  productUpdateHandler,
+  customerCreateHandler,
+} from "@/utils";
 
 // handlers for webhook events
 
@@ -68,7 +73,7 @@ export async function getShopify() {
           webhookId: string,
           apiVersion: string | undefined
         ) => {
-          await shopifyWebhooks.appUninstallHandler(
+          await appUninstallHandler(
             topic,
             shop,
             webhookRequestBody,
@@ -89,7 +94,7 @@ export async function getShopify() {
           webhookId: string,
           apiVersion: string | undefined
         ) => {
-          await shopifyWebhooks.customerCreateHandler(
+          await customerCreateHandler(
             topic,
             shop,
             webhookRequestBody,
@@ -110,7 +115,7 @@ export async function getShopify() {
           webhookId: string,
           apiVersion: string | undefined
         ) => {
-          await shopifyWebhooks.productCreateHandler(
+          await productCreateHandler(
             topic,
             shop,
             webhookRequestBody,
@@ -131,7 +136,7 @@ export async function getShopify() {
           webhookId: string,
           apiVersion: string | undefined
         ) => {
-          await shopifyWebhooks.productUpdateHandler(
+          await productUpdateHandler(
             topic,
             shop,
             webhookRequestBody,

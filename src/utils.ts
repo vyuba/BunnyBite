@@ -127,18 +127,14 @@ const productUpdateHandler = async (
   console.log("topic", topic);
 };
 
-const shopifyWebhooks = {
-  appUninstallHandler,
-  customerCreateHandler,
-  productCreateHandler,
-  productUpdateHandler,
-};
-
 export {
   setJwtCookie,
   getShopDetails,
   run,
   sendTwillioMessage,
   setCurrentShopCookie,
-  shopifyWebhooks,
+  productUpdateHandler,
+  productCreateHandler,
+  customerCreateHandler,
+  appUninstallHandler,
 };
