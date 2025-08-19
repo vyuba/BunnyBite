@@ -107,7 +107,6 @@ export const POST = async (req: NextRequest) => {
         id: products.data.id || crypto.randomUUID(),
         values: productsEmbeding,
         metadata: {
-          ...products.data,
           name: "bunny-bite",
           id: $id,
           shop: shop,
