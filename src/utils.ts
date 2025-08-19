@@ -4,6 +4,7 @@ import { Models } from "node-appwrite";
 import { createClient } from "./app/lib/node-appwrite";
 import { api } from "./polar";
 import { TwillioClient } from "./app/lib/twillio";
+import { getShopify } from "./app/lib/shopify";
 
 const setJwtCookie = async (key: Models.Jwt) => {
   (await cookies()).set("jwt", key?.jwt, {
@@ -54,10 +55,90 @@ async function run(userid) {
   console.log(checkout.url);
 }
 
+const appUninstallHandler = async (
+  topic: string,
+  shop: string,
+  webhookRequestBody: string,
+  webhookId: string,
+  apiVersion: string
+) => {
+  const { shopify, appwritesessionStorage } = await getShopify();
+  const sessionId = shopify.session.getOfflineId(shop);
+  const webhookBody = JSON.parse(webhookRequestBody);
+  console.log("webhook body", webhookBody);
+  console.log("webhook id", webhookId);
+  console.log("api version", apiVersion);
+  console.log("topic", topic);
+  // await sessionStorage.deleteSession(sessionId);
+  await appwritesessionStorage.deleteSession(sessionId);
+};
+
+const customerCreateHandler = async (
+  topic: string,
+  shop: string,
+  webhookRequestBody: string,
+  webhookId: string,
+  apiVersion: string
+) => {
+  // const sessionId = shopify.session.getOfflineId(shop);
+  const webhookBody = JSON.parse(webhookRequestBody);
+  console.log("webhook body", webhookBody);
+  console.log("webhook id", webhookId);
+  console.log("api version", apiVersion);
+  console.log("topic", topic);
+  // await sessionStorage.deleteSession(sessionId);
+  // await sessionStorage.deleteSession(`offline_${shop}`)
+  // await prisma.session.deleteMany({ where: { shop } });
+  // await prisma.stores.upsert({
+  //   where: { shop: shop },
+  //   update: { isActive: false },
+  //   create: { shop: shop, isActive: false },
+  // });
+  // Fetch the session from storage and process the webhook event
+};
+
+const productCreateHandler = async (
+  topic: string,
+  shop: string,
+  webhookRequestBody: string,
+  webhookId: string,
+  apiVersion: string
+) => {
+  // const sessionId = shopify.session.getOfflineId(shop);
+  const webhookBody = JSON.parse(webhookRequestBody);
+  console.log("webhook body", webhookBody);
+  console.log("webhook id", webhookId);
+  console.log("api version", apiVersion);
+  console.log("topic", topic);
+};
+
+const productUpdateHandler = async (
+  topic: string,
+  shop: string,
+  webhookRequestBody: string,
+  webhookId: string,
+  apiVersion: string
+) => {
+  // const sessionId = shopify.session.getOfflineId(shop);
+  const webhookBody = JSON.parse(webhookRequestBody);
+  console.log("webhook body", webhookBody);
+  console.log("webhook id", webhookId);
+  console.log("api version", apiVersion);
+  console.log("topic", topic);
+};
+
+const shopifyWebhooks = {
+  appUninstallHandler,
+  customerCreateHandler,
+  productCreateHandler,
+  productUpdateHandler,
+};
+
 export {
   setJwtCookie,
   getShopDetails,
   run,
   sendTwillioMessage,
   setCurrentShopCookie,
+  shopifyWebhooks,
 };

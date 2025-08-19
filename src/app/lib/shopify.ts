@@ -8,6 +8,7 @@ import {
 import "@shopify/shopify-api/adapters/web-api";
 import { AppwriteSessionStorage } from "@/helpers/appwrite-session-storage";
 import { CreateAdminClient } from "./node-appwrite";
+import { shopifyWebhooks } from "@/utils";
 
 // handlers for webhook events
 
@@ -25,45 +26,6 @@ import { CreateAdminClient } from "./node-appwrite";
 
 export async function getShopify() {
   const { adminClient } = await CreateAdminClient();
-  const appUninstallHandler = async (
-    topic: string,
-    shop: string,
-    webhookRequestBody: string,
-    webhookId: string,
-    apiVersion: string
-  ) => {
-    const sessionId = shopify.session.getOfflineId(shop);
-    const webhookBody = JSON.parse(webhookRequestBody);
-    console.log("webhook body", webhookBody);
-    console.log("webhook id", webhookId);
-    console.log("api version", apiVersion);
-    console.log("topic", topic);
-    // await sessionStorage.deleteSession(sessionId);
-    await appwritesessionStorage.deleteSession(sessionId);
-  };
-  const customerCreateHandler = async (
-    topic: string,
-    shop: string,
-    webhookRequestBody: string,
-    webhookId: string,
-    apiVersion: string
-  ) => {
-    // const sessionId = shopify.session.getOfflineId(shop);
-    const webhookBody = JSON.parse(webhookRequestBody);
-    console.log("webhook body", webhookBody);
-    console.log("webhook id", webhookId);
-    console.log("api version", apiVersion);
-    console.log("topic", topic);
-    // await sessionStorage.deleteSession(sessionId);
-    // await sessionStorage.deleteSession(`offline_${shop}`)
-    // await prisma.session.deleteMany({ where: { shop } });
-    // await prisma.stores.upsert({
-    //   where: { shop: shop },
-    //   update: { isActive: false },
-    //   create: { shop: shop, isActive: false },
-    // });
-    // Fetch the session from storage and process the webhook event
-  };
 
   const appwritesessionStorage = new AppwriteSessionStorage(
     adminClient,
@@ -84,6 +46,7 @@ export async function getShopify() {
       "write_orders",
       "read_customers",
       "write_customers",
+      "read_products",
     ],
     hostName: new URL(`https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}`)
       .host,
@@ -91,18 +54,8 @@ export async function getShopify() {
     isEmbeddedApp: false,
     sessionStorage: appwritesessionStorage,
     useOnlineTokens: false,
-    // webhooks: {
-    //   path: "/api/webhooks",
-    //   allowedTopics: ["APP_UNINSTALLED", "CUSTOMERS_CREATE"],
-    // },
-    // webhooks: [
-    //   {
-    //     topics: ["app/uninstalled"],
-    //     url: "/api/webhooks/app_uninstalled",
-    //     callback: appUninstallHandler,
-    //   },
-    // ],
   });
+
   shopify.webhooks.addHandlers({
     APP_UNINSTALLED: [
       {
@@ -115,7 +68,7 @@ export async function getShopify() {
           webhookId: string,
           apiVersion: string | undefined
         ) => {
-          await appUninstallHandler(
+          await shopifyWebhooks.appUninstallHandler(
             topic,
             shop,
             webhookRequestBody,
@@ -136,7 +89,49 @@ export async function getShopify() {
           webhookId: string,
           apiVersion: string | undefined
         ) => {
-          await customerCreateHandler(
+          await shopifyWebhooks.customerCreateHandler(
+            topic,
+            shop,
+            webhookRequestBody,
+            webhookId,
+            apiVersion!
+          );
+        },
+      },
+    ],
+    PRODUCTS_CREATE: [
+      {
+        deliveryMethod: DeliveryMethod.Http,
+        callbackUrl: "/api/webhooks",
+        callback: async (
+          topic: string,
+          shop: string,
+          webhookRequestBody: string,
+          webhookId: string,
+          apiVersion: string | undefined
+        ) => {
+          await shopifyWebhooks.productCreateHandler(
+            topic,
+            shop,
+            webhookRequestBody,
+            webhookId,
+            apiVersion!
+          );
+        },
+      },
+    ],
+    PRODUCTS_UPDATE: [
+      {
+        deliveryMethod: DeliveryMethod.Http,
+        callbackUrl: "/api/webhooks",
+        callback: async (
+          topic: string,
+          shop: string,
+          webhookRequestBody: string,
+          webhookId: string,
+          apiVersion: string | undefined
+        ) => {
+          await shopifyWebhooks.productUpdateHandler(
             topic,
             shop,
             webhookRequestBody,
@@ -151,29 +146,3 @@ export async function getShopify() {
   shopify.webhooks.getTopicsAdded();
   return { shopify, appwritesessionStorage };
 }
-// webhooks: {
-//   path: "/webhooks",
-//   allowedTopics: ["APP_UNINSTALLED"],
-// },
-
-// const appUninstallHandler = async (
-//   topic,
-//   shop,
-//   webhookRequestBody,
-//   webhookId,
-//   apiVersion
-// ) => {
-//   try {
-//     /** @type {AppUninstalled} */
-//     const webhookBody = JSON.parse(webhookRequestBody);
-
-//     await prisma.session.deleteMany({ where: { shop } });
-//     await prisma.stores.upsert({
-//       where: { shop: shop },
-//       update: { isActive: false },
-//       create: { shop: shop, isActive: false },
-//     });
-//   } catch (e) {
-//     console.error(e);
-//   }
-// };

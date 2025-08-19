@@ -71,7 +71,7 @@ const SecurityPage = () => {
                   isOpen: true,
                 })
               }
-              className="hover:bg-secondary-background invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
+              className="hover:bg-secondary-background visible md:invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
             >
               <EditSvg />
             </button>
@@ -95,7 +95,7 @@ const SecurityPage = () => {
                     isOpen: true,
                   })
                 }
-                className="hover:bg-secondary-background invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
+                className="hover:bg-secondary-background visible md:invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
               >
                 <EditSvg />
               </button>
@@ -118,7 +118,7 @@ const SecurityPage = () => {
                     isOpen: true,
                   })
                 }
-                className="hover:bg-secondary-background invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
+                className="hover:bg-secondary-background visible md:invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
               >
                 <EditSvg />
               </button>
