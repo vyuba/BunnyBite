@@ -34,10 +34,10 @@ const SettingsNavber = () => {
   return (
     <div className="w-full overflow-x-scroll">
       <ul className="flex mt-2 gap-1 items-center p-0.5 bg-tertiay-background w-fit rounded-md border border-border">
-        {SettingsNavLinks.map((links, index) => (
+        {SettingsNavLinks.map((links) => (
           <Link
             href={links.link}
-            key={index}
+            key={links.link}
             className={`py-1 transition-colors text-black/70 dark:text-white capitalize cursor-pointer px-3 ${
               pathname.includes(links.title)
                 ? "bg-primary-background border border-border"

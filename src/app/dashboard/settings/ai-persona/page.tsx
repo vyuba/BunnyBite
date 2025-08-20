@@ -3,18 +3,17 @@
 import { useUserStore } from "@/app/providers/userStoreProvider";
 import { EditSvg } from "../security/page";
 import Modal from "@/components/Modal";
-import { useState, useTransition } from "react";
-import { updateShop } from "@/client-utils";
+import { useUpdateShop } from "@/hooks/updateShop";
 
 const AiPersonaPage = () => {
   const { shop } = useUserStore((state) => state);
-  const [updatedData, setUpdatedData] = useState({
-    name: "",
-    label: "",
-    isOpen: false,
-  });
-
-  const [isPending, startTransition] = useTransition();
+  const {
+    updateShop,
+    isPending,
+    startTransition,
+    setUpdatedData,
+    updatedData,
+  } = useUpdateShop(shop);
 
   return (
     <>
@@ -59,7 +58,7 @@ const AiPersonaPage = () => {
                     <textarea
                       name="personality"
                       className="bg-tertiay-background text-[#6b6b6b] focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm border border-border"
-                      value={shop?.persona}
+                      value={shop?.personality || ""}
                       placeholder="Fill in how your AI should act..."
                       maxLength={500}
                     />
@@ -77,15 +76,11 @@ const AiPersonaPage = () => {
         description="Edit your AI persona."
       >
         <form
-          onSubmit={(event) =>
-            updateShop(
-              event,
-              updatedData,
-              setUpdatedData,
-              shop,
-              startTransition
-            )
-          }
+          onSubmit={(event) => {
+            startTransition(async () => {
+              await updateShop(event);
+            });
+          }}
           className="px-2 flex pb-1 gap-2 w-full flex-col"
         >
           <label className="flex items-start w-full flex-col gap-1">

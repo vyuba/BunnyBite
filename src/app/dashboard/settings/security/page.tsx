@@ -1,17 +1,17 @@
 "use client";
 import { useUserStore } from "@/app/providers/userStoreProvider";
-import { updateShop } from "@/client-utils";
 import Modal from "@/components/Modal";
-import { useState, useTransition } from "react";
+import { useUpdateShop } from "@/hooks/updateShop";
 
 const SecurityPage = () => {
   const { shop } = useUserStore((state) => state);
-  const [updatedData, setUpdatedData] = useState({
-    name: "",
-    label: "",
-    isOpen: false,
-  });
-  const [isPending, startTransition] = useTransition();
+  const {
+    updateShop,
+    isPending,
+    startTransition,
+    setUpdatedData,
+    updatedData,
+  } = useUpdateShop(shop);
 
   return (
     <div className="flex  w-full flex-col gap-2 pt-2 text-black/70 dark:text-white">
@@ -107,13 +107,9 @@ const SecurityPage = () => {
       >
         <form
           onSubmit={(event) =>
-            updateShop(
-              event,
-              updatedData,
-              setUpdatedData,
-              shop,
-              startTransition
-            )
+            startTransition(async () => {
+              await updateShop(event);
+            })
           }
           className="px-2 flex pb-1 gap-2 w-full flex-col"
         >
