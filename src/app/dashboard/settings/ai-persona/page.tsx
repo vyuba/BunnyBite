@@ -1,7 +1,7 @@
 "use client";
 
 import { useUserStore } from "@/app/providers/userStoreProvider";
-import { EditSvg } from "../security/page";
+import EditSvg from "@/components/EditSvg";
 import Modal from "@/components/Modal";
 import { useUpdateShop } from "@/hooks/updateShop";
 
