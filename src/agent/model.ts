@@ -3,6 +3,7 @@ import "../../envConfig";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { END, interrupt, MemorySaver } from "@langchain/langgraph";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
+// import { Command } from "@langchain/langgraph";
 // import readline from "readline";
 import { tool } from "@langchain/core/tools";
 import { ID } from "appwrite";
@@ -12,10 +13,17 @@ import {
   StateGraph,
 } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
-import { AIMessage, HumanMessage } from "@langchain/core/messages";
+import {
+  AIMessage,
+  HumanMessage,
+  SystemMessage,
+} from "@langchain/core/messages";
 
 import "dotenv/config";
 import { RunnableConfig } from "@langchain/core/runnables";
+import { pcIndex } from "@/app/lib/pinecone";
+import { model } from "@/app/lib/openai";
+import { Shop } from "@/types";
 
 //STATE ANNOTATOIN
 
@@ -80,6 +88,25 @@ Steps:
 
 Important: Do NOT perform any actions or call any tools except **save-refund**, **tracking_tool**, or setting the action to **'save'**.
 `;
+
+// get shop personality
+
+const getShopPersonality = async (shopId: Shop["$id"]) => {
+  try {
+    const { adminDatabase } = CreateAdminClient();
+    const shop: Shop = await adminDatabase.getDocument(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      shopId
+    );
+    console.log(shop);
+
+    return shop.personality;
+  } catch (error) {
+    console.log(error);
+    return error.message;
+  }
+};
 
 //THE SAVE REFUND TOOL
 
@@ -207,8 +234,15 @@ const agent = createReactAgent({
 
 //THE FIRST NODE
 
-const myNode = async (state: typeof State.State) => {
+const myNode = async (state: typeof State.State, config: RunnableConfig) => {
+  const shopId = config["configurable"].get("shop_id");
+
+  //fetching the personality
+
+  const shopPersonality = await getShopPersonality(shopId);
+
   let user_message;
+  const system_message = new SystemMessage({ content: shopPersonality });
   if (state.messages.length === 0) {
     const user_input = "Hello";
     user_message = new HumanMessage({ content: user_input });
@@ -221,14 +255,9 @@ const myNode = async (state: typeof State.State) => {
       user_message = new HumanMessage({ content: value.user_input });
     }
   }
-  // const allMessages = [
-  //   new SystemMessage({ content: SYSTEM_PROMPT }),
-  //   ...state.messages,
-  //   user_message,
-  // ];
 
   const response = await agent.invoke({
-    messages: [...state.messages, user_message],
+    messages: [...state.messages, system_message, user_message],
   });
   console.log("AI:", response.structuredResponse.content);
   console.log("action", response.structuredResponse.action);
@@ -247,29 +276,74 @@ const myNode = async (state: typeof State.State) => {
 //ROUTING NODE
 
 const routingFunction = async (state: typeof State.State) => {
+  const query = state.messages[state.messages.length - 1].content as string;
+  // If query looks like knowledge, do RAG
+  if (query.toLowerCase().includes("rag")) {
+    return "rag";
+  }
   if (state.action === "save") {
     return "end";
   }
+
   return "root";
 };
+
+// RAG NODE
+
+async function ragNode(
+  state: typeof MessagesAnnotation.State,
+  config: RunnableConfig
+) {
+  const lastMessage = state.messages[state.messages.length - 1];
+
+  const query = lastMessage.content as string;
+
+  const shopId = config["configurable"].get("shop_id");
+
+  const namespace = pcIndex.namespace("__default__");
+
+  const queryVector = await model.embedQuery(query);
+
+  const response = await namespace.query({
+    vector: queryVector,
+    topK: 10,
+    filter: {
+      shopId: { $eq: shopId },
+    },
+    includeValues: false,
+    includeMetadata: true,
+  });
+  // console.log(response);
+
+  const context = response.matches.map((response) => {
+    const productInfo = `
+           Product Name: ${response.metadata.title}\nProduct Price: ${response.metadata.price}\nProduct Description: ${response.metadata.description}
+    `;
+    return productInfo;
+  });
+
+  const answer = await llm.invoke([
+    new HumanMessage(`Use this context to answer:\n${context}\n\nQ: ${query}`),
+  ]);
+  console.log(answer.content);
+
+  return { messages: [...state.messages, answer] };
+}
 
 // GRAPH INIT
 
 const checkpointer = new MemorySaver();
 export const graph = new StateGraph(State)
   .addNode("root", myNode)
-  .addEdge("__start__", "root")
+  .addNode("rag", ragNode)
+  .addEdge("__start__", "rag")
   .addConditionalEdges("root", routingFunction, {
     end: END,
     root: "root",
+    rag: "rag",
   })
+  .addEdge("rag", END)
   .compile({ checkpointer });
-
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
-
 // import { StructuredOutputParser } from "@langchain/core/output_parsers";
 
 // const main = async () => {
@@ -312,6 +386,11 @@ export const graph = new StateGraph(State)
 //   rl.close();
 // };
 // main();
+
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout,
+// });
 
 // const main = async () => {
 //   const threadConfig = {

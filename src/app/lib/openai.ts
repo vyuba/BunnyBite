@@ -5,5 +5,3 @@ export const model = new OpenAIEmbeddings({
   model: "text-embedding-3-large",
   dimensions: 1024,
 });
-
-console.log("model:", model);
