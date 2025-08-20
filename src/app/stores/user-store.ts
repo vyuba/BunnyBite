@@ -3,18 +3,19 @@ import { createStore } from "zustand/vanilla";
 import { clientDatabase } from "../lib/client-appwrite";
 import { Query } from "appwrite";
 import { setCurrentShopCookie } from "@/utils";
+import { Shop } from "@/types";
 
 export type UserState = {
   user: Models.User<Models.Preferences> | null;
-  shop: Models.Document | null;
-  userShops: Models.DocumentList<Models.Document> | null;
+  shop: Shop | null;
+  userShops: Models.DocumentList<Shop> | null;
   isSidebar: boolean;
 };
 
 export type UserActions = {
   setCurrentUser: (user: Models.User<Models.Preferences>) => void;
   setUserShop: (user_id: Models.Identity["$id"]) => void;
-  setActiveShop: (shop: Models.Document) => void;
+  setActiveShop: (shop: Shop) => void;
   setSidebar: (isSidebar: boolean) => void;
 };
 
@@ -43,11 +44,12 @@ export const createUserStore = (initState: UserState = defaultInitState) => {
     setCurrentUser: (user: Models.User<Models.Preferences>) =>
       set(() => ({ user })),
     setUserShop: async (user_id) => {
-      const response = await clientDatabase.listDocuments(
-        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-        [Query.equal("user", user_id || "")]
-      );
+      const response: Models.DocumentList<Shop> =
+        await clientDatabase.listDocuments(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+          [Query.equal("user", user_id || "")]
+        );
 
       const shopStorage = localStorage.getItem("shop");
       if (!shopStorage) {

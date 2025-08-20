@@ -3,7 +3,9 @@ import { initials } from "@dicebear/collection";
 import { ID, Models, Query } from "appwrite";
 import { clientDatabase } from "./app/lib/client-appwrite";
 import { sendTwillioMessage } from "./utils";
-import { Chats } from "./types";
+import { Chats, Shop } from "./types";
+import { toast } from "sonner";
+import React, { TransitionStartFunction } from "react";
 
 const getProfileIcon = (name: string, scale = 80, package_type = initials) => {
   const avatar = createAvatar(package_type, {
@@ -167,6 +169,47 @@ const convertTimestamp = (isoString: string) => {
     .toLowerCase();
 };
 
+// update the shop details
+const updateShop = async (
+  event: React.FormEvent<HTMLFormElement>,
+  updatedData: { name: string; label: string },
+  setUpdatedData: React.Dispatch<
+    React.SetStateAction<{ name: string; label: string; isOpen: boolean }>
+  >,
+  shop: Shop,
+  startTransition: TransitionStartFunction
+) => {
+  startTransition(async () => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const data = {
+      [updatedData?.name]: formData.get(updatedData?.name)?.toString(),
+    };
+
+    try {
+      if (!shop?.$id) return;
+      toast.loading("Updating " + updatedData?.label + "...", {
+        id: "updateShop",
+      });
+      await clientDatabase.updateDocument(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+        shop?.$id,
+        {
+          ...data,
+        }
+      );
+      setUpdatedData({ label: "", name: "", isOpen: false });
+      formData.delete(updatedData?.name);
+      toast.dismiss("updateShop");
+      toast.success("Updated successfully");
+    } catch (error) {
+      toast.dismiss("updateShop");
+      toast.error("Failed to update", error.message);
+    }
+  });
+};
+
 export {
   getProfileIcon,
   sendMessage,
@@ -175,4 +218,5 @@ export {
   getChats,
   convertTimestamp,
   updateChatUnseen,
+  updateShop,
 };

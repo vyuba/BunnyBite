@@ -5,6 +5,8 @@ import { createClient } from "./app/lib/node-appwrite";
 import { api } from "./polar";
 import { TwillioClient } from "./app/lib/twillio";
 import { getShopify } from "./app/lib/shopify";
+import { model } from "./app/lib/openai";
+import { pcIndex } from "./app/lib/pinecone";
 
 const setJwtCookie = async (key: Models.Jwt) => {
   (await cookies()).set("jwt", key?.jwt, {
@@ -110,6 +112,23 @@ const productCreateHandler = async (
   console.log("webhook id", webhookId);
   console.log("api version", apiVersion);
   console.log("topic", topic);
+  // creating an embedding for the products
+
+  const productsEmbeding = await model.embedQuery(JSON.stringify(webhookBody));
+
+  // Storing in pinecone index
+
+  await pcIndex.upsert([
+    {
+      id: webhookBody.product || crypto.randomUUID(),
+      values: productsEmbeding,
+      metadata: {
+        name: "bunny-bite",
+        // id: $id,
+        shop: shop,
+      },
+    },
+  ]);
 };
 
 const productUpdateHandler = async (

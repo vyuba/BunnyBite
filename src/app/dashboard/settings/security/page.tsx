@@ -1,10 +1,8 @@
 "use client";
-
-import { clientDatabase } from "@/app/lib/client-appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
+import { updateShop } from "@/client-utils";
 import Modal from "@/components/Modal";
 import { useState, useTransition } from "react";
-import { toast } from "sonner";
 
 const SecurityPage = () => {
   const { shop } = useUserStore((state) => state);
@@ -14,37 +12,6 @@ const SecurityPage = () => {
     isOpen: false,
   });
   const [isPending, startTransition] = useTransition();
-
-  const updateShop = async (event: React.FormEvent<HTMLFormElement>) => {
-    startTransition(async () => {
-      event.preventDefault();
-      const formData = new FormData(event.currentTarget);
-      const data = {
-        [updatedData?.name]: formData.get(updatedData?.name)?.toString(),
-      };
-
-      try {
-        if (!shop?.$id) return;
-        toast.loading("Updating " + updatedData?.label + "...", {
-          id: "updateShop",
-        });
-        await clientDatabase.updateDocument(
-          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-          process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-          shop?.$id,
-          {
-            ...data,
-          }
-        );
-        setUpdatedData({ label: "", name: "", isOpen: false });
-        formData.delete(updatedData?.name);
-        toast.dismiss("updateShop");
-        toast.success("Updated successfully");
-      } catch (error) {
-        toast.error("Failed to update", error.message);
-      }
-    });
-  };
 
   return (
     <div className="flex  w-full flex-col gap-2 pt-2 text-black/70 dark:text-white">
@@ -139,7 +106,15 @@ const SecurityPage = () => {
         description="Edit your Twilio Account SID."
       >
         <form
-          onSubmit={updateShop}
+          onSubmit={(event) =>
+            updateShop(
+              event,
+              updatedData,
+              setUpdatedData,
+              shop,
+              startTransition
+            )
+          }
           className="px-2 flex pb-1 gap-2 w-full flex-col"
         >
           <label className="flex items-start w-full flex-col gap-1">
@@ -164,7 +139,7 @@ const SecurityPage = () => {
 
 export default SecurityPage;
 
-const EditSvg = () => {
+export const EditSvg = () => {
   return (
     <svg
       width="15"

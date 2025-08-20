@@ -8,6 +8,10 @@ const SettingsNavLinks = [
     link: "/dashboard/settings/account",
   },
   {
+    title: "ai-persona",
+    link: "/dashboard/settings/ai-persona",
+  },
+  {
     title: "security",
     link: "/dashboard/settings/security",
   },
@@ -41,7 +45,11 @@ const SettingsNavber = () => {
             }  rounded-sm`}
           >
             <h2 className="text-nowrap">
-              {links.title === "credit-grants" ? "Credit grants" : links.title}
+              {links.title === "credit-grants"
+                ? "Credit grants"
+                : links.title === "ai-persona"
+                ? "AI Persona"
+                : links.title}
             </h2>
           </Link>
         ))}

@@ -16,3 +16,16 @@ export interface Message {
   sending?: boolean;
   createdAt: string;
 }
+
+export type Shop = Models.Document & {
+  isAIActive: boolean;
+  products_vectors_added: boolean;
+  shop: string;
+  shop_number: string;
+  tokensFunded: number;
+  tokensUsed: number;
+  twillio_account_siid: string;
+  twillio_auth_token: string;
+  user: string;
+  personality: string;
+};

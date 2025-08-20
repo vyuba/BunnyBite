@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac } from "crypto";
 import { pcIndex } from "@/app/lib/pinecone";
 import { getShopify } from "@/app/lib/shopify";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { model } from "@/app/lib/openai";
+import { PineconeRecord, RecordMetadata } from "@pinecone-database/pinecone";
 
 export const POST = async (req: NextRequest) => {
   //Getting the payload from the request
@@ -85,34 +86,32 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ status: 400, error: products.errors });
     }
 
-    // init the model for embedding
-
-    const model = new OpenAIEmbeddings({
-      apiKey: process.env.OPENAI_API_KEY,
-      model: "text-embedding-3-large",
-      dimensions: 1024,
-    });
-
-    console.log("model:", model);
     // creating an embedding for the products
 
-    const productsEmbeding = await model.embedQuery(
-      JSON.stringify(products.data)
-    );
+    const productsEmbedingResponse: PineconeRecord<RecordMetadata>[] =
+      await Promise.all(
+        products.data.products.nodes.map(async (product) => {
+          const productsEmbeding = await model.embedQuery(
+            // JSON.stringify(product)
+            `${product.title}. ${product.description}. ${product.priceRangeV2.minVariantPrice.amount}`
+          );
+          return {
+            id: product.id,
+            values: productsEmbeding,
+            metadata: {
+              title: product.title,
+              description: product.description,
+              price: product.priceRangeV2.minVariantPrice.amount,
+              shop: shop,
+              shopId: $id,
+            },
+          } as PineconeRecord<RecordMetadata>;
+        })
+      );
 
     // Storing in pinecone index
 
-    await pcIndex.upsert([
-      {
-        id: products.data.id || crypto.randomUUID(),
-        values: productsEmbeding,
-        metadata: {
-          name: "bunny-bite",
-          id: $id,
-          shop: shop,
-        },
-      },
-    ]);
+    await pcIndex.upsert(productsEmbedingResponse);
 
     return NextResponse.json({ status: 200 });
   } catch (error) {
