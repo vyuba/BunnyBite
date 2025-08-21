@@ -310,52 +310,66 @@ async function ragNode(state: typeof State.State, config: RunnableConfig) {
   console.log("config", config.configurable);
   const shopId = config.configurable.shop_id;
 
-  const namespace = pcIndex.namespace("__default__");
+  try {
+    const namespace = pcIndex.namespace("__default__");
 
-  const queryVector = await model.embedQuery(query);
+    const queryVector = await model.embedQuery(query);
 
-  const response = await namespace.query({
-    vector: queryVector,
-    topK: 10,
-    filter: {
-      shopId: { $eq: shopId },
-    },
-    includeValues: false,
-    includeMetadata: true,
-  });
-  // console.log(response);
+    const response = await namespace.query({
+      vector: queryVector,
+      topK: 10,
+      filter: {
+        shopId: { $eq: shopId },
+      },
+      includeValues: false,
+      includeMetadata: true,
+    });
+    // console.log(response);
 
-  const context = response.matches.map((response) => {
-    const productInfo = `
-           Product Name: ${response.metadata.title}\nProduct Price: ${response.metadata.price}\nProduct Description: ${response.metadata.description}
-    `;
-    return productInfo;
-  });
+    const context = response.matches.map((response) => {
+      const productInfo = `
+             Product Name: ${response.metadata.title}\nProduct Price: ${response.metadata.price}\nProduct Description: ${response.metadata.description}
+      `;
+      return productInfo;
+    });
 
-  // const answer = await llm.invoke([
-  //   new HumanMessage(`Use this context to answer:\n${context}\n\nQ: ${query}`),
-  // ]);
+    // const answer = await llm.invoke([
+    //   new HumanMessage(`Use this context to answer:\n${context}\n\nQ: ${query}`),
+    // ]);
 
-  // console.log(answer.content);
-  const agentResponse = await agent.invoke({
-    messages: [
-      ...state.messages,
-      user_message,
-      new HumanMessage(
-        `Use this context to answer:\n${context}\n\nQ: ${query}`
-      ),
-    ],
-  });
-  // console.log(answer.content);
+    // console.log(answer.content);
+    const agentResponse = await agent.invoke({
+      messages: [
+        ...state.messages,
+        user_message,
+        new HumanMessage(
+          `Use this context to answer:\n${context}\n\nQ: ${query}`
+        ),
+      ],
+    });
+    // console.log(answer.content);
 
-  return {
-    messages: [
-      ...state.messages,
-      new AIMessage({ content: agentResponse.structuredResponse.content }),
-    ],
-    action: agentResponse.structuredResponse.action,
-    output: agentResponse.structuredResponse.content,
-  };
+    return {
+      messages: [
+        ...state.messages,
+        new AIMessage({ content: agentResponse.structuredResponse.content }),
+      ],
+      action: agentResponse.structuredResponse.action,
+      output: agentResponse.structuredResponse.content,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      messages: [
+        ...state.messages,
+        new AIMessage({
+          content: "I am sorry, I could not understand that." + error,
+        }),
+      ],
+      action: "save",
+      output: "I am sorry, I could not understand that.",
+    };
+  }
 }
 
 // GRAPH INIT
