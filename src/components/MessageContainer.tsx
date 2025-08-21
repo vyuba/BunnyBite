@@ -139,8 +139,10 @@ const MessageContainer = () => {
   return (
     <div
       className={`w-full ${
-        isChatOpen ? "translate-x-full z-10" : " translate-x-0 z-20  "
-      } md:translate-x-0 md:z-0  h-full relative duration-300  bg-primary-background overflow-hidden rounded-md border border-border`}
+        isChatOpen
+          ? "translate-x-full z-10 duration-300"
+          : " translate-x-0 z-20 duration-300 "
+      } md:translate-x-0 md:z-0  h-full relative bg-primary-background overflow-hidden rounded-md border border-border`}
     >
       {/* bg-repeat bg-[url('/whatsappbackground.png')] */}
       <div className="bg-primary-background w-full h-full">

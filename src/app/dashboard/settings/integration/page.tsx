@@ -1,8 +1,8 @@
 "use client";
 import { clientDatabase } from "@/app/lib/client-appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
+import EditSvg from "@/components/EditSvg";
 import { TrashIcon } from "@phosphor-icons/react";
-import { PencilSimpleIcon } from "@phosphor-icons/react/dist/ssr";
 import { ID } from "appwrite";
 import { AnimatePresence, motion } from "motion/react";
 import { useSearchParams } from "next/navigation";
@@ -127,40 +127,40 @@ const IntegrationPage = () => {
                         className=" w-fit bg-[#303030] border border-[#4A4A4A] text-white border-b-2  capitalize px-2.5 hover:cursor-pointer  text-sm py-1.5 rounded-lg flex items-center gap-1"
                       >
                         <p>Save</p>
-                        {/* <PencilSimpleIcon size={17} /> */}
                       </button>
                     </motion.form>
                   )}
                 </AnimatePresence>
-                <div className="w-full flex flex-col md:flex-row items-end justify-between gap-1.5">
+                <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-between gap-1.5">
                   {userShops &&
                     userShops.documents.map((store) => (
                       <div
                         key={store?.$id}
-                        className="w-full flex flex-row items-end flex-1"
+                        className="w-full flex flex-row group "
                       >
-                        <label className="flex items-start w-full flex-col gap-1">
-                          <span className="text-sm">Shopify</span>
+                        <label className="w-full flex items-start  flex-col gap-1">
+                          <div className="flex justify-between items-center w-full">
+                            <span className="text-sm capitalize">
+                              {store?.shop.replace(".myshopify.com", "")}
+                            </span>
+                            <div className="flex items-center gap-0.5 visible md:invisible group-hover:visible">
+                              <button className="w-fit bg-transparent hover:bg-[var(--background)] text-black/70 dark:text-white  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1 ">
+                                <EditSvg />
+                              </button>
+                              <button
+                                onClick={() => deleteShop(store?.$id)}
+                                className=" w-fit bg-transparent text-red-600 hover:bg-[var(--background)]  capitalize px-2.5 cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1"
+                              >
+                                <TrashIcon size={17} />
+                              </button>
+                            </div>
+                          </div>
                           <input
                             type="text"
-                            className="bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md max-w-[400px] py-1.5 px-1.5 w-full text-sm border border-border"
+                            className="w-full bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5  text-sm border border-border"
                             defaultValue={store?.shop}
                           />
                         </label>
-                        <div className="flex items-center gap-0.5">
-                          <button className=" w-fit bg-transparent hover:bg-[var(--background)] text-black/80  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1">
-                            <PencilSimpleIcon
-                              fill="var(--icon-background)"
-                              size={17}
-                            />
-                          </button>
-                          <button
-                            onClick={() => deleteShop(store?.$id)}
-                            className=" w-fit bg-transparent text-red-600 hover:bg-[var(--background)]  capitalize px-2.5 cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1"
-                          >
-                            <TrashIcon size={17} />
-                          </button>
-                        </div>
                       </div>
                     ))}
                 </div>

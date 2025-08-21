@@ -117,7 +117,7 @@ const saveRefund = tool(
   ) => {
     const { adminDatabase } = CreateAdminClient();
     const { name, id, reason } = params;
-    const shopId = config["configurable"].get("shop_id");
+    const shopId = config.configurable.shop_id;
     console.log("--CALLING-THE-REFUND-FUNCTION--");
 
     console.log({ name, reason, id, shop: shopId });
@@ -235,7 +235,7 @@ const agent = createReactAgent({
 //THE FIRST NODE
 
 const myNode = async (state: typeof State.State, config: RunnableConfig) => {
-  const shopId = config["configurable"].get("shop_id");
+  const shopId = config.configurable.shop_id;
 
   //fetching the personality
 
