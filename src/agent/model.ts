@@ -290,13 +290,22 @@ const routingFunction = async (state: typeof State.State) => {
 
 // RAG NODE
 
-async function ragNode(
-  state: typeof MessagesAnnotation.State,
-  config: RunnableConfig
-) {
-  const lastMessage = state.messages[state.messages.length - 1];
-
-  const query = lastMessage.content as string;
+async function ragNode(state: typeof State.State, config: RunnableConfig) {
+  let query;
+  let user_message;
+  if (state.messages.length === 0) {
+    const user_input = "Hello";
+    user_message = new HumanMessage({ content: user_input });
+  } else {
+    const value = interrupt({
+      user_input: state.some_text,
+    });
+    if (value) {
+      console.log("USER:", value.user_input);
+      query = value.user_input;
+      user_message = new HumanMessage({ content: value.user_input });
+    }
+  }
 
   const shopId = config["configurable"].get("shop_id");
 
@@ -322,12 +331,30 @@ async function ragNode(
     return productInfo;
   });
 
-  const answer = await llm.invoke([
-    new HumanMessage(`Use this context to answer:\n${context}\n\nQ: ${query}`),
-  ]);
-  console.log(answer.content);
+  // const answer = await llm.invoke([
+  //   new HumanMessage(`Use this context to answer:\n${context}\n\nQ: ${query}`),
+  // ]);
 
-  return { messages: [...state.messages, answer] };
+  // console.log(answer.content);
+  const agentResponse = await agent.invoke({
+    messages: [
+      ...state.messages,
+      user_message,
+      new HumanMessage(
+        `Use this context to answer:\n${context}\n\nQ: ${query}`
+      ),
+    ],
+  });
+  // console.log(answer.content);
+
+  return {
+    messages: [
+      ...state.messages,
+      new AIMessage({ content: agentResponse.structuredResponse.content }),
+    ],
+    action: agentResponse.structuredResponse.action,
+    output: agentResponse.structuredResponse.content,
+  };
 }
 
 // GRAPH INIT

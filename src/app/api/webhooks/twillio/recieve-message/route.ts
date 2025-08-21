@@ -156,6 +156,10 @@ export const POST = async (req: NextRequest) => {
       // returning the response from the ai agent serverless function
 
       return response;
+    } else {
+      return new NextResponse("Success", {
+        status: 200,
+      });
     }
   } catch (error) {
     console.log(error);
