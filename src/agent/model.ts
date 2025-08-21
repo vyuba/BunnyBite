@@ -307,7 +307,8 @@ async function ragNode(state: typeof State.State, config: RunnableConfig) {
     }
   }
 
-  const shopId = config["configurable"].get("shop_id");
+  console.log("config", config.configurable);
+  const shopId = config.configurable.shop_id;
 
   const namespace = pcIndex.namespace("__default__");
 
