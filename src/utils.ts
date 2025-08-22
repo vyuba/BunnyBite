@@ -227,11 +227,28 @@ const productUpdateHandler = async (
   apiVersion: string
 ) => {
   // const sessionId = shopify.session.getOfflineId(shop);
-  const webhookBody = JSON.parse(webhookRequestBody);
-  console.log("webhook body", webhookBody);
+
+  const product = JSON.parse(webhookRequestBody);
+  console.log("webhook body", product);
   console.log("webhook id", webhookId);
   console.log("api version", apiVersion);
   console.log("topic", topic);
+
+  // updating embedding for the products
+
+  const productsEmbeding = await model.embedQuery(JSON.stringify(product));
+
+  //updating the index of pincone
+
+  await pcIndex.update({
+    id: product.id,
+    values: productsEmbeding,
+    metadata: {
+      title: product.title,
+      description: product.description,
+      price: product.priceRangeV2.minVariantPrice.amount || "",
+    },
+  });
 };
 
 export {
