@@ -263,10 +263,10 @@ const IntegrationPage = () => {
           <button
             disabled={isPending}
             type="submit"
-            className={` self-end border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer  text-sm py-1.5 rounded-lg ${
+            className={` self-end border w-fit border-b-2  capitalize px-2.5 hover:cursor-pointer  text-sm py-1.5 rounded-lg ${
               type === "delete"
-                ? "bg-red-600 text-white"
-                : "bg-[var(--background)] "
+                ? "bg-red-600 border-red-900 text-white"
+                : "bg-[var(--background)] border-border  "
             }`}
           >
             <p>{type === "delete" ? "Delete" : "Save"}</p>
