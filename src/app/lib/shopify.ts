@@ -13,6 +13,7 @@ import {
   productCreateHandler,
   productUpdateHandler,
   customerCreateHandler,
+  productDeleteHandler,
 } from "@/utils";
 
 // handlers for webhook events
@@ -137,6 +138,27 @@ export async function getShopify() {
           apiVersion: string | undefined
         ) => {
           await productUpdateHandler(
+            topic,
+            shop,
+            webhookRequestBody,
+            webhookId,
+            apiVersion!
+          );
+        },
+      },
+    ],
+    PRODUCTS_DELETE: [
+      {
+        deliveryMethod: DeliveryMethod.Http,
+        callbackUrl: "/api/webhooks",
+        callback: async (
+          topic: string,
+          shop: string,
+          webhookRequestBody: string,
+          webhookId: string,
+          apiVersion: string | undefined
+        ) => {
+          await productDeleteHandler(
             topic,
             shop,
             webhookRequestBody,

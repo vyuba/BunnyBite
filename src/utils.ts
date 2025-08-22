@@ -74,12 +74,38 @@ const appUninstallHandler = async (
   console.log("topic", topic);
 
   try {
+    // fetching the shop id
+    const userShop = await adminDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      [Query.equal("shop", shop)]
+    );
+
     await appwritesessionStorage.deleteSession(sessionId);
+
+    await adminDatabase.deleteDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+      [Query.equal("shop_id", userShop.documents[0].$id)]
+    );
+
+    await adminDatabase.deleteDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+      [Query.equal("shop_phone", userShop.documents[0].shop_number)]
+    );
+
     await adminDatabase.deleteDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
       [Query.equal("shop", shop)]
     );
+
+    const deleteResponse = await pcIndex.deleteMany({
+      shop: { $eq: shop },
+    });
+
+    console.log("Deleted Shop Pinecone Response", deleteResponse);
   } catch (error) {
     console.log(error);
   }
@@ -145,12 +171,49 @@ const productCreateHandler = async (
         metadata: {
           title: product.title,
           description: product.description,
-          price: product.priceRangeV2.minVariantPrice.amount,
+          price: product.priceRangeV2.minVariantPrice.amount || "",
           shop: shop,
           shopId: userShop.documents[0]?.$id,
         },
       },
     ]);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const productDeleteHandler = async (
+  topic: string,
+  shop: string,
+  webhookRequestBody: string,
+  webhookId: string,
+  apiVersion: string
+) => {
+  // const sessionId = shopify.session.getOfflineId(shop);
+  const product = JSON.parse(webhookRequestBody);
+  console.log("webhook body", product);
+  console.log("webhook id", webhookId);
+  console.log("api version", apiVersion);
+  console.log("topic", topic);
+  const { adminDatabase } = CreateAdminClient();
+
+  try {
+    // fetching the shop id
+    const userShop = await adminDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      [Query.equal("shop", shop)]
+    );
+
+    // deleting from pinecone index
+
+    const deleteResponse = await pcIndex.deleteMany({
+      title: { $eq: product.title },
+      shop: { $eq: shop },
+      shopId: { $eq: userShop.documents[0]?.$id },
+    });
+
+    console.log("Delete Pinecone Response", deleteResponse);
   } catch (error) {
     console.log(error);
   }
@@ -179,6 +242,7 @@ export {
   setCurrentShopCookie,
   productUpdateHandler,
   productCreateHandler,
+  productDeleteHandler,
   customerCreateHandler,
   appUninstallHandler,
 };
