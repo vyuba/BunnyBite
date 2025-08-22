@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
-import { Models } from "node-appwrite";
-import { createClient } from "./app/lib/node-appwrite";
+import { Models, Query } from "node-appwrite";
+import { CreateAdminClient, createClient } from "./app/lib/node-appwrite";
 import { api } from "./polar";
 import { TwillioClient } from "./app/lib/twillio";
 import { getShopify } from "./app/lib/shopify";
@@ -65,14 +65,24 @@ const appUninstallHandler = async (
   apiVersion: string
 ) => {
   const { shopify, appwritesessionStorage } = await getShopify();
+  const { adminDatabase } = CreateAdminClient();
   const sessionId = shopify.session.getOfflineId(shop);
   const webhookBody = JSON.parse(webhookRequestBody);
   console.log("webhook body", webhookBody);
   console.log("webhook id", webhookId);
   console.log("api version", apiVersion);
   console.log("topic", topic);
-  // await sessionStorage.deleteSession(sessionId);
-  await appwritesessionStorage.deleteSession(sessionId);
+
+  try {
+    await appwritesessionStorage.deleteSession(sessionId);
+    await adminDatabase.deleteDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      [Query.equal("shop", shop)]
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const customerCreateHandler = async (
@@ -112,23 +122,40 @@ const productCreateHandler = async (
   console.log("webhook id", webhookId);
   console.log("api version", apiVersion);
   console.log("topic", topic);
-  // creating an embedding for the products
+  const { adminDatabase } = CreateAdminClient();
 
-  const productsEmbeding = await model.embedQuery(JSON.stringify(webhookBody));
+  try {
+    // fetching the shop id
+    const userShop = await adminDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      [Query.equal("shop", shop)]
+    );
 
-  // Storing in pinecone index
+    // creating an embedding for the products
 
-  await pcIndex.upsert([
-    {
-      id: webhookBody.product || crypto.randomUUID(),
-      values: productsEmbeding,
-      metadata: {
-        name: "bunny-bite",
-        // id: $id,
-        shop: shop,
+    const productsEmbeding = await model.embedQuery(
+      JSON.stringify(webhookBody)
+    );
+
+    // Storing in pinecone index
+
+    await pcIndex.upsert([
+      {
+        id: webhookBody.product.id,
+        values: productsEmbeding,
+        metadata: {
+          title: webhookBody.product.title,
+          description: webhookBody.product.description,
+          price: webhookBody.product.priceRangeV2.minVariantPrice.amount,
+          shop: shop,
+          shopId: userShop.documents[0]?.$id,
+        },
       },
-    },
-  ]);
+    ]);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const productUpdateHandler = async (

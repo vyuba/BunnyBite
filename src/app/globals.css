@@ -29,6 +29,7 @@
 :root {
   --background: #f1f1f1;
   --primary-background: #ffffff;
+  --primary-background-transparent: rgba(255, 255, 255, 0);
   --foreground: #0a0a0a;
   --teitary-background: #f7f7f7;
   --icon-background: #303030;
@@ -44,6 +45,7 @@
 :root[data-theme="dark"] {
   --background: #151515;
   --primary-background: #151515;
+  --primary-background-transparent: rgba(21, 21, 21, 0);
   --icon-background: #cfcfcf;
   --secondary-background: #232323;
   --teitary-background: #202020;

@@ -210,6 +210,23 @@ const updateShop = async (
   });
 };
 
+//create user setup guide
+
+const createUserSetupGuide = async (userId: string) => {
+  try {
+    await clientDatabase.createDocument(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+      ID.unique(),
+      {
+        userId: userId,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   getProfileIcon,
   sendMessage,
@@ -219,4 +236,5 @@ export {
   convertTimestamp,
   updateChatUnseen,
   updateShop,
+  createUserSetupGuide,
 };

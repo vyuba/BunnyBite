@@ -9,7 +9,7 @@ import { useUserStore } from "@/app/providers/userStoreProvider";
 import PageHeader from "@/components/PageHeader";
 import AnouncementBanner from "@/components/AnouncementBanner";
 import { useSearchParams } from "next/navigation";
-import AppwriteJWTRefresher from "../AppwriteJwtRefresher";
+// import AppwriteJWTRefresher from "../AppwriteJwtRefresher";
 
 const DashboardPage = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
@@ -46,7 +46,7 @@ const DashboardPage = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
-      <AppwriteJWTRefresher />
+      {/* <AppwriteJWTRefresher /> */}
       <div className="flex w-full h-dvh">
         <SideBar user={user?.name} />
         <div className="h-screen overflow-hidden flex-[85%] bg-secondary-background ">

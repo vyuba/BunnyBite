@@ -15,12 +15,11 @@ import { useUserStore } from "@/app/providers/userStoreProvider";
 const setupStatus = [
   {
     icon: CircleDashedIcon,
-    text: "Setup guide 1: Create a Twilio Account",
+    text: "Create a Twilio Account",
     description:
       "To begin, go to https://www.twilio.com and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
-    // description:
-    //   "To begin, go to <a className='text-[#0077CC]' href='https://www.twilio.com/'> twilio.com </a> and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
     checked: true,
+    tag: "create_twillio_acct",
   },
   {
     icon: CheckCircleIcon,
@@ -28,13 +27,15 @@ const setupStatus = [
     description:
       "From the Twilio WhatsApp Sandbox section, follow the instructions to send a message (e.g., “join XYZ”) from your WhatsApp to the test number. This connects your personal WhatsApp so you can send and receive messages while testing the bot.",
     checked: false,
+    tag: "whatsapp_number",
   },
   {
     icon: CheckCircleIcon,
-    text: "Generate Your API Key",
+    text: "Generate Your twillio API Keys",
     description:
-      "Log into your chatbot dashboard (from our app), go to Settings, then click on API Key. Press “Generate New Key” and copy it. This key allows the chatbot to securely identify and respond to your account's messages. Keep it safe — it's your access pass.",
+      "In your Twilio dashboard, go to the API Keys, auth key and account siid keys section, and generate a new API key. This key allows the chatbot to securely identify and respond to your account's messages. Keep it safe — it's your access pass.",
     checked: false,
+    tag: "twillio_Keys",
   },
   {
     icon: CheckCircleIcon,
@@ -42,6 +43,7 @@ const setupStatus = [
     description:
       "In your Twilio dashboard, go to the Messaging > Sandbox Settings section. You'll find fields labeled “When a message comes in.” Paste your chatbot webhook URL there — it should look something like https://yourdomain.com/api/whatsapp/webhook. This lets Twilio forward incoming WhatsApp messages to your bot so it can respond.",
     checked: false,
+    tag: "setup_webhook",
   },
   {
     icon: CheckCircleIcon,
@@ -49,6 +51,7 @@ const setupStatus = [
     description:
       "Now that everything is connected, try messaging the WhatsApp sandbox number from your phone. Type something like “Track my order.” The chatbot should respond by asking for your order ID. Reply with an example like #1234, and it should give you tracking info. This confirms that everything's working.",
     checked: false,
+    tag: "whatsapp_number",
   },
   {
     icon: CheckCircleIcon,
@@ -56,6 +59,7 @@ const setupStatus = [
     description:
       "That's it! Your AI-powered WhatsApp chatbot is now ready to assist customers with order tracking. You can sit back while the assistant handles the most common support requests instantly and efficiently. If you ever need help or want to add more features, you can always return to your dashboard.",
     checked: false,
+    tag: "whatsapp_number",
   },
 ];
 
@@ -88,12 +92,14 @@ const AccountSetup = () => {
     const fetchSetupProgress = async () => {
       const response = (await getSetupProgress(user?.$id)) as SetupProgress;
       console.log(response);
-      const updatedSetupStatus = setupStatus.map((step, index) => ({
+      const updatedSetupStatus = setupStatus.map((step) => ({
         ...step,
-        checked: response?.completedSteps?.includes(index),
+        checked: response?.[step.tag],
       }));
       setAccountSetupStatus(updatedSetupStatus);
-      setActiveIndex(response?.completedSteps.at(-1));
+      setActiveIndex(
+        updatedSetupStatus.findIndex((step) => step.checked === false)
+      );
     };
     fetchSetupProgress();
   }, [user]);
@@ -164,7 +170,7 @@ const AccountSetup = () => {
                 backgroundColor:
                   activeIndex === index
                     ? "var(--primary-background)"
-                    : "rgba(21, 21, 21, 0)",
+                    : "var(--primary-background-transparent",
                 border:
                   activeIndex === index ? "1px solid var(--border)" : "none",
                 display:
@@ -180,7 +186,7 @@ const AccountSetup = () => {
                 backgroundColor:
                   activeIndex === index
                     ? "var(--primary-background)"
-                    : "rgba(21, 21, 21, 0)",
+                    : "var(--primary-background-transparent)",
                 paddingBlock:
                   activeIndex === index ? "16px" : isSetupsVisible ? 0 : "16px",
                 border:

@@ -12,7 +12,7 @@ const SecurityPage = () => {
     startTransition,
     setUpdatedData,
     updatedData,
-  } = useUpdateShop(shop);
+  } = useUpdateShop(shop?.$id, "edit");
 
   return (
     <div className="flex  w-full flex-col gap-2 pt-2 text-black/70 dark:text-white">

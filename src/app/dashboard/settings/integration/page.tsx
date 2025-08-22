@@ -1,76 +1,92 @@
 "use client";
-import { clientDatabase } from "@/app/lib/client-appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
 import EditSvg from "@/components/EditSvg";
+import Modal from "@/components/Modal";
+import { useUpdateShop } from "@/hooks/updateShop";
 import { TrashIcon } from "@phosphor-icons/react";
-import { ID } from "appwrite";
-import { AnimatePresence, motion } from "motion/react";
+// import { AnimatePresence, motion } from "motion/react";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
+// import { toast } from "sonner";
 const IntegrationPage = () => {
   const searchParams = useSearchParams();
   const { user, userShops } = useUserStore((state) => state);
-  const [showConnect, setShowConnect] = useState(false);
+  // const [isPending, startTransition] = useTransition();
   const store = searchParams.get("shop");
+  const [type, setType] = useState(null);
+  const [shopId, setShopId] = useState(null);
+
+  const {
+    setUpdatedData,
+    updatedData,
+    updateShop,
+    deleteShop,
+    connectShop,
+    isPending,
+  } = useUpdateShop(shopId, type, user);
+
   useEffect(() => {
     if (store) {
-      setShowConnect(true);
+      setUpdatedData({ name: "shop", label: "shop name", isOpen: true });
     }
-  }, [store]);
+  }, [store, setUpdatedData]);
 
-  const ConnectShop = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    toast.loading("Saving your store", {
-      id: "connect",
-    });
-    const formData = new FormData(e.currentTarget);
-    try {
-      const store = formData.get("store");
-      await clientDatabase.createDocument(
-        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-        ID.unique(),
-        {
-          shop: store,
-          user: user.$id,
-        }
-      );
-      toast.success("Store saved", {
-        id: "connect",
-      });
-    } catch (error) {
-      toast.error(`Error Saving your store ${error?.message}`, {
-        id: "connect",
-      });
-    } finally {
-      toast.dismiss("connect");
-    }
-  };
-  const deleteShop = async (id) => {
-    if (!id) {
-      throw new Error("Store id is required");
-    }
-    try {
-      toast.loading("Deleting store", {
-        id: "delete-store",
-      });
-      await clientDatabase.deleteDocument(
-        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-        process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-        id
-      );
-      toast.success("Store deleted", {
-        id: "delete-store",
-      });
-    } catch (error) {
-      toast.error(`Error deleting your store ${error?.message}`, {
-        id: "delete-store",
-      });
-    } finally {
-      toast.dismiss("delete-store");
-    }
-  };
+  // const ConnectShop = async (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   toast.loading("Saving your store", {
+  //     id: "connect",
+  //   });
+  //   const formData = new FormData(e.currentTarget);
+
+  //   startTransition(async () => {
+  //     try {
+  //       const store = formData.get("store");
+  //       await clientDatabase.createDocument(
+  //         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+  //         process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+  //         ID.unique(),
+  //         {
+  //           shop: store,
+  //           user: user.$id,
+  //         }
+  //       );
+  //       toast.success("Store saved", {
+  //         id: "connect",
+  //       });
+  //     } catch (error) {
+  //       toast.error(`Error Saving your store ${error?.message}`, {
+  //         id: "connect",
+  //       });
+  //     } finally {
+  //       toast.dismiss("connect");
+  //     }
+  //   });
+  // };
+  // const deleteShop = async (id: string) => {
+  //   if (!id) {
+  //     throw new Error("Store id is required");
+  //   }
+  //   try {
+  //     toast.loading("Deleting store", {
+  //       id: "delete-store",
+  //     });
+  //     await clientDatabase.deleteDocument(
+  //       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+  //       process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+  //       id
+  //     );
+  //     toast.success("Store deleted", {
+  //       id: "delete-store",
+  //     });
+  //   } catch (error) {
+  //     toast.error(`Error deleting your store ${error?.message}`, {
+  //       id: "delete-store",
+  //     });
+  //   } finally {
+  //     toast.dismiss("delete-store");
+  //   }
+  // };
+
   return (
     <>
       <div className="grid gap-3 py-3 w-full text-black/70 dark:text-white">
@@ -89,13 +105,20 @@ const IntegrationPage = () => {
                     manage integration
                   </span>
                   <button
-                    onClick={() => setShowConnect(!showConnect)}
+                    onClick={() => {
+                      setType("create");
+                      setUpdatedData({
+                        name: "shop",
+                        label: "shop name",
+                        isOpen: true,
+                      });
+                    }}
                     className="border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer bg-tertiay-background text-sm py-1.5 rounded-lg"
                   >
                     connect new store
                   </button>
                 </div>
-                <AnimatePresence>
+                {/* <AnimatePresence>
                   {showConnect && (
                     <motion.form
                       layout
@@ -130,7 +153,7 @@ const IntegrationPage = () => {
                       </button>
                     </motion.form>
                   )}
-                </AnimatePresence>
+                </AnimatePresence> */}
                 <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-between gap-1.5">
                   {userShops &&
                     userShops.documents.map((store) => (
@@ -144,11 +167,31 @@ const IntegrationPage = () => {
                               {store?.shop.replace(".myshopify.com", "")}
                             </span>
                             <div className="flex items-center gap-0.5 visible md:invisible group-hover:visible">
-                              <button className="w-fit bg-transparent hover:bg-[var(--background)] text-black/70 dark:text-white  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1 ">
+                              <button
+                                onClick={() => {
+                                  setType("edit");
+                                  setUpdatedData({
+                                    name: "shop",
+                                    label: "shop name",
+                                    isOpen: true,
+                                  });
+                                  setShopId(store?.$id);
+                                }}
+                                className="w-fit bg-transparent hover:bg-[var(--background)] text-black/70 dark:text-white  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1 "
+                              >
                                 <EditSvg />
                               </button>
                               <button
-                                onClick={() => deleteShop(store?.$id)}
+                                onClick={async () => {
+                                  setType("delete");
+                                  setUpdatedData({
+                                    name: `store ${store?.shop}`,
+                                    label: "This action cannot be undone.",
+                                    isOpen: true,
+                                  });
+                                  setShopId(store?.$id);
+                                  // await deleteShop();
+                                }}
                                 className=" w-fit bg-transparent text-red-600 hover:bg-[var(--background)]  capitalize px-2.5 cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1"
                               >
                                 <TrashIcon size={17} />
@@ -169,6 +212,67 @@ const IntegrationPage = () => {
           </div>
         </div>
       </div>
+      <Modal
+        title={
+          type === "create"
+            ? "Add your store"
+            : type === "delete"
+            ? "Delete your store"
+            : "Edit your store"
+        }
+        description={
+          type === "delete"
+            ? `Are you sure you want to delete ${updatedData?.name}?`
+            : type === "create"
+            ? "Add your store name"
+            : "Edit your store name"
+        }
+        isOpen={updatedData.isOpen}
+        onClose={() =>
+          setUpdatedData((prev) => ({
+            ...prev,
+            isOpen: false,
+          }))
+        }
+      >
+        <form
+          onSubmit={
+            type === "edit"
+              ? updateShop
+              : type === "create"
+              ? connectShop
+              : deleteShop
+          }
+          className="px-2 flex pb-1 gap-2 w-full flex-col"
+        >
+          <label className={` items-start w-full flex-col gap-1`}>
+            <span className={`text-sm ${type === "delete" && "font-medium"}`}>
+              {updatedData?.label}
+            </span>
+            <input
+              {...(store ? { value: store } : {})}
+              type="text"
+              name={updatedData?.name}
+              className={`bg-tertiay-background text-[#6b6b6b]  focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm border border-border ${
+                type === "delete" ? "hidden" : " "
+              }`}
+
+              // onChange={(e) => console.log(store, e)}
+            />
+          </label>
+          <button
+            disabled={isPending}
+            type="submit"
+            className={` self-end border w-fit border-border border-b-2  capitalize px-2.5 hover:cursor-pointer  text-sm py-1.5 rounded-lg ${
+              type === "delete"
+                ? "bg-red-600 text-white"
+                : "bg-[var(--background)] "
+            }`}
+          >
+            <p>{type === "delete" ? "Delete" : "Save"}</p>
+          </button>
+        </form>
+      </Modal>
     </>
   );
 };

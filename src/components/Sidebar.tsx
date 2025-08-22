@@ -293,7 +293,10 @@ export const SideBar = ({ user }: { user: string | null }) => {
               if (store?.$id !== shop?.$id) {
                 return (
                   <button
-                    onClick={() => setActiveShop(store)}
+                    onClick={() => {
+                      if (store?.$id !== shop?.$id) return;
+                      setActiveShop(store);
+                    }}
                     key={store?.$id}
                     className="cursor-pointer text-xs flex items-center gap-1 hover:bg-primary-background rounded-sm p-1.5"
                   >

@@ -9,6 +9,7 @@ import { ID } from "appwrite";
 import { motion } from "motion/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { SmileyXEyesIcon } from "@phosphor-icons/react";
+import { createUserSetupGuide } from "@/client-utils";
 
 export interface Status {
   message: string | null;
@@ -52,11 +53,13 @@ const RegisterPage = () => {
       id: "Register",
     });
     try {
-      await clientAccount.create(
+      const user = await clientAccount.create(
         ID.unique(),
         email as string,
         password as string
       );
+
+      await createUserSetupGuide(user.$id);
 
       setStatus({
         message: "Account created successfully",

@@ -13,7 +13,7 @@ const AiPersonaPage = () => {
     startTransition,
     setUpdatedData,
     updatedData,
-  } = useUpdateShop(shop);
+  } = useUpdateShop(shop?.$id, "edit");
 
   return (
     <>
@@ -59,7 +59,7 @@ const AiPersonaPage = () => {
                       readOnly
                       name="personality"
                       className="bg-tertiay-background text-[#6b6b6b] focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm border border-border"
-                      value={shop?.personality || ""}
+                      value={shop?.personality}
                       placeholder="Fill in how your AI should act..."
                       maxLength={500}
                     />
