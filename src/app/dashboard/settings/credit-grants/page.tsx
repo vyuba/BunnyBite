@@ -24,24 +24,31 @@ const CreditPage = () => {
                     NGN
                   </span>
                 </div>
-                <div className="flex items-center w-full gap-4">
-                  <div
-                    id="credits-progress"
-                    className="w-full h-2 rounded-xs border border-border overflow-hidden"
-                  >
+                {shop ? (
+                  <div className="flex items-center w-full gap-4">
                     <div
-                      style={{
-                        width: `${
-                          (shop?.tokensUsed / shop?.tokensFunded) * 100
-                        }%`,
-                      }}
-                      className={`bg-secondary-background h-full`}
-                    />
+                      id="credits-progress"
+                      className="w-full h-2 rounded-xs border border-border overflow-hidden"
+                    >
+                      <div
+                        style={{
+                          width: `${
+                            (shop?.tokensUsed / shop?.tokensFunded) * 100
+                          }%`,
+                        }}
+                        className={`bg-secondary-background h-full`}
+                      />
+                    </div>
+                    <span className="text-nowrap">
+                      ₦{shop?.tokensUsed * 0.1} / ₦ {shop?.tokensFunded * 0.1}
+                    </span>
                   </div>
-                  <span className="text-nowrap">
-                    ₦{shop?.tokensUsed * 0.1} / ₦ {shop?.tokensFunded * 0.1}
-                  </span>
-                </div>
+                ) : (
+                  <p className="text-sm text-black/50 dark:text-white/50">
+                    You have not added any stores yet so you do not have any
+                    credit
+                  </p>
+                )}
               </label>
             </div>
           </div>

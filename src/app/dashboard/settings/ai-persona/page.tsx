@@ -37,33 +37,41 @@ const AiPersonaPage = () => {
                   </span>
                 </div>
                 <div className="flex items-center w-full gap-4">
-                  <div className="flex items-start w-full flex-col gap-1 text-black/70 dark:text-white group">
-                    <div className="flex justify-between items-center w-full">
-                      <span className="text-sm">
-                        How your chatbot should reply
-                      </span>
-                      <button
-                        onClick={() =>
-                          setUpdatedData({
-                            name: "personality",
-                            label: "Personality",
-                            isOpen: true,
-                          })
-                        }
-                        className="hover:bg-secondary-background visible md:invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
-                      >
-                        <EditSvg />
-                      </button>
+                  {shop ? (
+                    <div className="flex items-start w-full flex-col gap-1 text-black/70 dark:text-white group">
+                      <div className="flex justify-between items-center w-full">
+                        <span className="text-sm">
+                          How your chatbot should reply
+                        </span>
+                        <button
+                          onClick={() =>
+                            setUpdatedData({
+                              name: "personality",
+                              label: "Personality",
+                              isOpen: true,
+                            })
+                          }
+                          className="hover:bg-secondary-background visible md:invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit"
+                        >
+                          <EditSvg />
+                        </button>
+                      </div>
+
+                      <textarea
+                        readOnly
+                        name="personality"
+                        className="bg-tertiay-background text-[#6b6b6b] focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm border border-border"
+                        value={shop?.personality}
+                        placeholder="Fill in how your AI should act..."
+                        maxLength={500}
+                      />
                     </div>
-                    <textarea
-                      readOnly
-                      name="personality"
-                      className="bg-tertiay-background text-[#6b6b6b] focus:outline-none focus:border-focused-border focus:bg-primary-background focus-border-2 focus:ring focus:ring-border focus:ring-opacity-50 rounded-md py-1.5 px-1.5 w-full text-sm border border-border"
-                      value={shop?.personality}
-                      placeholder="Fill in how your AI should act..."
-                      maxLength={500}
-                    />
-                  </div>
+                  ) : (
+                    <p className="text-sm text-black/50 dark:text-white/50">
+                      You have not added any stores yet so you can not edit
+                      personality
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

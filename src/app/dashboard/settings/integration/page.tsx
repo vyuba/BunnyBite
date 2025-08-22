@@ -155,7 +155,7 @@ const IntegrationPage = () => {
                   )}
                 </AnimatePresence> */}
                 <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-between gap-1.5">
-                  {userShops &&
+                  {userShops ? (
                     userShops.documents.map((store) => (
                       <div
                         key={store?.$id}
@@ -205,7 +205,12 @@ const IntegrationPage = () => {
                           />
                         </label>
                       </div>
-                    ))}
+                    ))
+                  ) : (
+                    <p className="text-sm text-black/50 dark:text-white/50">
+                      You have not added any stores yet
+                    </p>
+                  )}
                 </div>
               </label>
             </div>

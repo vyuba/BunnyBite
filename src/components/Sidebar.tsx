@@ -273,7 +273,7 @@ export const SideBar = ({ user }: { user: string | null }) => {
               blurDataURL={getProfileIcon(user)}
             />
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between w-full">
             <div className="flex flex-col items-start">
               <span className="text-sm">{user}</span>
               <span className="text-xs">{shop?.shop}</span>
@@ -312,7 +312,7 @@ export const SideBar = ({ user }: { user: string | null }) => {
         ) : (
           <Link
             href={`/dashboard/settings/integration`}
-            className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-primary-background rounded-sm p-1"
+            className="flex items-center w-full mb-2.5 justify-start cursor-pointer gap-1 transition-all hover:bg-primary-background rounded-sm p-1"
           >
             <PlusIcon weight="fill" fill="var(--icon-background)" size={15} />
             <span className="capitalize text-sm">add shop</span>
