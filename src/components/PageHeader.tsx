@@ -9,7 +9,7 @@ const PageHeader = ({ username }) => {
     <div className="flex pb-3 justify-between w-full  items-center gap-1.5">
       <h1 className="capitalize font-medium text-base text-black/90 dark:text-white/90">
         {pathname === "/dashboard"
-          ? `Dashboard, welcome ${username}`
+          ? `Dashboard, welcome ${username || "New User"}`
           : pathname.split("/").includes("chat")
           ? "Chats"
           : pathname.includes("security")
