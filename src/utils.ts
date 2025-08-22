@@ -117,8 +117,8 @@ const productCreateHandler = async (
   apiVersion: string
 ) => {
   // const sessionId = shopify.session.getOfflineId(shop);
-  const webhookBody = JSON.parse(webhookRequestBody);
-  console.log("webhook body", webhookBody);
+  const product = JSON.parse(webhookRequestBody);
+  console.log("webhook body", product);
   console.log("webhook id", webhookId);
   console.log("api version", apiVersion);
   console.log("topic", topic);
@@ -134,20 +134,18 @@ const productCreateHandler = async (
 
     // creating an embedding for the products
 
-    const productsEmbeding = await model.embedQuery(
-      JSON.stringify(webhookBody)
-    );
+    const productsEmbeding = await model.embedQuery(JSON.stringify(product));
 
     // Storing in pinecone index
 
     await pcIndex.upsert([
       {
-        id: webhookBody.product.id,
+        id: product.id,
         values: productsEmbeding,
         metadata: {
-          title: webhookBody.product.title,
-          description: webhookBody.product.description,
-          price: webhookBody.product.priceRangeV2.minVariantPrice.amount,
+          title: product.title,
+          description: product.description,
+          price: product.priceRangeV2.minVariantPrice.amount,
           shop: shop,
           shopId: userShop.documents[0]?.$id,
         },

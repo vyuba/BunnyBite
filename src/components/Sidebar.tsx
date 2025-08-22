@@ -273,11 +273,13 @@ export const SideBar = ({ user }: { user: string | null }) => {
               blurDataURL={getProfileIcon(user)}
             />
           </div>
-          <div className="flex flex-col items-start">
-            <span className="text-sm">{user}</span>
-            <span className="text-xs">{shop?.shop}</span>
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col items-start">
+              <span className="text-sm">{user}</span>
+              <span className="text-xs">{shop?.shop}</span>
+            </div>
+            <CaretUpDownIcon size={18} />
           </div>
-          <CaretUpDownIcon size={18} />
         </button>
         {userShops?.total > 1 ? (
           <div className="w-full flex flex-col pb-1.5 px-1">
@@ -309,11 +311,11 @@ export const SideBar = ({ user }: { user: string | null }) => {
           </div>
         ) : (
           <Link
-            href={`/dashboard/settings/intgration`}
-            className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-secondary-background rounded-sm p-1"
+            href={`/dashboard/settings/integration`}
+            className="flex items-center w-full justify-start cursor-pointer gap-1 transition-all hover:bg-primary-background rounded-sm p-1"
           >
             <PlusIcon weight="fill" fill="var(--icon-background)" size={15} />
-            <span className="capitalize">add shop</span>
+            <span className="capitalize text-sm">add shop</span>
           </Link>
         )}
         <div className="bg-primary-background text-sm w-full rounded-sm flex flex-col py-1 px-1 gap-2">
