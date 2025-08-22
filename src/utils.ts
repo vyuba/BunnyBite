@@ -86,7 +86,7 @@ const appUninstallHandler = async (
     await adminDatabase.deleteDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-      [Query.equal("shop_id", userShop.documents[0].$id)]
+      [Query.equal("shop_phone", userShop.documents[0].shop_number)]
     );
 
     await adminDatabase.deleteDocuments(
