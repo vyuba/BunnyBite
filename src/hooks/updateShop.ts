@@ -4,6 +4,7 @@ import { useTransition, useState, FormEvent } from "react";
 import { toast } from "sonner";
 import { ID, Query } from "appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
+import { usePathname, useRouter } from "next/navigation";
 
 type UpdateData = { name: string; label: string; isOpen: boolean };
 
@@ -16,6 +17,9 @@ export function useUpdateShop(
   const { removeUserShop, updateUserShop, addUserShop } = useUserStore(
     (state) => state
   );
+  // const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [updatedData, setUpdatedData] = useState<UpdateData>({
     name: "",
     label: "",
@@ -141,12 +145,17 @@ export function useUpdateShop(
               );
 
               addUserShop(shop);
+              // searchParams.delete("shop");
+
               toast.success("Store saved", { id: "connect" });
               setUpdatedData({
                 name: "",
                 label: "",
                 isOpen: false,
               });
+
+              // clears the current path and sets a new one then removes the search param
+              router.push(pathname);
             } catch (error) {
               toast.error(`Error Saving your store ${error?.message}`, {
                 id: "connect",
