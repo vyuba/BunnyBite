@@ -159,7 +159,7 @@ export const POST = async (req: NextRequest) => {
 
       return response;
     } else {
-      return new NextResponse("Success", {
+      return new NextResponse("are you a boy", {
         status: 200,
       });
     }

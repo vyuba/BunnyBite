@@ -25,26 +25,7 @@ const MessageContainer = () => {
   const [messages, setMessages] =
     useState<Models.DocumentList<Models.Document> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
   const [isPending, startTransition] = useTransition();
-  const [optimisticMessages, addOptimisticMessage] = useOptimistic<
-    Models.DocumentList<Models.Document>,
-    string
-  >(messages, (state, newMessage) => ({
-    total: state.total + 1,
-    documents: [
-      ...state.documents,
-      {
-        ...state.documents[0],
-        content: newMessage,
-        $id: crypto.randomUUID(),
-        sending: true,
-        sender_type: "shop",
-        $createdAt: new Date().toISOString(),
-        $updatedAt: new Date().toISOString(),
-      } as Models.Document,
-    ],
-  }));
 
   useEffect(() => {
     bottom_message.current?.scrollIntoView({
@@ -79,24 +60,34 @@ const MessageContainer = () => {
           setMessages((prev) => ({
             ...prev,
             documents: [
-              ...(prev?.documents || []),
+              ...prev?.documents,
               response.payload as Models.Document,
             ],
           }));
-
-          // bottom_message.current?.scrollIntoView({
-          //   behavior: "smooth",
-          //   block: "end",
-          // });
         }
       }
     );
-
-    if (!unsubscribe) {
-      return;
-    }
     return () => unsubscribe();
   }, [shop?.shop_number, chatId]);
+
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic<
+    Models.DocumentList<Models.Document>,
+    string
+  >(messages, (state, newMessage) => ({
+    total: state.total + 1,
+    documents: [
+      ...state.documents,
+      {
+        ...state.documents[0],
+        content: newMessage,
+        $id: crypto.randomUUID(),
+        sending: true,
+        sender_type: "shop",
+        $createdAt: new Date().toISOString(),
+        $updatedAt: new Date().toISOString(),
+      } as Models.Document,
+    ],
+  }));
 
   const handleSendMessage = async (
     content: string,
