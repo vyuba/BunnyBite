@@ -155,8 +155,8 @@ const IntegrationPage = () => {
                   )}
                 </AnimatePresence> */}
                 <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-between gap-1.5">
-                  {userShops.total !== 0 ? (
-                    userShops.documents.map((store) => (
+                  {userShops?.total !== 0 ? (
+                    userShops?.documents.map((store) => (
                       <div
                         key={store?.$id}
                         className="w-full flex flex-row group "

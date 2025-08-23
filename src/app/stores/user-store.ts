@@ -17,6 +17,9 @@ export type UserActions = {
   setUserShop: (user_id: Models.Identity["$id"]) => void;
   setActiveShop: (shop: Shop) => void;
   setSidebar: (isSidebar: boolean) => void;
+  removeUserShop: (shop_id: Shop["$id"]) => void;
+  updateUserShop: (shop_id: Shop["$id"], shop: Shop) => void;
+  addUserShop: (shop: Shop) => void;
 };
 
 export type UserStore = UserState & UserActions;
@@ -63,6 +66,34 @@ export const createUserStore = (initState: UserState = defaultInitState) => {
       console.log(shop);
       setCurrentShopCookie(shopStorage);
       set(() => ({ shop, userShops: response }));
+    },
+    removeUserShop: async (shop_id: Shop["$id"]) => {
+      set((state) => ({
+        userShops: {
+          ...state.userShops,
+          documents: state.userShops.documents.filter(
+            (shop) => shop.id !== shop_id
+          ),
+        },
+      }));
+    },
+    updateUserShop: (shop_id: Shop["$id"], shop: Shop) => {
+      set((state) => ({
+        userShops: {
+          ...state.userShops,
+          documents: state.userShops.documents.map((userShop) =>
+            userShop.$id === shop_id ? shop : userShop
+          ),
+        },
+      }));
+    },
+    addUserShop: (shop: Shop) => {
+      set((state) => ({
+        userShops: {
+          ...state.userShops,
+          documents: [...state.userShops.documents, shop],
+        },
+      }));
     },
     setActiveShop: async (shop) => {
       localStorage.setItem("shop", shop?.shop);

@@ -83,23 +83,61 @@ const appUninstallHandler = async (
 
     await appwritesessionStorage.deleteSession(sessionId);
 
-    await adminDatabase.deleteDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
-      [Query.equal("shop_phone", userShop.documents[0].shop_number)]
-    );
+    // if there is no shop number that means there can't be any messages or chat so i am checking for that
 
-    await adminDatabase.deleteDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      [Query.equal("shop_phone", userShop.documents[0].shop_number)]
-    );
+    if (userShop.documents[0].shop_number) {
+      //checking for message response
+      const messageResponse = await adminDatabase.listDocuments(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+        [Query.equal("shop_phone", userShop.documents[0].shop_number)]
+      );
 
-    await adminDatabase.deleteDocuments(
+      //if there is not messages then no need to delete cause there is none
+
+      if (messageResponse.total > 0) {
+        await adminDatabase.deleteDocuments(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
+          [Query.equal("shop_phone", userShop.documents[0].shop_number)]
+        );
+      }
+
+      // checking if there is any chat
+
+      const chatsResponse = await adminDatabase.listDocuments(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+        [Query.equal("shop_phone", userShop.documents[0].shop_number)]
+      );
+
+      // only deleting if there is chat available
+
+      if (chatsResponse.total > 0) {
+        await adminDatabase.deleteDocuments(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
+          [Query.equal("shop_phone", userShop.documents[0].shop_number)]
+        );
+      }
+    }
+
+    // checking if there is any refund
+
+    const refundResponse = await adminDatabase.listDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_REFUND_COLLECTION_ID!,
       [Query.equal("shopId", userShop.documents[0].$id)]
     );
+
+    // only deleting if there is refund
+    if (refundResponse.total > 0) {
+      await adminDatabase.deleteDocuments(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_REFUND_COLLECTION_ID!,
+        [Query.equal("shopId", userShop.documents[0].$id)]
+      );
+    }
 
     await adminDatabase.deleteDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,

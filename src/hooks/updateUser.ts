@@ -1,4 +1,5 @@
 import { clientAccount } from "@/app/lib/client-appwrite";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 import { useTransition, useState, FormEvent } from "react";
 import { toast } from "sonner";
 
@@ -6,6 +7,7 @@ type UpdateData = { name: string; label: string; isOpen: boolean };
 
 export function useUpdateUsername() {
   const [isPending, startTransition] = useTransition();
+  const { setCurrentUser } = useUserStore((state) => state);
   const [updatedData, setUpdatedData] = useState<UpdateData>({
     name: "",
     label: "",
@@ -25,8 +27,8 @@ export function useUpdateUsername() {
         id: "updateUsername",
       });
 
-      await clientAccount.updateName(data.name);
-
+      const user = await clientAccount.updateName(data.name);
+      setCurrentUser(user);
       setUpdatedData({ label: "", name: "", isOpen: false });
       formData.delete(updatedData?.name);
 

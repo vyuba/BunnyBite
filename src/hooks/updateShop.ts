@@ -2,7 +2,8 @@ import { clientDatabase } from "@/app/lib/client-appwrite";
 import { Shop } from "@/types";
 import { useTransition, useState, FormEvent } from "react";
 import { toast } from "sonner";
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
+import { useUserStore } from "@/app/providers/userStoreProvider";
 
 type UpdateData = { name: string; label: string; isOpen: boolean };
 
@@ -12,6 +13,9 @@ export function useUpdateShop(
   user?: { $id: string }
 ) {
   const [isPending, startTransition] = useTransition();
+  const { removeUserShop, updateUserShop, addUserShop } = useUserStore(
+    (state) => state
+  );
   const [updatedData, setUpdatedData] = useState<UpdateData>({
     name: "",
     label: "",
@@ -19,7 +23,7 @@ export function useUpdateShop(
   });
 
   let updateShop: ((event: FormEvent<HTMLFormElement>) => void) | undefined;
-  let deleteShop: (() => void) | undefined;
+  let deleteShop: ((e: FormEvent<HTMLFormElement>) => void) | undefined;
   let connectShop: ((e: FormEvent<HTMLFormElement>) => void) | undefined;
 
   switch (type) {
@@ -40,18 +44,24 @@ export function useUpdateShop(
                 id: "updateShop",
               });
 
-              await clientDatabase.updateDocument(
+              const shop: Shop = await clientDatabase.updateDocument(
                 process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
                 process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
                 id,
                 { ...data }
               );
 
+              updateUserShop(id, shop);
               setUpdatedData({ label: "", name: "", isOpen: false });
               formData.delete(updatedData?.name);
 
               toast.dismiss("updateShop");
               toast.success("Updated successfully");
+              setUpdatedData({
+                name: "",
+                label: "",
+                isOpen: false,
+              });
             } catch (error) {
               toast.dismiss("updateShop");
               toast.error("Failed to update", error?.message);
@@ -62,7 +72,8 @@ export function useUpdateShop(
       break;
 
     case "delete":
-      deleteShop = () => {
+      deleteShop = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         if (!id) throw new Error("Store id is required");
 
         startTransition(() => {
@@ -75,6 +86,12 @@ export function useUpdateShop(
                 id
               );
               toast.success("Store deleted", { id: "delete-store" });
+              setUpdatedData({
+                name: "",
+                label: "",
+                isOpen: false,
+              });
+              removeUserShop(id);
             } catch (error) {
               toast.error(`Error deleting your store ${error?.message}`, {
                 id: "delete-store",
@@ -98,7 +115,22 @@ export function useUpdateShop(
               toast.loading("Saving your store", { id: "connect" });
 
               const store = formData.get("shop");
-              await clientDatabase.createDocument(
+              //checking if the user already has a store with this name
+
+              const isShopNameAvailableForUser =
+                await clientDatabase.listDocuments(
+                  process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+                  process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+                  [
+                    Query.equal("user", user?.$id),
+                    Query.equal("shop", store as string),
+                  ]
+                );
+
+              if (isShopNameAvailableForUser.total > 0)
+                throw new Error("You already added this store");
+
+              const shop: Shop = await clientDatabase.createDocument(
                 process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
                 process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
                 ID.unique(),
@@ -107,7 +139,14 @@ export function useUpdateShop(
                   user: user?.$id,
                 }
               );
+
+              addUserShop(shop);
               toast.success("Store saved", { id: "connect" });
+              setUpdatedData({
+                name: "",
+                label: "",
+                isOpen: false,
+              });
             } catch (error) {
               toast.error(`Error Saving your store ${error?.message}`, {
                 id: "connect",
