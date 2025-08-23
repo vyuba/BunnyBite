@@ -91,6 +91,8 @@ export const POST = async (req: NextRequest) => {
       [Query.equal("shop_number", shopNumber)]
     );
 
+    console.log(shopResponse);
+
     // creating message with the message sent by the customer
 
     const message = await adminDatabase.createDocument(

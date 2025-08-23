@@ -75,6 +75,7 @@ export const createUserStore = (initState: UserState = defaultInitState) => {
             (shop) => shop.id !== shop_id
           ),
         },
+        shop: state.shop.$id === shop_id ? null : state.shop,
       }));
     },
     updateUserShop: (shop_id: Shop["$id"], shop: Shop) => {
@@ -85,6 +86,7 @@ export const createUserStore = (initState: UserState = defaultInitState) => {
             userShop.$id === shop_id ? shop : userShop
           ),
         },
+        shop: state.shop.$id === shop_id ? shop : state.shop,
       }));
     },
     addUserShop: (shop: Shop) => {
