@@ -57,6 +57,7 @@ export const POST = async (req: NextRequest) => {
       },
       [Permission.read(Role.any())]
     );
+
     // console.log(response);
     return NextResponse.json({ message: "Post recieved" }, { status: 200 });
   } catch (error) {
@@ -85,6 +86,9 @@ export const POST = async (req: NextRequest) => {
       [Permission.read(Role.any())]
     );
     console.log(error);
-    return NextResponse.json({ message: "Error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error" },
+      { status: 500, headers: { "Content-Type": "text/plain" } }
+    );
   }
 };

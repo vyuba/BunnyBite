@@ -134,7 +134,8 @@ export const POST = async (req: NextRequest) => {
 
     // checking if the chat has ai active and also checking if the token available is bellow 10000
 
-    if (newChat?.isAIActive === true && tokenAvailable < 10000) {
+    // if (newChat?.isAIActive === true && tokenAvailable < 10000) {
+    if (newChat?.isAIActive === true || false) {
       const response = await fetch(
         `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
         {
@@ -159,8 +160,9 @@ export const POST = async (req: NextRequest) => {
 
       return response;
     } else {
-      return new NextResponse("are you a boy", {
+      return new NextResponse("Success", {
         status: 200,
+        headers: { "Content-Type": "text/plain" },
       });
     }
   } catch (error) {
@@ -172,7 +174,7 @@ export const POST = async (req: NextRequest) => {
     });
     return new NextResponse("Internal Server Error" + response.body, {
       status: 500,
-      headers: { "Content-Type": "text/xml" },
+      headers: { "Content-Type": "text/plain" },
     });
   }
 };

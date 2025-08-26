@@ -27,6 +27,25 @@ const MessageContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic<
+    Models.DocumentList<Models.Document>,
+    string
+  >(messages, (state, newMessage) => ({
+    total: state.total + 1,
+    documents: [
+      ...state.documents,
+      {
+        ...state.documents[0],
+        content: newMessage,
+        $id: crypto.randomUUID(),
+        sending: true,
+        sender_type: "shop",
+        $createdAt: new Date().toISOString(),
+        $updatedAt: new Date().toISOString(),
+      } as Models.Document,
+    ],
+  }));
+
   useEffect(() => {
     bottom_message.current?.scrollIntoView({
       behavior: "smooth",
@@ -52,6 +71,12 @@ const MessageContainer = () => {
         const document = response.payload as Models.Document;
         const documentChatId = document?.chat_id;
         // const customer = document?.sender_type === "customer";
+        console.log("WebSocket Document received:", response.payload);
+        console.log("Current messages length:", messages.documents.length);
+        console.log(
+          "Current optimistic length:",
+          optimisticMessages.documents.length
+        );
         if (
           document &&
           chatId === documentChatId &&
@@ -64,30 +89,17 @@ const MessageContainer = () => {
               response.payload as Models.Document,
             ],
           }));
+          console.log("New messages length:", messages.documents.length);
         }
       }
     );
     return () => unsubscribe();
-  }, [shop?.shop_number, chatId]);
-
-  const [optimisticMessages, addOptimisticMessage] = useOptimistic<
-    Models.DocumentList<Models.Document>,
-    string
-  >(messages, (state, newMessage) => ({
-    total: state.total + 1,
-    documents: [
-      ...state.documents,
-      {
-        ...state.documents[0],
-        content: newMessage,
-        $id: crypto.randomUUID(),
-        sending: true,
-        sender_type: "shop",
-        $createdAt: new Date().toISOString(),
-        $updatedAt: new Date().toISOString(),
-      } as Models.Document,
-    ],
-  }));
+  }, [
+    shop?.shop_number,
+    messages.documents.length,
+    optimisticMessages.documents.length,
+    chatId,
+  ]);
 
   const handleSendMessage = async (
     content: string,
