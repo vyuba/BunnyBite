@@ -7,13 +7,10 @@ import { useUpdateShop } from "@/hooks/updateShop";
 
 const AiPersonaPage = () => {
   const { shop } = useUserStore((state) => state);
-  const {
-    updateShop,
-    isPending,
-    startTransition,
-    setUpdatedData,
-    updatedData,
-  } = useUpdateShop(shop?.$id, "edit");
+  const { updateShop, isPending, setUpdatedData, updatedData } = useUpdateShop(
+    shop?.$id,
+    "edit"
+  );
 
   return (
     <>
@@ -85,11 +82,7 @@ const AiPersonaPage = () => {
         description="Edit your AI persona."
       >
         <form
-          onSubmit={(event) => {
-            startTransition(async () => {
-              await updateShop(event);
-            });
-          }}
+          onSubmit={updateShop}
           className="px-2 flex pb-1 gap-2 w-full flex-col"
         >
           <label className="flex items-start w-full flex-col gap-1">

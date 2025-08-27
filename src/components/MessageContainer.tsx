@@ -98,7 +98,7 @@ const MessageContainer = () => {
   }, [
     shop?.shop_number,
     messages?.documents.length,
-    optimisticMessages?.documents.length,
+    optimisticMessages?.documents,
     chatId,
   ]);
 
@@ -158,7 +158,7 @@ const MessageContainer = () => {
               ref={message_box}
               className="w-full flex-1 flex flex-col gap-2 py-16 px-3 overflow-auto relative "
             >
-              {Object.entries(groupByDay).map(([key, messages]) => (
+              {Object.entries(groupByDay)?.map(([key, messages]) => (
                 <div key={key} className={`w-full flex flex-col gap-1.5`}>
                   <span className="self-center py-1.5 px-2 border text-sm border-border bg-tertiay-background text-black/70 dark:text-white/70 rounded-xl">
                     {key}

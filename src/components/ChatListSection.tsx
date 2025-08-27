@@ -129,9 +129,9 @@ const ChatListSection = () => {
       </div>
       {isLoading ? (
         <SpinnerLoader />
-      ) : chats && filteredChats.length > 0 ? (
+      ) : chats && filteredChats?.length > 0 ? (
         <div className="bg-primary-background mx-1 mb-1 p-2 h-full rounded-lg border-t border-border">
-          {filteredChats.map((chat) => (
+          {filteredChats?.map((chat) => (
             <Chat chat={chat} query={query} key={chat.$id} />
           ))}
         </div>

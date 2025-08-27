@@ -43,7 +43,7 @@ export function useUpdateShop(
         startTransition(() => {
           (async () => {
             try {
-              if (!id) return;
+              if (!id) throw new Error("You have not added any shop");
               toast.loading("Updating " + updatedData?.label + "...", {
                 id: "updateShop",
               });
