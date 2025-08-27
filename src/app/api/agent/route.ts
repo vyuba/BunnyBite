@@ -1,9 +1,10 @@
 import { graph } from "@/agent/model";
-import { Command } from "@langchain/langgraph";
+// import { Command } from "@langchain/langgraph";
 import { NextRequest, NextResponse } from "next/server";
 import { Permission, Role } from "node-appwrite";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { sendTwillioMessage } from "@/utils";
+import { HumanMessage } from "@langchain/core/messages";
 
 export const POST = async (req: NextRequest) => {
   const { adminDatabase } = CreateAdminClient();
@@ -13,28 +14,31 @@ export const POST = async (req: NextRequest) => {
 
   try {
     const threadConfig = {
-      configurable: { thread_id: message.chat_id, shop_id: message.shop_id },
+      configurable: {
+        thread_id: message.chat_id,
+        shop_id: message.shop_id,
+        shop_name: message.shop,
+      },
     };
     const GraphResponse = await graph.invoke(
       {
-        action: "update",
-        messages: [],
+        messages: [new HumanMessage(message.content)],
       },
       threadConfig
     );
 
-    const response = await graph.invoke(
-      new Command({
-        resume: {
-          user_input: message?.content,
-          messages: GraphResponse.messages,
-        },
-      }),
-      threadConfig
-    );
+    // const response = await graph.invoke(
+    //   new Command({
+    //     resume: {
+    //       user_input: message?.content,
+    //       messages: GraphResponse.messages,
+    //     },
+    //   }),
+    //   threadConfig
+    // );
 
     const twillioMessage = {
-      content: response?.output,
+      content: GraphResponse?.output,
       shop_phone: message?.shop_phone,
       customer_number: message?.customer_number,
       twillio_account_siid: message.twillio_account_siid,
@@ -49,7 +53,7 @@ export const POST = async (req: NextRequest) => {
       id,
       {
         sender_type: message?.sender_type,
-        content: response?.output,
+        content: GraphResponse?.output,
         messageId: message?.messageId,
         Receiver_id: message?.Receiver_id,
         chat_id: message?.chat_id,

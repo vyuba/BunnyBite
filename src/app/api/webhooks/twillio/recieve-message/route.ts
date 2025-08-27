@@ -138,6 +138,7 @@ export const POST = async (req: NextRequest) => {
             shop_id: storedMsg.shop_id,
             twillio_account_siid: shopDoc.twillio_account_siid,
             twillio_auth_token: shopDoc.twillio_auth_token,
+            shop: shopDoc.shop,
           }),
         }
       );

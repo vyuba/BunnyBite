@@ -29,3 +29,5 @@ export type Shop = Models.Document & {
   user: string;
   personality: string;
 };
+
+export type Type = "create" | "edit" | "delete";

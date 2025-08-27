@@ -4,16 +4,14 @@ import EditSvg from "@/components/EditSvg";
 import Modal from "@/components/Modal";
 import { useUpdateShop } from "@/hooks/updateShop";
 import { TrashIcon } from "@phosphor-icons/react";
-// import { AnimatePresence, motion } from "motion/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-// import { toast } from "sonner";
+import { Type } from "@/types";
 const IntegrationPage = () => {
   const searchParams = useSearchParams();
   const { user, userShops } = useUserStore((state) => state);
-  // const [isPending, startTransition] = useTransition();
   const store = searchParams.get("shop");
-  const [type, setType] = useState(null);
+  const [type, setType] = useState<Type | null>(null);
   const [shopId, setShopId] = useState(null);
 
   const {
@@ -26,66 +24,10 @@ const IntegrationPage = () => {
   } = useUpdateShop(shopId, type, user);
 
   useEffect(() => {
-    if (store) {
-      setUpdatedData({ name: "shop", label: "shop name", isOpen: true });
-    }
+    if (!store) return;
+    setUpdatedData({ name: "shop", label: "shop name", isOpen: true });
+    setType("create");
   }, [store, setUpdatedData]);
-
-  // const ConnectShop = async (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   toast.loading("Saving your store", {
-  //     id: "connect",
-  //   });
-  //   const formData = new FormData(e.currentTarget);
-
-  //   startTransition(async () => {
-  //     try {
-  //       const store = formData.get("store");
-  //       await clientDatabase.createDocument(
-  //         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-  //         process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-  //         ID.unique(),
-  //         {
-  //           shop: store,
-  //           user: user.$id,
-  //         }
-  //       );
-  //       toast.success("Store saved", {
-  //         id: "connect",
-  //       });
-  //     } catch (error) {
-  //       toast.error(`Error Saving your store ${error?.message}`, {
-  //         id: "connect",
-  //       });
-  //     } finally {
-  //       toast.dismiss("connect");
-  //     }
-  //   });
-  // };
-  // const deleteShop = async (id: string) => {
-  //   if (!id) {
-  //     throw new Error("Store id is required");
-  //   }
-  //   try {
-  //     toast.loading("Deleting store", {
-  //       id: "delete-store",
-  //     });
-  //     await clientDatabase.deleteDocument(
-  //       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-  //       process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-  //       id
-  //     );
-  //     toast.success("Store deleted", {
-  //       id: "delete-store",
-  //     });
-  //   } catch (error) {
-  //     toast.error(`Error deleting your store ${error?.message}`, {
-  //       id: "delete-store",
-  //     });
-  //   } finally {
-  //     toast.dismiss("delete-store");
-  //   }
-  // };
 
   return (
     <>
