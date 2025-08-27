@@ -6,13 +6,10 @@ import { useUpdateShop } from "@/hooks/updateShop";
 
 const SecurityPage = () => {
   const { shop } = useUserStore((state) => state);
-  const {
-    updateShop,
-    isPending,
-    startTransition,
-    setUpdatedData,
-    updatedData,
-  } = useUpdateShop(shop?.$id, "edit");
+  const { updateShop, isPending, setUpdatedData, updatedData } = useUpdateShop(
+    shop?.$id,
+    "edit"
+  );
 
   return (
     <div className="flex  w-full flex-col gap-2 pt-2 text-black/70 dark:text-white">
@@ -107,11 +104,7 @@ const SecurityPage = () => {
         description="Edit your Twilio Account SID."
       >
         <form
-          onSubmit={(event) =>
-            startTransition(async () => {
-              await updateShop(event);
-            })
-          }
+          onSubmit={updateShop}
           className="px-2 flex pb-1 gap-2 w-full flex-col"
         >
           <label className="flex items-start w-full flex-col gap-1">
