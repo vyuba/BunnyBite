@@ -9,7 +9,7 @@ const BillingPage = () => {
             <h2 className="text-base">Overview</h2>
             <p className="text-sm">Info on your billing plan</p>
           </div>
-          <div className=" px-3 mt-3 border-t  border-border">
+          <div className=" px-3 ">
             <div className="flex  w-full flex-col gap-2 pt-2">
               <label className="flex flex-col gap-1 ">
                 <div className="w-full flex items-center justify-between">
