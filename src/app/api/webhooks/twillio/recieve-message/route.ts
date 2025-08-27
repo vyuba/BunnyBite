@@ -24,7 +24,7 @@ export const POST = async (req: NextRequest) => {
     const messageType = params.get("MessageType") || "text";
 
     const shopResponse = await adminDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_APPWRITE_PROJECT!,
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
       [Query.equal("shop_number", shopNumber)]
     );
@@ -123,7 +123,7 @@ export const POST = async (req: NextRequest) => {
 
     if (aiActive && HAS_LOW_TOKENS) {
       const resp = await fetch(
-        `https://${process.env.SHOPIFY_APP_URL!}/api/agent`,
+        `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
