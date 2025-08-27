@@ -154,6 +154,8 @@ const appUninstallHandler = async (
       shop: { $eq: shop },
     });
 
+    await pcIndex.deleteNamespace(`__${shop}__`);
+
     console.log("Deleted Shop Pinecone Response", deleteResponse);
   } catch (error) {
     console.log(error);
