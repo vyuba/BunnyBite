@@ -81,7 +81,7 @@ export const POST = async (req: NextRequest) => {
           chat_id: newChatId,
           shop_phone: shopNumber,
           unseen_messages: 0,
-          isAIActive: false,
+          isAIActive: true,
         },
         [Permission.read(Role.any())]
       );

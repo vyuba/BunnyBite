@@ -5,6 +5,7 @@ import { Permission, Role } from "node-appwrite";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { sendTwillioMessage } from "@/utils";
 import { HumanMessage } from "@langchain/core/messages";
+export const runtime = "nodejs"; // ensure Node, not Edge
 
 export const POST = async (req: NextRequest) => {
   const { adminDatabase } = CreateAdminClient();
