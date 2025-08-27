@@ -77,6 +77,7 @@ const MessageContainer = () => {
           "Current optimistic length:",
           optimisticMessages?.documents.length
         );
+        console.log("Current optimistic data:", optimisticMessages?.documents);
         if (
           document &&
           chatId === documentChatId &&

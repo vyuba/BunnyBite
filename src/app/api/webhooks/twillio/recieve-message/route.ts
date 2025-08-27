@@ -148,7 +148,7 @@ export const POST = async (req: NextRequest) => {
       });
     }
 
-    return new NextResponse("OK", {
+    return new NextResponse("", {
       status: 200,
       headers: { "Content-Type": "text/plain" },
     });
