@@ -24,12 +24,18 @@ const sendMessage = async (
   messages: Models.DocumentList<Models.Document>,
   shop: Models.Document
 ) => {
+  if (!shop?.twillio_auth_token || !shop?.twillio_account_siid) {
+    throw new Error("Twilio Api keys not added");
+  }
+
   const twillioMessage = {
     content,
     shop_phone: shop?.shop_number,
     customer_number: messages.documents.find(
       (message) => message?.customer_number !== null
     )?.customer_number,
+    twillio_auth_token: shop.twillio_auth_token,
+    twillio_account_siid: shop.twillio_account_siid,
   };
 
   const id = await sendTwillioMessage(twillioMessage);
@@ -57,6 +63,7 @@ const sendMessage = async (
     console.log("--MESAGE-SENT--", response);
   } catch (error) {
     console.log(error);
+    toast.error(error.message);
   }
 };
 

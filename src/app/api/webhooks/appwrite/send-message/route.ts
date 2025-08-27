@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { TwillioClient } from "@/app/lib/twillio";
+// import { TwillioClient } from "@/app/lib/twillio";
 import { createHmac } from "crypto";
 
 export const POST = async (req: NextRequest) => {
@@ -36,15 +36,15 @@ export const POST = async (req: NextRequest) => {
   // Send only if its the shop that sent the message
 
   if (json?.sender_type !== "customer") {
-    const reponse = await TwillioClient.messages.create({
-      body: json?.content,
-      from: json?.shop_phone,
-      to: json?.customer_number,
-    });
-    console.log(reponse);
-    return new NextResponse(reponse.body, {
+    // const reponse = await TwillioClient.messages.create({
+    //   body: json?.content,
+    //   from: json?.shop_phone,
+    //   to: json?.customer_number,
+    // });
+    // console.log(reponse);
+    return new NextResponse("error", {
       status: 200,
-      headers: { "Content-Type": "text/xml" },
+      headers: { "Content-Type": "text/plain" },
     });
   }
 };

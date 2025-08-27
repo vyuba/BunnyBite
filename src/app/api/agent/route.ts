@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
 
   try {
     const threadConfig = {
-      configurable: { thread_id: message?.chat_id, shop_id: message.shop_id },
+      configurable: { thread_id: message.chat_id, shop_id: message.shop_id },
     };
     const GraphResponse = await graph.invoke(
       {
@@ -37,6 +37,8 @@ export const POST = async (req: NextRequest) => {
       content: response?.output,
       shop_phone: message?.shop_phone,
       customer_number: message?.customer_number,
+      twillio_account_siid: message.twillio_account_siid,
+      twillio_auth_token: message.twillio_auth_token,
     };
 
     const id = await sendTwillioMessage(twillioMessage);
@@ -65,6 +67,8 @@ export const POST = async (req: NextRequest) => {
       content: "Try again in one minute, Thank you",
       shop_phone: message?.shop_phone,
       customer_number: message?.customer_number,
+      twillio_account_siid: message.twillio_account_siid,
+      twillio_auth_token: message.twillio_auth_token,
     };
 
     const id = await sendTwillioMessage(twillioMessage);

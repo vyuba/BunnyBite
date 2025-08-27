@@ -1,56 +1,65 @@
 import { NextRequest, NextResponse } from "next/server";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { ID, Permission, Query, Role } from "node-appwrite";
-import { TwillioClient } from "@/app/lib/twillio";
+import { initTwilio } from "@/app/lib/twillio";
+export const runtime = "nodejs"; // ensure Node, not Edge
 
 export const POST = async (req: NextRequest) => {
-  // fetching the admin database from the function
-
-  const { adminDatabase } = await CreateAdminClient();
-
-  //Converting the req into text format
-
-  const body = await req.text();
-  console.log(body);
-
-  // Using UrlSearchParams to pars the body
-  const params = new URLSearchParams(body);
-  console.log(params);
-
-  //Getting all the attribute from the urlsearchparams
-
-  const customerNumber = params.get("From"); // sender's number (e.g., 'whatsapp:+234...')
-  const content = params.get("Body"); // message text content
-  const customer_name = params.get("ProfileName"); // profile name
-  const messageSid = params.get("MessageSid"); // message sid
-  const repliedMessage = params.get("OriginalRepliedMessageSid"); // replied message sid
-  const shopNumber = params.get("To"); // shop twillio number
-
-  console.log("CUSTOMER:", customerNumber);
-  console.log("CONTENT:", content);
-  console.log("SHOP:", shopNumber);
-  const messageType = params.get("MessageType");
-  console.log("MESSAGE-TYPE", messageType);
-
-  // if statement to check if not text return we only accept text back
+  let twilioClient: Awaited<ReturnType<typeof initTwilio>> | null = null;
+  let customerNumber = "";
+  let shopNumber = "";
 
   try {
-    if (messageType !== "text") {
-      const reponse = await TwillioClient.messages.create({
-        body: "We can only accept text currently, thank you",
-        from: shopNumber,
-        to: customerNumber,
-      });
+    const { adminDatabase } = await CreateAdminClient();
 
-      return new NextResponse(reponse.body, {
-        status: 200,
-        headers: { "Content-Type": "text/xml" },
+    const bodyText = await req.text();
+    const params = new URLSearchParams(bodyText);
+
+    customerNumber = params.get("From") || "";
+    const content = params.get("Body") || "";
+    const customer_name = params.get("ProfileName") || "";
+    const messageSid = params.get("MessageSid") || ID.unique();
+    const repliedMessage = params.get("OriginalRepliedMessageSid") || null;
+    shopNumber = params.get("To") || "";
+    const messageType = params.get("MessageType") || "text";
+
+    const shopResponse = await adminDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_APPWRITE_PROJECT!,
+      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
+      [Query.equal("shop_number", shopNumber)]
+    );
+    const shopDoc = shopResponse.documents[0];
+    if (!shopDoc) {
+      return new NextResponse("Shop not found", {
+        status: 404,
+        headers: { "Content-Type": "text/plain" },
+      });
+    }
+    if (!shopDoc.twillio_auth_token || !shopDoc.twillio_account_siid) {
+      return new NextResponse("Missing Twilio credentials for shop", {
+        status: 400,
+        headers: { "Content-Type": "text/plain" },
       });
     }
 
-    // Checking if that chat room is available
+    twilioClient = await initTwilio(
+      shopDoc.twillio_account_siid,
+      shopDoc.twillio_auth_token
+    );
 
-    const isChatAvailable = await adminDatabase.listDocuments(
+    if (messageType !== "text") {
+      await twilioClient.messages.create({
+        body: "We can only accept text currently, thank you.",
+        from: shopNumber,
+        to: customerNumber,
+      });
+      return new NextResponse("OK", {
+        status: 200,
+        headers: { "Content-Type": "text/plain" },
+      });
+    }
+
+    const chats = await adminDatabase.listDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
       [
@@ -59,120 +68,102 @@ export const POST = async (req: NextRequest) => {
       ]
     );
 
-    console.log("IS-CHAT-AVAILABLE", isChatAvailable);
-    let newChatId = isChatAvailable.documents[0]?.chat_id;
-    let newChat = isChatAvailable.documents[0];
-
-    // if not create a new chat room for the customer and shop
-
-    if (isChatAvailable.total === 0) {
-      const response = await adminDatabase.createDocument(
+    let chatDoc = chats.documents[0];
+    if (!chatDoc) {
+      const newChatId = ID.unique();
+      chatDoc = await adminDatabase.createDocument(
         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
         ID.unique(),
         {
           customer_phone: customerNumber,
           customer_name,
-          chat_id: ID.unique(),
+          chat_id: newChatId,
           shop_phone: shopNumber,
           unseen_messages: 0,
+          isAIActive: false,
         },
         [Permission.read(Role.any())]
       );
-      newChat = response;
-      newChatId = response?.chat_id;
     }
+    const chat_id: string = String(chatDoc.chat_id);
 
-    // fetch the shop details
-
-    const shopResponse = await adminDatabase.listDocuments(
-      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
-      process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
-      [Query.equal("shop_number", shopNumber)]
-    );
-
-    console.log(shopResponse);
-
-    // creating message with the message sent by the customer
-
-    const message = await adminDatabase.createDocument(
+    const storedMsg = await adminDatabase.createDocument(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_MESSAGE_COLLECTION_ID!,
       messageSid,
       {
         sender_type: "customer",
-        content: content,
+        content,
         messageId: ID.unique(),
-        Receiver_id: shopResponse?.documents[0]?.shop,
-        chat_id: newChatId,
+        Receiver_id: shopDoc.shop,
+        chat_id,
         replied_msg: repliedMessage,
         customer_number: customerNumber,
         shop_phone: shopNumber,
-        shop_id: shopResponse?.documents[0]?.$id,
+        shop_id: shopDoc.$id,
       },
       [Permission.read(Role.any())]
     );
 
-    // adding one to the unseen messages
-
-    console.log("NEW-CHAT", newChat);
+    const unseen = Number(chatDoc.unseen_messages ?? 0) + 1;
     await adminDatabase.updateDocument(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_APPWRITE_CHATS_COLLECTION_ID!,
-      newChat?.$id,
-      {
-        unseen_messages: newChat?.unseen_messages + 1,
-      }
+      chatDoc.$id,
+      { unseen_messages: unseen }
     );
 
-    // calculating the amount of token available
+    const tokensFunded = Math.max(0, Number(shopDoc.tokensFunded ?? 0));
+    const tokensUsed = Math.max(0, Number(shopDoc.tokensUsed ?? 0));
+    const tokenAvailable = Math.max(0, tokensFunded - tokensUsed);
 
-    const tokenAvailable =
-      shopResponse?.documents[0].tokensFunded -
-      shopResponse?.documents[0].tokensUsed;
-    console.log(tokenAvailable);
+    const aiActive = Boolean(chatDoc.isAIActive);
+    const HAS_LOW_TOKENS = tokenAvailable <= 10000;
 
-    // checking if the chat has ai active and also checking if the token available is bellow 10000
-
-    // if (newChat?.isAIActive === true && tokenAvailable < 10000) {
-    if (newChat?.isAIActive === true || false) {
-      const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_SHOPIFY_APP_URL!}/api/agent`,
+    if (aiActive && HAS_LOW_TOKENS) {
+      const resp = await fetch(
+        `https://${process.env.SHOPIFY_APP_URL!}/api/agent`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             sender_type: "shop",
-            content: content,
+            content,
             messageId: ID.unique(),
-            Receiver_id: message.Receiver_id,
-            chat_id: message.chat_id,
+            Receiver_id: storedMsg.Receiver_id,
+            chat_id: storedMsg.chat_id,
             customer_number: customerNumber,
             shop_phone: shopNumber,
-            shop_id: message?.shop_id,
+            shop_id: storedMsg.shop_id,
+            twillio_account_siid: shopDoc.twillio_account_siid,
+            twillio_auth_token: shopDoc.twillio_auth_token,
           }),
         }
       );
-
-      // returning the response from the ai agent serverless function
-
-      return response;
-    } else {
-      return new NextResponse("Success", {
-        status: 200,
-        headers: { "Content-Type": "text/plain" },
+      const aiJson = await resp.json();
+      return new NextResponse(JSON.stringify(aiJson), {
+        status: resp.status,
+        headers: { "Content-Type": "application/json" },
       });
     }
-  } catch (error) {
-    console.log(error);
-    const response = await TwillioClient.messages.create({
-      body: "Try again in a few minutes, Thank you",
-      from: shopNumber,
-      to: customerNumber,
+
+    return new NextResponse("OK", {
+      status: 200,
+      headers: { "Content-Type": "text/plain" },
     });
-    return new NextResponse("Internal Server Error" + response.body, {
+  } catch (err) {
+    console.error(err);
+    if (twilioClient && customerNumber && shopNumber) {
+      try {
+        await twilioClient.messages.create({
+          body: "Try again in a few minutes. Thank you.",
+          from: shopNumber,
+          to: customerNumber,
+        });
+      } catch {}
+    }
+    return new NextResponse("Internal Error", {
       status: 500,
       headers: { "Content-Type": "text/plain" },
     });

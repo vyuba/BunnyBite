@@ -3,10 +3,10 @@ import { cookies } from "next/headers";
 import { Models, Query } from "node-appwrite";
 import { CreateAdminClient, createClient } from "./app/lib/node-appwrite";
 import { api } from "./polar";
-import { TwillioClient } from "./app/lib/twillio";
 import { getShopify } from "./app/lib/shopify";
 import { model } from "./app/lib/openai";
 import { pcIndex } from "./app/lib/pinecone";
+import { initTwilio } from "./app/lib/twillio";
 
 const setJwtCookie = async (key: Models.Jwt) => {
   (await cookies()).set("jwt", key?.jwt, {
@@ -35,8 +35,13 @@ const setCurrentShopCookie = async (shop: string) => {
 };
 
 const sendTwillioMessage = async (message) => {
+  const twilioClient = await initTwilio(
+    message.twillio_account_siid,
+    message.twillio_auth_token
+  );
+
   try {
-    const response = await TwillioClient.messages.create({
+    const response = await twilioClient.messages.create({
       body: message.content,
       from: message.shop_phone,
       to: message.customer_number,
