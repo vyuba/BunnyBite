@@ -120,9 +120,11 @@ const save_refund = tool(
 const rag_fetch = tool(
   async ({ query }: { query: string }, config: RunnableConfig) => {
     const shopId = config.configurable?.shop_id as string;
-    if (!query || !shopId) throw new Error("Missing query or shopId");
+    const shop_name = config.configurable?.shop_name as string;
+    if (!query || !shopId || !shop_name)
+      throw new Error("Missing query or shopId or shop name");
 
-    const namespace = pcIndex.namespace("__default__");
+    const namespace = pcIndex.namespace(`__${shop_name}__`);
     const vector = await openaiEmbeddings.embedQuery(query);
     const result = await namespace.query({
       vector,

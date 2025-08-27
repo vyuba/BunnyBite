@@ -150,7 +150,7 @@ const appUninstallHandler = async (
       [Query.equal("shop", shop)]
     );
 
-    const deleteResponse = await pcIndex.deleteMany({
+    const deleteResponse = await pcIndex.namespace(`__${shop}__`).deleteMany({
       shop: { $eq: shop },
     });
 
@@ -213,7 +213,7 @@ const productCreateHandler = async (
 
     // Storing in pinecone index
 
-    await pcIndex.upsert([
+    await pcIndex.namespace(`__${shop}__`).upsert([
       {
         id: product.id,
         values: productsEmbeding,
@@ -256,7 +256,7 @@ const productDeleteHandler = async (
 
     // deleting from pinecone index
 
-    const deleteResponse = await pcIndex.deleteMany({
+    const deleteResponse = await pcIndex.namespace(`__${shop}__`).deleteMany({
       title: { $eq: product.title },
       shop: { $eq: shop },
       shopId: { $eq: userShop.documents[0]?.$id },
@@ -289,7 +289,7 @@ const productUpdateHandler = async (
 
   //updating the index of pincone
 
-  await pcIndex.update({
+  await pcIndex.namespace(`__${shop}__`).update({
     id: product.id,
     values: productsEmbeding,
     metadata: {
