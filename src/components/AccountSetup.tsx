@@ -85,7 +85,7 @@ const getSetupProgress = async (id: string) => {
 const AccountSetup = () => {
   const { user } = useUserStore((state) => state);
   const [isSetupsVisible, setIsSetupsVisible] = useState(true);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const [accountSetupStatus, setAccountSetupStatus] = useState(setupStatus);
 
   useEffect(() => {

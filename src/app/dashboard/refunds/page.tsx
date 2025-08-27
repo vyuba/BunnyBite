@@ -25,6 +25,9 @@ const RefundPage = () => {
   useEffect(() => {
     const fetchRefunds = async () => {
       try {
+        if (!shop?.$id) {
+          throw new Error("Shop id not provided");
+        }
         const response = await clientDatabase.listDocuments(
           process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
           process.env.NEXT_PUBLIC_APPWRITE_REFUND_COLLECTION_ID!,
@@ -34,6 +37,7 @@ const RefundPage = () => {
         setRefunds(response);
       } catch (error) {
         console.log(error);
+        setIsLoading(false);
       }
     };
     fetchRefunds();
