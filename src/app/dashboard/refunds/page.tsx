@@ -191,7 +191,7 @@ const RefundPage = () => {
                     </tr>
                   ))
                 : refunds &&
-                  refunds.documents.map((refund, index) => (
+                  refunds?.documents.map((refund, index) => (
                     <tr
                       key={refund?.$id}
                       className="text-black/75 dark:text-white/80 border-b border-border relative "
@@ -281,7 +281,7 @@ const RefundPage = () => {
           <span className="text-sm text-black/70 dark:text-white capitalize">
             {isLoading ? (
               <Skeleton styling={`w-20 h-6 rounded-xs`} />
-            ) : refunds.total > 0 ? (
+            ) : refunds?.total > 0 ? (
               ` Refunds per page. Total: ${refunds?.total}`
             ) : (
               "No refunds available"

@@ -18,7 +18,7 @@ const setupStatus = [
     text: "Create a Twilio Account",
     description:
       "To begin, go to https://www.twilio.com and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
-    checked: true,
+    checked: false,
     tag: "create_twillio_acct",
   },
   {
@@ -92,6 +92,9 @@ const AccountSetup = () => {
     const fetchSetupProgress = async () => {
       const response = (await getSetupProgress(user?.$id)) as SetupProgress;
       console.log(response);
+      if (!response) {
+        return;
+      }
       const updatedSetupStatus = setupStatus.map((step) => ({
         ...step,
         checked: response?.[step.tag],
