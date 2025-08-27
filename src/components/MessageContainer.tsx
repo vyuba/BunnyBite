@@ -71,11 +71,11 @@ const MessageContainer = () => {
         const document = response.payload as Models.Document;
         const documentChatId = document?.chat_id;
         // const customer = document?.sender_type === "customer";
-        console.log("WebSocket Document received:", response.payload);
-        console.log("Current messages length:", messages.documents.length);
+        console.log("WebSocket Document received:", response?.payload);
+        console.log("Current messages length:", messages?.documents.length);
         console.log(
           "Current optimistic length:",
-          optimisticMessages.documents.length
+          optimisticMessages?.documents.length
         );
         if (
           document &&
@@ -86,18 +86,18 @@ const MessageContainer = () => {
             ...prev,
             documents: [
               ...prev?.documents,
-              response.payload as Models.Document,
+              response?.payload as Models.Document,
             ],
           }));
-          console.log("New messages length:", messages.documents.length);
+          console.log("New messages length:", messages?.documents.length);
         }
       }
     );
     return () => unsubscribe();
   }, [
     shop?.shop_number,
-    messages.documents.length,
-    optimisticMessages.documents.length,
+    messages?.documents.length,
+    optimisticMessages?.documents.length,
     chatId,
   ]);
 
