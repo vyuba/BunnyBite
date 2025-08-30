@@ -42,8 +42,8 @@ export const POST = async (req: NextRequest) => {
       if (exists) {
         // Notify user because shop already exists
         await adminDatabase.createDocument(
-          process.env.DATABASE_ID,
-          process.env.APPWRITE_NOTIFICATION_COLLECTION_ID,
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
           ID.unique(),
           {
             user_id: user,
@@ -123,8 +123,8 @@ export const POST = async (req: NextRequest) => {
 
       // 4. Notify
       await adminDatabase.createDocument(
-        process.env.DATABASE_ID,
-        process.env.APPWRITE_NOTIFICATION_COLLECTION_ID,
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
         ID.unique(),
         { user_id: user, message: "You just added your shop. Good job, champ!" }
       );
@@ -135,8 +135,8 @@ export const POST = async (req: NextRequest) => {
       // Check if Twilio fields or shop_number were added
       if (twillio_account_siid || twillio_auth_token || shop_number) {
         await adminDatabase.createDocument(
-          process.env.DATABASE_ID,
-          process.env.APPWRITE_NOTIFICATION_COLLECTION_ID,
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
           ID.unique(),
           {
             user_id: user,
