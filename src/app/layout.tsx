@@ -4,6 +4,7 @@ import "./globals.css";
 import { UserStoreProvider } from "./providers/userStoreProvider";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "./providers/ThemeProvider";
+
 const neueMontreal = LocalFont({
   src: [
     {
@@ -72,17 +73,10 @@ export default function RootLayout({
             },
           }}
         />
-        <HomeLayout>{children}</HomeLayout>
+        <UserStoreProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </UserStoreProvider>
       </body>
     </html>
   );
 }
-
-const HomeLayout = ({ children }: { children: React.ReactNode }) => {
-  "use client";
-  return (
-    <UserStoreProvider>
-      <ThemeProvider>{children}</ThemeProvider>
-    </UserStoreProvider>
-  );
-};

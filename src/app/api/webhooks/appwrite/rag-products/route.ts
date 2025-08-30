@@ -12,10 +12,10 @@ export const POST = async (req: NextRequest) => {
 
   try {
     const { shopify, appwritesessionStorage } = await getShopify();
-    const { adminDatabase } = await CreateAdminClient();
+    const { adminDatabase } = CreateAdminClient();
 
     console.log("req headers", req.headers);
-    const event = await req.headers["x-appwrite-event"];
+    const event: string = req.headers["x-appwrite-event"];
     const doc = await req.json();
 
     if (!doc) {
