@@ -15,7 +15,7 @@ export const POST = async (req: NextRequest) => {
     const { adminDatabase } = CreateAdminClient();
 
     console.log("req headers", req.headers);
-    const event: string = req.headers["x-appwrite-event"];
+    const event: string = req.headers.get("x-appwrite-event");
     const doc = await req.json();
 
     if (!doc) {
