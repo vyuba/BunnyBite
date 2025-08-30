@@ -2,9 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { pcIndex } from "@/app/lib/pinecone";
 import { getShopify } from "@/app/lib/shopify";
 import { model } from "@/app/lib/openai";
-// import { PineconeRecord, RecordMetadata } from "@pinecone-database/pinecone";
-import { ID } from "appwrite";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
+import { Query, ID, Permission, Role } from "node-appwrite";
 export const runtime = "nodejs"; // ensure Node, not Edge
 
 export const POST = async (req: NextRequest) => {
@@ -49,7 +48,8 @@ export const POST = async (req: NextRequest) => {
             user_id: user,
             message:
               "You already added the namespace added details. Thank you!",
-          }
+          },
+          [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
         );
         return NextResponse.json({ ok: true }, { status: 200 });
       }
@@ -126,7 +126,21 @@ export const POST = async (req: NextRequest) => {
         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
         ID.unique(),
-        { user_id: user, message: "You just added your shop. Good job, champ!" }
+        {
+          user_id: user,
+          message: "You just added your shop. Good job, champ!",
+        },
+        [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
+      );
+      // setup progress
+      await adminDatabase.createDocument(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+        ID.unique(),
+        {
+          userId: user,
+        },
+        [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
       );
     }
 
@@ -141,7 +155,28 @@ export const POST = async (req: NextRequest) => {
           {
             user_id: user,
             message: "Congrats on adding your Twilio/Shop details 🎉",
-          }
+          },
+          [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
+        );
+        const userSetupProgress = await adminDatabase.listDocuments(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+          [Query.equal("userId", user)]
+        );
+
+        const docId = userSetupProgress.documents[0].$id;
+
+        await adminDatabase.updateDocument(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+          docId,
+          {
+            twilio_auth_token: twillio_auth_token,
+            create_twilio_account: twillio_auth_token || twillio_account_siid,
+            connect_whatsapp: shop_number ? true : false,
+            twilio_account_sid: twillio_account_siid,
+          },
+          [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
         );
       }
     }

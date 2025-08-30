@@ -22,6 +22,7 @@ const NotificationContainer = ({ setIsProfileClicked, isProfileClicked }) => {
           [Query.equal("user_id", user?.$id)]
         );
         setIsLoading(false);
+        console.log("Notification", response);
         setNotifications(response);
       } catch (error) {
         console.log(error);

@@ -12,54 +12,62 @@ import { clientDatabase } from "@/app/lib/client-appwrite";
 import { Models, Query } from "appwrite";
 import { useUserStore } from "@/app/providers/userStoreProvider";
 
-const setupStatus = [
+export const setupStatus = [
   {
     icon: CircleDashedIcon,
     text: "Create a Twilio Account",
     description:
-      "To begin, go to https://www.twilio.com and sign up for an account. Once you're in the dashboard, find the WhatsApp Sandbox. This is a testing environment that allows you to connect your WhatsApp number before going live. You'll be given a test number and a join code to use in the sandbox.",
+      "Go to https://www.twilio.com and sign up for a free account. Once logged in, you’ll find the WhatsApp Sandbox in your dashboard. This testing environment gives you a temporary number and join code to connect your WhatsApp before going live.",
     checked: false,
-    tag: "create_twillio_acct",
+    tag: "create_twilio_account",
   },
   {
     icon: CheckCircleIcon,
-    text: "Connect Your WhatsApp Number to Twilio",
+    text: "Connect Your WhatsApp Number",
     description:
-      "From the Twilio WhatsApp Sandbox section, follow the instructions to send a message (e.g., “join XYZ”) from your WhatsApp to the test number. This connects your personal WhatsApp so you can send and receive messages while testing the bot.",
+      "In the Twilio WhatsApp Sandbox, follow the instructions to send a message (e.g., “join ABC123”) from your WhatsApp to the sandbox number. This links your personal WhatsApp for testing so you can send and receive bot messages.",
     checked: false,
-    tag: "whatsapp_number",
+    tag: "connect_whatsapp",
   },
   {
     icon: CheckCircleIcon,
-    text: "Generate Your twillio API Keys",
+    text: "Add Your Twilio Auth Token",
     description:
-      "In your Twilio dashboard, go to the API Keys, auth key and account siid keys section, and generate a new API key. This key allows the chatbot to securely identify and respond to your account's messages. Keep it safe — it's your access pass.",
+      "In your Twilio dashboard, go to the API section. Copy your Auth Token, . Enter these into your dashboard setup so your chatbot can send messages securely.",
     checked: false,
-    tag: "twillio_Keys",
+    tag: "twilio_auth_token",
   },
   {
     icon: CheckCircleIcon,
-    text: "Set Up the Webhook in Twilio",
+    text: "Add Your Twilio Account SID",
     description:
-      "In your Twilio dashboard, go to the Messaging > Sandbox Settings section. You'll find fields labeled “When a message comes in.” Paste your chatbot webhook URL there — it should look something like https://yourdomain.com/api/whatsapp/webhook. This lets Twilio forward incoming WhatsApp messages to your bot so it can respond.",
+      "In your Twilio dashboard, go to the API section. Copy your Account SID . Enter these into your dashboard setup so your chatbot can send messages securely.",
+    checked: false,
+    tag: "twilio_account_sid",
+  },
+  {
+    icon: CheckCircleIcon,
+    text: "Set Up Your Webhook",
+    description:
+      "In the Twilio dashboard, go to Messaging > Sandbox Settings. Under 'When a message comes in,' paste your chatbot webhook URL (e.g., https://yourdomain.com/api/whatsapp/webhook). This allows Twilio to forward messages from WhatsApp to your bot.",
     checked: false,
     tag: "setup_webhook",
   },
+  // {
+  //   icon: CheckCircleIcon,
+  //   text: "Test Your WhatsApp Bot",
+  //   description:
+  //     "Now test the connection: send a message like 'Track my order' to your Twilio WhatsApp sandbox number. Your chatbot should respond and ask for an order ID. Try replying with #1234 to confirm that tracking works correctly.",
+  //   checked: false,
+  //   tag: "test_bot",
+  // },
   {
     icon: CheckCircleIcon,
-    text: "Test the Chatbot in WhatsApp",
+    text: "You're All Set! 🎉",
     description:
-      "Now that everything is connected, try messaging the WhatsApp sandbox number from your phone. Type something like “Track my order.” The chatbot should respond by asking for your order ID. Reply with an example like #1234, and it should give you tracking info. This confirms that everything's working.",
+      "Great job! Your AI-powered WhatsApp chatbot is now live and ready to assist customers. You can return to this dashboard anytime to add features, enable notifications, or manage your setup.",
     checked: false,
-    tag: "whatsapp_number",
-  },
-  {
-    icon: CheckCircleIcon,
-    text: "You're All Set - Congratulations! 🎉",
-    description:
-      "That's it! Your AI-powered WhatsApp chatbot is now ready to assist customers with order tracking. You can sit back while the assistant handles the most common support requests instantly and efficiently. If you ever need help or want to add more features, you can always return to your dashboard.",
-    checked: false,
-    tag: "whatsapp_number",
+    tag: "completed_setup",
   },
 ];
 
