@@ -159,13 +159,29 @@ export const POST = async (req: NextRequest) => {
     if (event.includes(".update")) {
       // Check if Twilio fields or shop_number were added
       if (twillio_account_siid || twillio_auth_token || shop_number) {
+        console.log(
+          "TWILIO ACT SID",
+          twillio_account_siid,
+          "TWILIO AUTH",
+          twillio_auth_token,
+          "SHOP",
+          shop_number
+        );
         await adminDatabase.createDocument(
           process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
           process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
           ID.unique(),
           {
             user_id: user,
-            message: "Congrats on adding your Twilio/Shop details 🎉",
+            message: `Congrats on adding your ${
+              twillio_account_siid
+                ? "Twilio account sid"
+                : twillio_auth_token
+                ? "Twilio auth token"
+                : shop_number
+                ? "Whatsapp number"
+                : "Twilio/Shop"
+            } details 🎉`,
           },
           [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
         );
@@ -182,10 +198,10 @@ export const POST = async (req: NextRequest) => {
           process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
           docId,
           {
-            twilio_auth_token: twillio_auth_token,
-            create_twilio_account: twillio_auth_token || twillio_account_siid,
+            twilio_auth_token: twillio_auth_token ? true : false,
+            create_twilio_account: twillio_auth_token ? true : false,
             connect_whatsapp: shop_number ? true : false,
-            twilio_account_sid: twillio_account_siid,
+            twilio_account_sid: twillio_account_siid ? true : false,
           },
           [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
         );

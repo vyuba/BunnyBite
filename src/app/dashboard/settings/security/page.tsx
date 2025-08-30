@@ -95,7 +95,7 @@ const SecurityPage = () => {
           </>
         ) : (
           <p className="text-sm text-black/50 dark:text-white/50">
-            No shop added to your account to you can not add security api
+            No shop added to your account so you can not add security api
           </p>
         )}
       </label>

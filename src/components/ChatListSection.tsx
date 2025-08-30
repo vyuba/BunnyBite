@@ -7,6 +7,7 @@ import { useUserStore } from "@/app/providers/userStoreProvider";
 import { useChatProvider } from "@/app/providers/SidebarStoreProvider";
 import { getChats } from "@/client-utils";
 import Chat from "./Chat";
+import EmptyChatSvg from "@/icons/EmptyChat";
 
 const ChatListSection = () => {
   const { isChatOpen } = useChatProvider();
@@ -137,7 +138,7 @@ const ChatListSection = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center w-full h-full">
-          <svg
+          {/* <svg
             width="170"
             height="200"
             viewBox="0 0 214 219"
@@ -234,10 +235,16 @@ const ChatListSection = () => {
                 ></rect>
               </clipPath>
             </defs>
-          </svg>
-          <button className="border w-fit border-border  text-black/70 dark:text-white capitalize px-3 hover:cursor-pointer bg-[var(--background)] text-sm py-2 rounded-lg">
-            Oops empty chat list
-          </button>
+          </svg> */}
+          <EmptyChatSvg />
+          <div className="flex flex-col items-center justify-center gap-1.5">
+            <p className=" w-fit font-medium text-center text-black/70 dark:text-white/70 capitalize  hover:cursor-pointer  text-sm  rounded-lg">
+              Empty Chat
+            </p>
+            <p className=" max-w-[90%] text-center text-black/70 dark:text-white/70 capitalize  hover:cursor-pointer  text-sm rounded-lg">
+              No Chat received from any customer&apos;s yets
+            </p>
+          </div>
         </div>
       )}
     </div>

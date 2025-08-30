@@ -52,13 +52,13 @@ const NotificationContainer = ({ setIsProfileClicked, isProfileClicked }) => {
           notifications?.documents.map((noti) => (
             <li
               key={noti?.$id}
-              className="w-full relative cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3"
+              className="w-full relative cursor-pointer hover:bg-background border-y text-sm border-border px-2 py-3"
             >
               {noti?.message}
               <span
                 className={`absolute ${
-                  noti?.seen ? "block" : "hidden"
-                } top-1/2 left-1 size-2 bg-[#00BFAE] rounded-full`}
+                  noti?.seen ? "hidden" : "block"
+                }-top-1/2 translate-y-1/2 right-3 size-2.5 z-10 border border-[#009286] bg-[#00BFAE] rounded-full`}
               />
             </li>
           ))
