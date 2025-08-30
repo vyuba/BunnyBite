@@ -1,10 +1,11 @@
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
 import { pcIndex } from "@/app/lib/pinecone";
 import { getShopify } from "@/app/lib/shopify";
 import { model } from "@/app/lib/openai";
 import { CreateAdminClient } from "@/app/lib/node-appwrite";
 import { Query, ID, Permission, Role } from "node-appwrite";
-export const runtime = "nodejs"; // ensure Node, not Edge
 
 export const POST = async (req: NextRequest) => {
   //init shopify
@@ -140,8 +141,8 @@ export const POST = async (req: NextRequest) => {
         [Query.equal("userId", user)]
       );
 
-      const userSetupProgressId = userSetupProgress.documents[0].$id;
-      if (userSetupProgressId === null) {
+      const userSetupProgressId = userSetupProgress.documents[0]?.$id;
+      if (!userSetupProgressId) {
         await adminDatabase.createDocument(
           process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
           process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
