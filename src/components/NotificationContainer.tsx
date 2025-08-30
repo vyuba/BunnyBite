@@ -52,9 +52,14 @@ const NotificationContainer = ({ setIsProfileClicked, isProfileClicked }) => {
           notifications?.documents.map((noti) => (
             <li
               key={noti?.$id}
-              className="w-full cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3"
+              className="w-full relative cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3"
             >
               {noti?.message}
+              <span
+                className={`absolute ${
+                  noti?.seen ? "block" : "hidden"
+                } top-1/2 left-1 size-2 bg-[#00BFAE] rounded-full`}
+              />
             </li>
           ))
         ) : isLoading ? (

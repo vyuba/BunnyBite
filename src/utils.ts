@@ -144,6 +144,40 @@ const appUninstallHandler = async (
       );
     }
 
+    // checking if there is user notification
+
+    const notification = await adminDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
+      [Query.equal("user_id", userShop.documents[0].user)]
+    );
+
+    // only deleting if there is user notification
+    if (notification.total > 0) {
+      await adminDatabase.deleteDocuments(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_NOTIFICATION_COLLECTION_ID!,
+        [Query.equal("user_id", userShop.documents[0].user)]
+      );
+    }
+
+    // checking if there is user progress
+
+    const userProgress = await adminDatabase.listDocuments(
+      process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+      process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+      [Query.equal("userId", userShop.documents[0].user)]
+    );
+
+    // only deleting if there is user progress
+    if (userProgress.total > 0) {
+      await adminDatabase.deleteDocuments(
+        process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+        [Query.equal("userId", userShop.documents[0].user)]
+      );
+    }
+
     await adminDatabase.deleteDocuments(
       process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
       process.env.NEXT_PUBLIC_SHOPS_COLLECTION_ID!,
