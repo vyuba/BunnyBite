@@ -133,15 +133,25 @@ export const POST = async (req: NextRequest) => {
         [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
       );
       // setup progress
-      await adminDatabase.createDocument(
+
+      const userSetupProgress = await adminDatabase.listDocuments(
         process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
         process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
-        ID.unique(),
-        {
-          userId: user,
-        },
-        [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
+        [Query.equal("userId", user)]
       );
+
+      const userSetupProgressId = userSetupProgress.documents[0].$id;
+      if (userSetupProgressId === null) {
+        await adminDatabase.createDocument(
+          process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
+          process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
+          ID.unique(),
+          {
+            userId: user,
+          },
+          [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
+        );
+      }
     }
 
     // Update event
@@ -158,12 +168,12 @@ export const POST = async (req: NextRequest) => {
           },
           [Permission.read(Role.user(user)), Permission.update(Role.user(user))]
         );
+
         const userSetupProgress = await adminDatabase.listDocuments(
           process.env.NEXT_PUBLIC_PROJECT_DATABASE_ID!,
           process.env.NEXT_PUBLIC_APPWRITE_USER_SETUPS_PROGRESS_COLLECTION_ID!,
           [Query.equal("userId", user)]
         );
-
         const docId = userSetupProgress.documents[0].$id;
 
         await adminDatabase.updateDocument(
