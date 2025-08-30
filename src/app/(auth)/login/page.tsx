@@ -5,11 +5,11 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { clientAccount } from "../lib/client-appwrite";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Status } from "@/components/pages/RegisterPage";
 import Image from "next/image";
 import { SmileyXEyesIcon } from "@phosphor-icons/react";
+import { clientAccount } from "@/app/lib/client-appwrite";
 
 const LoginPage = () => {
   const router = useRouter();

@@ -1,7 +1,8 @@
-import { BellIcon, GearIcon } from "@phosphor-icons/react";
+import { BellIcon } from "@phosphor-icons/react";
 import PopOver from "./Popover";
 import Link from "next/link";
 import { useState } from "react";
+import NotificationContainer from "./NotificationContainer";
 
 const AnouncementBanner = () => {
   const [isProfileClicked, setIsProfileClicked] = useState(false);
@@ -28,26 +29,10 @@ const AnouncementBanner = () => {
               />
             }
           >
-            <div className="w-full h-[400px]">
-              <span className=" p-3 w-full flex items-center justify-between">
-                <p className=" text-sm md:text-base">Notifications</p>
-                <Link
-                  onClick={() => setIsProfileClicked(!isProfileClicked)}
-                  href={"/dashboard/settings/account"}
-                >
-                  <GearIcon
-                    weight={`regular`}
-                    fill="var(--icon-background)"
-                    size={20}
-                  />
-                </Link>
-              </span>
-              <ul className="w-full flex flex-col">
-                <li className="w-full cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3">
-                  🎉 Welcome to BunnyBite Hope you have a wonderful time here
-                </li>
-              </ul>
-            </div>
+            <NotificationContainer
+              setIsProfileClicked={setIsProfileClicked}
+              isProfileClicked={isProfileClicked}
+            />
           </PopOver>
         </div>
       </div>
@@ -70,26 +55,10 @@ const AnouncementBanner = () => {
               />
             }
           >
-            <div className="w-full h-[400px]">
-              <span className=" p-3 w-full flex items-center justify-between">
-                <p className=" text-sm md:text-base">Notifications</p>
-                <Link
-                  onClick={() => setIsProfileClicked(!isProfileClicked)}
-                  href={"/dashboard/settings/account"}
-                >
-                  <GearIcon
-                    weight={`regular`}
-                    fill="var(--icon-background)"
-                    size={20}
-                  />
-                </Link>
-              </span>
-              <ul className="w-full flex flex-col">
-                <li className="w-full cursor-pointer hover:bg-background border-y text-xs md:text-sm border-border px-2 py-3">
-                  🎉 Welcome to BunnyBite Hope you have a wonderful time here
-                </li>
-              </ul>
-            </div>
+            <NotificationContainer
+              setIsProfileClicked={setIsProfileClicked}
+              isProfileClicked={isProfileClicked}
+            />
           </PopOver>
         </div>
       </div>
