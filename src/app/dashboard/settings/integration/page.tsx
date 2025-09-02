@@ -119,7 +119,7 @@ const IntegrationPage = () => {
                                   });
                                   setShopId(store?.$id);
                                 }}
-                                className="w-fit bg-transparent hover:bg-[var(--background)] text-black/70 dark:text-white  capitalize px-2.5 hover:cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1 "
+                                className="hover:bg-secondary-background visible md:invisible group-hover:visible transition-all p-1.5 rounded-sm cursor-pointer w-fit "
                               >
                                 <EditSvg />
                               </button>
@@ -134,7 +134,7 @@ const IntegrationPage = () => {
                                   setShopId(store?.$id);
                                   // await deleteShop();
                                 }}
-                                className=" w-fit bg-transparent text-red-600 hover:bg-[var(--background)]  capitalize px-2.5 cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1"
+                                className=" w-fit bg-transparent hover:bg-secondary-background text-red-600   capitalize px-2.5 cursor-pointer  text-sm py-2 rounded-lg flex items-center gap-1"
                               >
                                 <TrashIcon size={17} />
                               </button>
