@@ -54,11 +54,11 @@ export default async function Home() {
                 Install app
               </button>
             </Link>
-            <Link href="/login">
+            {/* <Link href="/login">
               <button className="border border-border border-b-2 text-black/70 dark:text-white capitalize px-4 hover:cursor-pointer bg-primary-background text-sm md:text-base py-2 rounded-lg">
                 sign in
               </button>
-            </Link>
+            </Link> */}
           </div>
         </div>
         <div className="w-full max-w-[800px] bg-primary-background border border-border h-[400px] rounded-lg" />

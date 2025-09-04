@@ -184,13 +184,20 @@ const appUninstallHandler = async (
       [Query.equal("shop", shop)]
     );
 
-    const deleteResponse = await pcIndex.namespace(`__${shop}__`).deleteMany({
-      shop: { $eq: shop },
-    });
+    console.log("Delete Pinecone namespace ");
 
-    await pcIndex.deleteNamespace(`__${shop}__`);
+    const nmList = await pcIndex.listNamespaces();
+    const exists = nmList.namespaces.find((ns) => ns.name === `__${shop}__`);
 
-    console.log("Deleted Shop Pinecone Response", deleteResponse);
+    if (exists) {
+      await pcIndex.deleteNamespace(`__${shop}__`);
+    }
+
+    // const deleteResponse = await pcIndex.namespace(`__${shop}__`).deleteMany({
+    //   shop: { $eq: shop },
+    // });
+
+    // console.log("Deleted Shop Pinecone Response", deleteResponse);
   } catch (error) {
     console.log(error);
   }
