@@ -1,37 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+<a href="https://bunny-bite.vercel.app">
+    <img src="./.github/assets/logo.png" alt="BunnyBite logo" title="BunnyBite logo" width="80"/>
+</a>
 
-First, run the development server:
+# BunnyBite [Web App](#)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Automatied AI - Whatsapp Chatbot For Ecommerce - Shopify
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<div align="left">
 
-## Learn More
+* Shopify App Installation.
+* Automated AI Replies.
+* A configurable setup for whatsapp with twillio and shopify.
+* Order tacking number display with AI.
+* Automated Refunds Through AI.
+* Light and dark themes.
+* Realtime Chatting System with AI or User.
+* AI token Calculated with polar 🚧.
+* Whatsapp Marketting with Broadcasting 🚧.
+* RAG with Shop Products with Pinecone .
 
-To learn more about Next.js, take a look at the following resources:
+</div>
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# BunnyBite
+</div>
