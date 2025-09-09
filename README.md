@@ -8,6 +8,8 @@
 
 ### Automatied AI - Whatsapp Chatbot For Ecommerce - Shopify
 
+<p>A Shopify non-embeded app used to automate customer service with custom Shopify Stores AI agent.</p>
+
 
 ## Teck Stack
 
