@@ -1,13 +1,21 @@
 <div align="center">
 
 <a href="https://bunny-bite.vercel.app">
-    <img src="./.github/assets/logo.png" alt="BunnyBite logo" title="BunnyBite logo" width="80"/>
+    <img src="./public/bunnyBite-logo.svg" alt="BunnyBite logo" title="BunnyBite logo" width="100"/>
 </a>
 
 # BunnyBite [Web App](#)
 
 ### Automatied AI - Whatsapp Chatbot For Ecommerce - Shopify
 
+
+## Teck Stack
+
+<div align="center">
+
+Next js - React - Pinecone - Openai - Langraph - Appwrite - Shopify 
+
+</div>
 
 ## Features
 
