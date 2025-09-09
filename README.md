@@ -14,8 +14,10 @@
 ## Teck Stack
 
 <div align="center">
-
-Next js - React - Pinecone - Openai - Langraph - Appwrite - Shopify 
+    
+```ts
+Next js - React - Pinecone - Openai - Langraph - Appwrite - Shopify
+```
 
 </div>
 
