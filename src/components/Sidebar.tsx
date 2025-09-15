@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import ToolKit from "./ToolKit";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { MoonIcon } from "@phosphor-icons/react/dist/ssr";
+import { MoonIcon, UsersThreeIcon } from "@phosphor-icons/react/dist/ssr";
 import { useTheme } from "@/app/providers/ThemeProvider";
 // import { signOut } from "@/helpers/appwrite-helpers";
 import { getProfileIcon } from "@/client-utils";
@@ -42,6 +42,12 @@ const SideBarLinks = {
     },
     {
       id: 3,
+      title: "Campaign",
+      icon: UsersThreeIcon,
+      link: "/dashboard/campaign",
+    },
+    {
+      id: 4,
       title: "Refunds",
       icon: ShoppingBagIcon,
       link: "/dashboard/refunds",
@@ -49,7 +55,7 @@ const SideBarLinks = {
   ],
   SidebarFooterLinks: [
     {
-      id: 4,
+      id: 5,
       title: "Settings",
       icon: GearIcon,
       link: "/dashboard/settings",

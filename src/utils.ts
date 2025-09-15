@@ -184,10 +184,10 @@ const appUninstallHandler = async (
       [Query.equal("shop", shop)]
     );
 
-    console.log("Delete Pinecone namespace ");
-
     const nmList = await pcIndex.listNamespaces();
     const exists = nmList.namespaces.find((ns) => ns.name === `__${shop}__`);
+
+    console.log("Delete Pinecone namespace ", exists);
 
     if (exists) {
       await pcIndex.deleteNamespace(`__${shop}__`);

@@ -19,6 +19,7 @@ import { pcIndex } from "@/app/lib/pinecone";
 import { model as openaiEmbeddings } from "@/app/lib/openai";
 import { MemorySaver } from "@langchain/langgraph";
 import type { Shop } from "@/types";
+import { v4 as uuidv4 } from "uuid";
 
 // ---------------- State ----------------
 const State = Annotation.Root({
@@ -34,7 +35,7 @@ You are a friendly, shop-aware customer support agent.
 You only handle:
 1) Refund requests (use save_refund),
 2) Order tracking (use tracking_tool),
-3) Shop context / FAQs via RAG (use rag_fetch).
+3) Any question or statement about the shop products use the ("rag_fetch" ) tool .
 Follow shop tone and policies. Call tools with correct JSON. Keep replies concise.
 `;
 
@@ -182,12 +183,50 @@ async function llmNode(state: typeof State.State) {
 }
 
 /** Router: if the latest AIMessage has tool calls -> tools; else END */
-function router(state: typeof State.State) {
+
+async function router(state: typeof State.State) {
+  const llm = new ChatOpenAI({
+    model: "gpt-4o-mini",
+    temperature: 0,
+    apiKey: process.env.OPENAI_API_KEY!,
+  });
+
   const last = state.messages[state.messages.length - 1];
+
   if (last instanceof AIMessage) {
     const toolCalls = last.tool_calls ?? last.additional_kwargs?.tool_calls;
     if (Array.isArray(toolCalls) && toolCalls.length) return "tools";
   }
+
+  const isHumanMessageAboutProducts = await llm.invoke([
+    new SystemMessage(
+      "Answer ONLY with `yes` or `no`. Is the following human message asking about products?"
+    ),
+    new HumanMessage(last),
+  ]);
+
+  const response = String(isHumanMessageAboutProducts.content)
+    .trim()
+    .toLowerCase();
+
+  if (response === "yes") {
+    // inject a tool call for the ToolNode
+    const toolCallMessage = new AIMessage({
+      content: "",
+      tool_calls: [
+        {
+          name: "rag_fetch", // passing rag tool
+          args: { query: last.content }, // arguments you want to pass
+          id: uuidv4(),
+          type: "tool_call",
+        },
+      ],
+    });
+
+    state.messages.push(toolCallMessage);
+    return "tools";
+  }
+
   return END;
 }
 

@@ -33,7 +33,7 @@ const NotificationContainer = ({ setIsProfileClicked, isProfileClicked }) => {
   }, [user?.$id]);
 
   return (
-    <div className="w-full h-[400px]">
+    <div className="w-full h-full relative">
       <span className=" p-3 w-full flex items-center justify-between">
         <p className=" text-sm md:text-base">Notifications</p>
         <Link
@@ -47,7 +47,7 @@ const NotificationContainer = ({ setIsProfileClicked, isProfileClicked }) => {
           />
         </Link>
       </span>
-      <ul className="w-full flex flex-col">
+      <ul className="w-full flex flex-col overflow-auto h-full max-h-[200px]">
         {notifications?.total > 0 ? (
           notifications?.documents.map((noti) => (
             <li
